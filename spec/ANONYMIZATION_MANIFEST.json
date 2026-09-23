@@ -1,0 +1,22 @@
+{
+  "schema": "c658-spec-anonymization/v1",
+  "token": "<ANONYMIZED:DEVICE_ID_A:6_BYTES>",
+  "changes": [
+    {
+      "file": "spec/KNOWN_VALUES.json",
+      "json_pointer": "/receiver_paired_device_probe/observed_hex",
+      "preserved_prefix": "08 59"
+    },
+    {
+      "file": "spec/EVIDENCE_STATUS.csv",
+      "record_id": "RX01",
+      "column": "source",
+      "preserved_prefix": "08 59"
+    },
+    {
+      "file": "docs/TECHNICAL_SPEC.md",
+      "location": "Receiver paired-device response example",
+      "preserved_prefix": "08 59"
+    }
+  ]
+}

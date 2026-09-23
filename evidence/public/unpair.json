@@ -1,0 +1,71 @@
+{
+  "schema": "c652-experimental-unpair/v1",
+  "started_at": "2026-09-23T05:10:12.188031+00:00",
+  "device": "/dev/hidraw10",
+  "slot": 0,
+  "packet": "41 04 00 00 00",
+  "target_before": {
+    "slot": 0,
+    "report_id": "0x43",
+    "device_type": "0x59",
+    "occupied": true,
+    "serial_raw_hex": "<ANONYMIZED:DEVICE_ID_A:6_BYTES>",
+    "raw_hex": "43 59 <ANONYMIZED:DEVICE_ID_A:6_BYTES>",
+    "layout_evidence": "prior-static for device_type/serial interpretation"
+  },
+  "required_expect_raw": "43 59 <ANONYMIZED:DEVICE_ID_A:6_BYTES>",
+  "evidence": "prior-static; first Linux end-to-end validation required",
+  "before": [
+    {
+      "slot": 0,
+      "report_id": "0x43",
+      "device_type": "0x59",
+      "occupied": true,
+      "serial_raw_hex": "<ANONYMIZED:DEVICE_ID_A:6_BYTES>",
+      "raw_hex": "43 59 <ANONYMIZED:DEVICE_ID_A:6_BYTES>",
+      "layout_evidence": "prior-static for device_type/serial interpretation"
+    },
+    {
+      "slot": 1,
+      "report_id": "0x44",
+      "device_type": "0x00",
+      "occupied": false,
+      "serial_raw_hex": "00 00 00 00 00 00",
+      "raw_hex": "44 00 00 00 00 00 00 00",
+      "layout_evidence": "prior-static for device_type/serial interpretation"
+    },
+    {
+      "slot": 2,
+      "report_id": "0x45",
+      "device_type": "0x00",
+      "occupied": false,
+      "serial_raw_hex": "00 00 00 00 00 00",
+      "raw_hex": "45 00 00 00 00 00 00 00",
+      "layout_evidence": "prior-static for device_type/serial interpretation"
+    },
+    {
+      "slot": 3,
+      "report_id": "0x46",
+      "device_type": "0x00",
+      "occupied": false,
+      "serial_raw_hex": "00 00 00 00 00 00",
+      "raw_hex": "46 00 00 00 00 00 00 00",
+      "layout_evidence": "prior-static for device_type/serial interpretation"
+    },
+    {
+      "slot": 4,
+      "report_id": "0x47",
+      "device_type": "0x00",
+      "occupied": false,
+      "serial_raw_hex": "00 00 00 00 00 00",
+      "raw_hex": "47 00 00 00 00 00 00 00",
+      "layout_evidence": "prior-static for device_type/serial interpretation"
+    }
+  ],
+  "snapshots": [],
+  "packet_sent": false,
+  "target_empty_confirmed": false,
+  "success": false,
+  "finished_at": "2026-09-23T05:10:12.294954+00:00",
+  "failure": "[Errno 32] Broken pipe"
+}

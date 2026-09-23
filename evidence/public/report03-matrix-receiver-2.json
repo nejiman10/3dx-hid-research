@@ -1,0 +1,5717 @@
+{
+  "schema": "c658-report03-matrix/v1",
+  "started_at": "2026-09-23T03:46:45.817033+00:00",
+  "device": "/dev/hidraw5",
+  "input_hidraw": [
+    "/dev/hidraw5",
+    "/dev/hidraw10",
+    "/dev/hidraw11",
+    "/dev/hidraw12",
+    "/dev/hidraw13"
+  ],
+  "event": [
+    "/dev/input/event11"
+  ],
+  "stages": [
+    3,
+    4
+  ],
+  "selected_slot": 7,
+  "requested_presses_per_phase": 10,
+  "capture_seconds_per_phase": 12.0,
+  "evidence_note": "Report 0x17 byte2 remains UNKNOWN_CHARGING_STATE_CANDIDATE",
+  "phases": [
+    {
+      "sequence": 1,
+      "stage": 3,
+      "name": "host-index-0",
+      "slot": 7,
+      "physical_button": "radial",
+      "expected_report03_mask": null,
+      "mapping_wire_value": "0x28",
+      "report10_hex": "10 00 1c 1f 01 ff 00 00 00 00 00 00 00 00 00 00 00 00 00 0a 0b 0c 0c 0e 0d 28 00 1e 00 00 00 01",
+      "capture_started_at": "2026-09-23T03:46:52.087272+00:00",
+      "raw_reports": [
+        {
+          "time": 96668.067149177,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 ff ff 00 00 00 00 00"
+        },
+        {
+          "time": 96668.076115131,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 fe ff 01 00 00 00 00"
+        },
+        {
+          "time": 96668.163138381,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 fe ff 01 00 00 00 00"
+        },
+        {
+          "time": 96668.170099332,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 fd ff 00 00 00 00 00"
+        },
+        {
+          "time": 96668.257135326,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 fe ff 01 00 00 00 00"
+        },
+        {
+          "time": 96668.265106469,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 ea ff 01 00 00 00 00"
+        },
+        {
+          "time": 96668.273109572,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 fc ff 00 00 00 00 00"
+        },
+        {
+          "time": 96668.281107374,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 f1 ff 01 00 00 00 00"
+        },
+        {
+          "time": 96668.290100511,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 fd ff 00 00 00 00 00"
+        },
+        {
+          "time": 96668.300103107,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 fe ff 00 00 00 00 00"
+        },
+        {
+          "time": 96668.308100399,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 fd ff 01 00 00 00 00"
+        },
+        {
+          "time": 96668.316104394,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 fc ff 00 00 00 00 00"
+        },
+        {
+          "time": 96668.324101375,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 f8 ff 01 00 00 00 00"
+        },
+        {
+          "time": 96668.332107374,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 fb ff 01 00 00 00 00"
+        },
+        {
+          "time": 96668.340105267,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 fa ff 00 00 00 00 00"
+        },
+        {
+          "time": 96668.348101957,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 fb ff 00 00 00 00 00"
+        },
+        {
+          "time": 96668.356101433,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 fc ff 01 00 00 00 00"
+        },
+        {
+          "time": 96668.364109837,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 fc ff 01 00 00 00 00"
+        },
+        {
+          "time": 96668.372103512,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 fc ff 00 00 00 00 00"
+        },
+        {
+          "time": 96668.380103348,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 fd ff 00 00 00 00 00"
+        },
+        {
+          "time": 96668.388109186,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 fd ff 01 00 00 00 00"
+        },
+        {
+          "time": 96668.39611277,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 fc ff 00 00 00 00 00"
+        },
+        {
+          "time": 96668.404111144,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 fe ff 01 00 00 00 00"
+        },
+        {
+          "time": 96668.412113155,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 fd ff 00 00 00 00 00"
+        },
+        {
+          "time": 96668.420100659,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 fe ff 01 00 00 00 00"
+        },
+        {
+          "time": 96668.428102399,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 fe ff 00 00 00 00 00"
+        },
+        {
+          "time": 96668.436108598,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 fd ff 00 00 00 00 00"
+        },
+        {
+          "time": 96668.444114456,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 fd ff 01 00 00 00 00"
+        },
+        {
+          "time": 96668.452120334,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 fc ff 00 00 00 00 00"
+        },
+        {
+          "time": 96668.460117205,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 fc ff 00 00 00 00 00"
+        },
+        {
+          "time": 96668.468106172,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 fc ff 01 00 00 00 00"
+        },
+        {
+          "time": 96668.476107982,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 fb ff 01 00 00 00 00"
+        },
+        {
+          "time": 96668.484104042,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 fb ff 00 00 00 00 00"
+        },
+        {
+          "time": 96668.49211499,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 fa ff 01 00 00 00 00"
+        },
+        {
+          "time": 96668.500118223,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 fa ff 02 00 00 00 00"
+        },
+        {
+          "time": 96668.50811846,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 f9 ff 01 00 00 00 00"
+        },
+        {
+          "time": 96668.518119253,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 f9 ff 01 00 00 00 00"
+        },
+        {
+          "time": 96668.526122016,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 f9 ff 00 00 00 00 00"
+        },
+        {
+          "time": 96668.534121492,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 fa ff 00 00 00 00 00"
+        },
+        {
+          "time": 96668.542118603,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 fa ff 01 00 00 00 00"
+        },
+        {
+          "time": 96668.550122117,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 f9 ff 01 00 00 00 00"
+        },
+        {
+          "time": 96668.558123066,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 f9 ff 01 00 00 00 00"
+        },
+        {
+          "time": 96668.566124636,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 f8 ff 01 00 00 00 00"
+        },
+        {
+          "time": 96668.574124543,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 f7 ff 01 00 00 00 00"
+        },
+        {
+          "time": 96668.583119663,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 f7 ff 00 00 00 00 00"
+        },
+        {
+          "time": 96668.591120562,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 f5 ff 01 00 00 00 00"
+        },
+        {
+          "time": 96668.599120749,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 f5 ff 01 00 00 00 00"
+        },
+        {
+          "time": 96668.607123943,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 ee ff 01 00 00 00 00"
+        },
+        {
+          "time": 96668.615115784,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 f5 ff 00 00 00 00 00"
+        },
+        {
+          "time": 96668.623113066,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 f4 ff 00 00 00 00 00"
+        },
+        {
+          "time": 96668.631113233,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 f4 ff 01 00 00 00 00"
+        },
+        {
+          "time": 96668.639114002,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 f4 ff 00 00 00 00 00"
+        },
+        {
+          "time": 96668.647104882,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 f4 ff 00 00 00 00 00"
+        },
+        {
+          "time": 96668.655109468,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 f4 ff 00 00 00 00 00"
+        },
+        {
+          "time": 96668.6631122,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 f4 ff 01 00 00 00 00"
+        },
+        {
+          "time": 96668.671112979,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 f4 ff 00 00 00 00 00"
+        },
+        {
+          "time": 96668.679111483,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 f3 ff 00 00 00 00 00"
+        },
+        {
+          "time": 96668.687110558,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 f4 ff 00 00 00 00 00"
+        },
+        {
+          "time": 96668.69811505,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 f4 ff 01 00 00 00 00"
+        },
+        {
+          "time": 96668.708110292,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 f5 ff 00 00 00 00 00"
+        },
+        {
+          "time": 96668.716112373,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 f6 ff 00 00 00 00 00"
+        },
+        {
+          "time": 96668.726110962,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 f8 ff 01 00 00 00 00"
+        },
+        {
+          "time": 96668.734110979,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 f5 ff 00 00 00 00 00"
+        },
+        {
+          "time": 96668.742115014,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 f9 ff 00 00 00 00 00"
+        },
+        {
+          "time": 96668.750113228,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 fa ff 00 00 00 00 00"
+        },
+        {
+          "time": 96668.758114257,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 fa ff 00 00 00 00 00"
+        },
+        {
+          "time": 96668.766117219,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 fa ff 00 00 00 00 00"
+        },
+        {
+          "time": 96668.774111626,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 fa ff 00 00 00 00 00"
+        },
+        {
+          "time": 96668.783111244,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 fc ff 00 00 00 00 00"
+        },
+        {
+          "time": 96668.791112875,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 fc ff 00 00 00 00 00"
+        },
+        {
+          "time": 96668.799114385,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 fb ff 00 00 00 00 00"
+        },
+        {
+          "time": 96668.807112568,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 fe ff 00 00 00 00 00"
+        },
+        {
+          "time": 96668.81511483,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 ff ff 00 00 00 00 00"
+        },
+        {
+          "time": 96668.823114096,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 fe ff 00 00 00 00 00"
+        },
+        {
+          "time": 96668.831112319,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 ff ff 00 00 00 00 00"
+        },
+        {
+          "time": 96668.839112917,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 fe ff ff ff 00 00 00"
+        },
+        {
+          "time": 96668.847113215,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 ff ff 00 00 00 00 00"
+        },
+        {
+          "time": 96668.858112718,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 fe ff 00 00 00 00 00"
+        },
+        {
+          "time": 96668.86612106,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 fd ff ff ff 00 00 00"
+        },
+        {
+          "time": 96668.874129394,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 fe ff ff ff 00 00 00"
+        },
+        {
+          "time": 96668.882126625,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 fd ff ff ff 00 00 00"
+        },
+        {
+          "time": 96668.89012546,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 fc ff ff ff 00 00 00"
+        },
+        {
+          "time": 96668.898130166,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 fd ff fe ff 00 00 00"
+        },
+        {
+          "time": 96668.906126577,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 fe ff ff ff 00 00 00"
+        },
+        {
+          "time": 96668.916128381,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 fe ff ff ff 00 00 00"
+        },
+        {
+          "time": 96668.924127457,
+          "path": "/dev/hidraw5",
+          "length": 3,
+          "report_id": "0x17",
+          "raw_hex": "17 64 00"
+        },
+        {
+          "time": 96668.932132814,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 ff ff ff ff 00 00 00"
+        },
+        {
+          "time": 96668.940129435,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 ff ff ff ff 00 00 00"
+        },
+        {
+          "time": 96668.94815492,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 00 00 ff ff 00 00 00"
+        },
+        {
+          "time": 96668.95614064,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 ff ff 00 00 00 00 00"
+        },
+        {
+          "time": 96668.964133954,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 00 00 ff ff 00 00 00"
+        },
+        {
+          "time": 96668.972125415,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 00 00 ff ff 00 00 00"
+        },
+        {
+          "time": 96668.98011902,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 ff ff fe ff 00 00 00"
+        },
+        {
+          "time": 96668.988124618,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 00 00 ff ff 00 00 00"
+        },
+        {
+          "time": 96668.996122271,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 ff ff fd ff 00 00 00"
+        },
+        {
+          "time": 96669.004121186,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 00 00 ff ff 00 00 00"
+        },
+        {
+          "time": 96669.012119019,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 00 00 ff ff 00 00 00"
+        },
+        {
+          "time": 96669.06814604,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 00 00 ff ff 00 00 00"
+        },
+        {
+          "time": 96669.076137571,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 00 00 ff ff 00 00 00"
+        },
+        {
+          "time": 96669.084131296,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 00 00 ff ff 00 00 00"
+        },
+        {
+          "time": 96669.092133107,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 00 00 ff ff 00 00 00"
+        },
+        {
+          "time": 96669.205150942,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 ff ff 00 00 00 00 00"
+        },
+        {
+          "time": 96669.213133706,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 ff ff 00 00 00 00 00"
+        },
+        {
+          "time": 96669.220137037,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 fe ff 01 00 00 00 00"
+        },
+        {
+          "time": 96669.22813984,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 fe ff 02 00 00 00 00"
+        },
+        {
+          "time": 96669.236145798,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 fe ff 01 00 00 00 00"
+        },
+        {
+          "time": 96669.244144212,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 fe ff 02 00 00 00 00"
+        },
+        {
+          "time": 96669.252142136,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 fc ff 03 00 00 00 00"
+        },
+        {
+          "time": 96669.261142075,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 fd ff 02 00 00 00 00"
+        },
+        {
+          "time": 96669.268146147,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 00 00 02 00 00 00 00"
+        },
+        {
+          "time": 96669.276145944,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 01 00 02 00 00 00 00"
+        },
+        {
+          "time": 96669.284136994,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 03 00 02 00 00 00 00"
+        },
+        {
+          "time": 96669.292137091,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 01 00 01 00 00 00 00"
+        },
+        {
+          "time": 96669.300136978,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 02 00 01 00 00 00 00"
+        },
+        {
+          "time": 96669.308138538,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 02 00 02 00 00 00 00"
+        },
+        {
+          "time": 96669.316141441,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 01 00 00 00 00 00 00"
+        },
+        {
+          "time": 96669.715185346,
+          "path": "/dev/hidraw5",
+          "length": 3,
+          "report_id": "0x17",
+          "raw_hex": "17 64 00"
+        },
+        {
+          "time": 96674.516309995,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 00 00 01 00 00 00 00"
+        },
+        {
+          "time": 96674.523270765,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 00 00 01 00 00 00 00"
+        },
+        {
+          "time": 96674.531279048,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 01 00 03 00 00 00 00"
+        },
+        {
+          "time": 96674.539269086,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 01 00 04 00 00 00 00"
+        },
+        {
+          "time": 96674.547281226,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 01 00 03 00 00 00 00"
+        },
+        {
+          "time": 96674.555290821,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 03 00 07 00 00 00 00"
+        },
+        {
+          "time": 96674.56328643,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 02 00 07 00 00 00 00"
+        },
+        {
+          "time": 96674.571300413,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 03 00 06 00 00 00 00"
+        },
+        {
+          "time": 96674.579284109,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 02 00 06 00 00 00 00"
+        },
+        {
+          "time": 96674.587274348,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 02 00 04 00 00 00 00"
+        },
+        {
+          "time": 96674.595274014,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 01 00 05 00 00 00 00"
+        },
+        {
+          "time": 96674.603285423,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 01 00 03 00 00 00 00"
+        },
+        {
+          "time": 96674.611268718,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 01 00 00 00 00 00 00"
+        },
+        {
+          "time": 96674.619276921,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 01 00 00 00 00 00 00"
+        },
+        {
+          "time": 96674.627266548,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 03 00 01 00 00 00 00"
+        },
+        {
+          "time": 96674.635282325,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 03 00 01 00 00 00 00"
+        },
+        {
+          "time": 96674.643278044,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 03 00 01 00 00 00 00"
+        },
+        {
+          "time": 96674.651275476,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 04 00 01 00 00 00 00"
+        },
+        {
+          "time": 96674.659273209,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 05 00 00 00 00 00 00"
+        },
+        {
+          "time": 96674.667283285,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 04 00 01 00 00 00 00"
+        },
+        {
+          "time": 96674.675272882,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 04 00 00 00 00 00 00"
+        },
+        {
+          "time": 96674.683272048,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 04 00 00 00 00 00 00"
+        },
+        {
+          "time": 96674.691272335,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 03 00 00 00 00 00 00"
+        },
+        {
+          "time": 96674.6992766,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 03 00 00 00 00 00 00"
+        },
+        {
+          "time": 96674.707268582,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 01 00 00 00 00 00 00"
+        },
+        {
+          "time": 96674.715286844,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 01 00 00 00 00 00 00"
+        },
+        {
+          "time": 96674.723284076,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 01 00 00 00 00 00 00"
+        },
+        {
+          "time": 96674.73128785,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 01 00 00 00 00 00 00"
+        },
+        {
+          "time": 96674.739288428,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 01 00 01 00 00 00 00"
+        },
+        {
+          "time": 96674.747286641,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 01 00 00 00 00 00 00"
+        },
+        {
+          "time": 96674.755284745,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 01 00 00 00 00 00 00"
+        },
+        {
+          "time": 96674.765293333,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 01 00 00 00 00 00 00"
+        },
+        {
+          "time": 96674.773284593,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 01 00 00 00 00 00 00"
+        },
+        {
+          "time": 96674.781289499,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 03 00 ff ff 00 00 00"
+        },
+        {
+          "time": 96674.789277393,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 05 00 fe ff 00 00 00"
+        },
+        {
+          "time": 96674.797284994,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 04 00 ff ff 00 00 00"
+        },
+        {
+          "time": 96674.8052788,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 03 00 ff ff 00 00 00"
+        },
+        {
+          "time": 96674.813273166,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 03 00 00 00 00 00 00"
+        },
+        {
+          "time": 96674.821288893,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 01 00 00 00 00 00 00"
+        },
+        {
+          "time": 96674.861287175,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 01 00 00 00 00 00 00"
+        },
+        {
+          "time": 96674.869281722,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 00 00 ff ff 00 00 00"
+        },
+        {
+          "time": 96674.877276068,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 01 00 00 00 00 00 00"
+        },
+        {
+          "time": 96674.885292536,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 02 00 00 00 00 00 00"
+        },
+        {
+          "time": 96674.893293154,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 02 00 ff ff 00 00 00"
+        },
+        {
+          "time": 96674.901283182,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 03 00 00 00 00 00 00"
+        },
+        {
+          "time": 96674.90928337,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 06 00 ff ff 00 00 00"
+        },
+        {
+          "time": 96674.917279559,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 07 00 ff ff 00 00 00"
+        },
+        {
+          "time": 96674.925276962,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 07 00 ff ff 00 00 00"
+        },
+        {
+          "time": 96674.933282599,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 05 00 fe ff 00 00 00"
+        },
+        {
+          "time": 96674.941278579,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 04 00 00 00 00 00 00"
+        },
+        {
+          "time": 96674.949284206,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 03 00 ff ff 00 00 00"
+        },
+        {
+          "time": 96674.957281989,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 02 00 00 00 00 00 00"
+        },
+        {
+          "time": 96674.965287387,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 00 00 ff ff 00 00 00"
+        },
+        {
+          "time": 96674.973284378,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 01 00 00 00 00 00 00"
+        },
+        {
+          "time": 96674.989285885,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 01 00 00 00 00 00 00"
+        },
+        {
+          "time": 96674.997291733,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 00 00 ff ff 00 00 00"
+        },
+        {
+          "time": 96675.005280619,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 01 00 00 00 00 00 00"
+        },
+        {
+          "time": 96675.013283601,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 01 00 ff ff 00 00 00"
+        },
+        {
+          "time": 96675.021284931,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 01 00 00 00 00 00 00"
+        },
+        {
+          "time": 96675.029284377,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 00 00 ff ff 00 00 00"
+        },
+        {
+          "time": 96675.037284795,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 01 00 00 00 00 00 00"
+        },
+        {
+          "time": 96675.045285613,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 01 00 ff ff 00 00 00"
+        },
+        {
+          "time": 96675.053279358,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 01 00 00 00 00 00 00"
+        },
+        {
+          "time": 96675.061285056,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 02 00 fd ff 00 00 00"
+        },
+        {
+          "time": 96675.0692832,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 05 00 fd ff 00 00 00"
+        },
+        {
+          "time": 96675.077285151,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 05 00 fd ff 00 00 00"
+        },
+        {
+          "time": 96675.085292431,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 06 00 fc ff 00 00 00"
+        },
+        {
+          "time": 96675.093280596,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 05 00 fc ff 00 00 00"
+        },
+        {
+          "time": 96675.101290832,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 07 00 fb ff 00 00 00"
+        },
+        {
+          "time": 96675.109289537,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 06 00 fc ff 00 00 00"
+        },
+        {
+          "time": 96675.117294774,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 06 00 fc ff 00 00 00"
+        },
+        {
+          "time": 96675.125295873,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 05 00 fd ff 00 00 00"
+        },
+        {
+          "time": 96675.133283256,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 06 00 fc ff 00 00 00"
+        },
+        {
+          "time": 96675.141282181,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 05 00 fd ff 00 00 00"
+        },
+        {
+          "time": 96675.149286005,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 04 00 fd ff 00 00 00"
+        },
+        {
+          "time": 96675.157291483,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 04 00 fd ff 00 00 00"
+        },
+        {
+          "time": 96675.165293393,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 03 00 fe ff 00 00 00"
+        },
+        {
+          "time": 96675.173285626,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 03 00 fe ff 00 00 00"
+        },
+        {
+          "time": 96675.181286735,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 01 00 ff ff 00 00 00"
+        },
+        {
+          "time": 96675.1892859,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 02 00 ff ff 00 00 00"
+        },
+        {
+          "time": 96675.197286278,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 00 00 ff ff 00 00 00"
+        },
+        {
+          "time": 96677.213381631,
+          "path": "/dev/hidraw5",
+          "length": 3,
+          "report_id": "0x17",
+          "raw_hex": "17 64 00"
+        },
+        {
+          "time": 96678.717427426,
+          "path": "/dev/hidraw5",
+          "length": 3,
+          "report_id": "0x17",
+          "raw_hex": "17 64 00"
+        },
+        {
+          "time": 96679.181453068,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 01 00 00 00 00 00 00"
+        },
+        {
+          "time": 96679.189407748,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 02 00 00 00 00 00 00"
+        },
+        {
+          "time": 96679.197402655,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 02 00 00 00 00 00 00"
+        },
+        {
+          "time": 96679.205394868,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 03 00 00 00 00 00 00"
+        },
+        {
+          "time": 96679.213399433,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 03 00 00 00 00 00 00"
+        },
+        {
+          "time": 96679.221395533,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 04 00 00 00 00 00 00"
+        },
+        {
+          "time": 96679.229399888,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 06 00 00 00 00 00 00"
+        }
+      ],
+      "key_events": [],
+      "summary": {
+        "report_counts": {
+          "0x1b": 203,
+          "0x17": 4
+        },
+        "report03_seen": false,
+        "expected_report03_mask": null,
+        "report03_expected_mask_seen": false,
+        "report03_bitmaps": [],
+        "report1b_button_values": {
+          "0x00": 203
+        }
+      }
+    },
+    {
+      "sequence": 2,
+      "stage": 3,
+      "name": "host-index-1",
+      "slot": 7,
+      "physical_button": "radial",
+      "expected_report03_mask": "0x01",
+      "mapping_wire_value": "0x29",
+      "report10_hex": "10 00 1c 1f 01 ff 00 00 00 00 00 00 00 00 00 00 00 00 00 0a 0b 0c 0c 0e 0d 29 00 1e 00 00 00 01",
+      "capture_started_at": "2026-09-23T03:47:06.945688+00:00",
+      "raw_reports": [
+        {
+          "time": 96682.647536057,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 ff ff 00 00 00 00 00"
+        },
+        {
+          "time": 96682.654494031,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 ff ff 00 00 00 00 00"
+        },
+        {
+          "time": 96682.740530933,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 ff ff 00 00 00 00 00"
+        },
+        {
+          "time": 96682.748510912,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 ff ff 00 00 00 00 00"
+        },
+        {
+          "time": 96682.756494438,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 ff ff 00 00 00 00 00"
+        },
+        {
+          "time": 96682.764494465,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 f0 ff ff ff 00 00 00"
+        },
+        {
+          "time": 96682.772495704,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 fd ff ff ff 00 00 00"
+        },
+        {
+          "time": 96682.780504357,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 fd ff ff ff 00 00 00"
+        },
+        {
+          "time": 96682.788503683,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 fd ff 00 00 00 00 00"
+        },
+        {
+          "time": 96682.79650925,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 fe ff ff ff 00 00 00"
+        },
+        {
+          "time": 96682.804511842,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 fd ff 00 00 00 00 00"
+        },
+        {
+          "time": 96682.812506469,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 ff ff 00 00 00 00 00"
+        },
+        {
+          "time": 96682.820504682,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 ff ff 00 00 00 00 00"
+        },
+        {
+          "time": 96682.836508654,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 ff ff 00 00 00 00 00"
+        },
+        {
+          "time": 96682.844495656,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 ff ff 00 00 00 00 00"
+        },
+        {
+          "time": 96682.852507846,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 ff ff 00 00 00 00 00"
+        },
+        {
+          "time": 96682.860507342,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 ff ff 00 00 00 00 00"
+        },
+        {
+          "time": 96682.868499273,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 fe ff 00 00 00 00 00"
+        },
+        {
+          "time": 96682.876506945,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 ff ff 00 00 00 00 00"
+        },
+        {
+          "time": 96682.884498596,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 ff ff 00 00 00 00 00"
+        },
+        {
+          "time": 96682.892506999,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 fe ff 00 00 00 00 00"
+        },
+        {
+          "time": 96682.900501385,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 fd ff 00 00 00 00 00"
+        },
+        {
+          "time": 96682.908508305,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 fe ff 00 00 00 00 00"
+        },
+        {
+          "time": 96682.91650221,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 fc ff 01 00 00 00 00"
+        },
+        {
+          "time": 96682.924496366,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 fc ff 00 00 00 00 00"
+        },
+        {
+          "time": 96682.932499138,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 fa ff 00 00 00 00 00"
+        },
+        {
+          "time": 96682.94050157,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 fa ff 01 00 00 00 00"
+        },
+        {
+          "time": 96682.948501146,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 f9 ff 00 00 00 00 00"
+        },
+        {
+          "time": 96682.955496652,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 fa ff 00 00 00 00 00"
+        },
+        {
+          "time": 96682.963499975,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 f9 ff 00 00 00 00 00"
+        },
+        {
+          "time": 96682.971500153,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 fb ff 00 00 00 00 00"
+        },
+        {
+          "time": 96682.983501511,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 fb ff 00 00 00 00 00"
+        },
+        {
+          "time": 96682.991497981,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 fc ff 00 00 00 00 00"
+        },
+        {
+          "time": 96682.999504861,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 fd ff ff ff 00 00 00"
+        },
+        {
+          "time": 96683.00750102,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 fb ff ff ff 00 00 00"
+        },
+        {
+          "time": 96683.015500206,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 fd ff 00 00 00 00 00"
+        },
+        {
+          "time": 96683.023500884,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 fc ff ff ff 00 00 00"
+        },
+        {
+          "time": 96683.031507063,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 fc ff fe ff 00 00 00"
+        },
+        {
+          "time": 96683.039500757,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 fa ff ff ff 00 00 00"
+        },
+        {
+          "time": 96683.047504882,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 f9 ff fd ff 00 00 00"
+        },
+        {
+          "time": 96683.055499028,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 f7 ff fd ff 00 00 00"
+        },
+        {
+          "time": 96683.06350179,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 f6 ff fd ff 00 00 00"
+        },
+        {
+          "time": 96683.071505664,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 f6 ff fc ff 00 00 00"
+        },
+        {
+          "time": 96683.080501185,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 f6 ff fd ff 00 00 00"
+        },
+        {
+          "time": 96683.088512363,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 f6 ff fe ff 00 00 00"
+        },
+        {
+          "time": 96683.096509254,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 f6 ff fe ff 00 00 00"
+        },
+        {
+          "time": 96683.104508449,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 f6 ff fe ff 00 00 00"
+        },
+        {
+          "time": 96683.112511412,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 f5 ff fe ff 00 00 00"
+        },
+        {
+          "time": 96683.120504876,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 f6 ff fe ff 00 00 00"
+        },
+        {
+          "time": 96683.128510223,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 f6 ff fe ff 00 00 00"
+        },
+        {
+          "time": 96683.136514017,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 f8 ff fe ff 00 00 00"
+        },
+        {
+          "time": 96683.146508698,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 f8 ff fe ff 00 00 00"
+        },
+        {
+          "time": 96683.154504978,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 f9 ff ff ff 00 00 00"
+        },
+        {
+          "time": 96683.162505486,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 f8 ff ff ff 00 00 00"
+        },
+        {
+          "time": 96683.170507617,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 f2 ff ff ff 00 00 00"
+        },
+        {
+          "time": 96683.178504919,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 f5 ff ff ff 00 00 00"
+        },
+        {
+          "time": 96683.186503473,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 f4 ff fe ff 00 00 00"
+        },
+        {
+          "time": 96683.194504081,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 f3 ff fe ff 00 00 00"
+        },
+        {
+          "time": 96683.202514588,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 f3 ff fd ff 00 00 00"
+        },
+        {
+          "time": 96683.210508083,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 f5 ff fe ff 00 00 00"
+        },
+        {
+          "time": 96683.218504673,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 f8 ff fd ff 00 00 00"
+        },
+        {
+          "time": 96683.226507676,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 f9 ff fe ff 00 00 00"
+        },
+        {
+          "time": 96683.234508454,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 fc ff 00 00 00 00 00"
+        },
+        {
+          "time": 96683.242506337,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 fe ff ff ff 00 00 00"
+        },
+        {
+          "time": 96683.25050981,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 fe ff 00 00 00 00 00"
+        },
+        {
+          "time": 96683.258505639,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 fe ff 00 00 00 00 00"
+        },
+        {
+          "time": 96683.266513541,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 fd ff 00 00 00 00 00"
+        },
+        {
+          "time": 96683.274511194,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 fc ff 00 00 00 00 00"
+        },
+        {
+          "time": 96683.282511982,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 fa ff 00 00 00 00 00"
+        },
+        {
+          "time": 96683.290506729,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 f9 ff 02 00 00 00 00"
+        },
+        {
+          "time": 96683.298516945,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 f7 ff 00 00 00 00 00"
+        },
+        {
+          "time": 96683.306512604,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 f6 ff 01 00 00 00 00"
+        },
+        {
+          "time": 96683.314505788,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 f7 ff 00 00 00 00 00"
+        },
+        {
+          "time": 96683.322506606,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 f5 ff 00 00 00 00 00"
+        },
+        {
+          "time": 96683.330513747,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 f7 ff fe ff 00 00 00"
+        },
+        {
+          "time": 96683.338508233,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 f9 ff fe ff 00 00 00"
+        },
+        {
+          "time": 96683.346511296,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 fd ff fe ff 00 00 00"
+        },
+        {
+          "time": 96683.354512104,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 ff ff fe ff 00 00 00"
+        },
+        {
+          "time": 96683.362515558,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 01 00 00 00 00 00 00"
+        },
+        {
+          "time": 96683.370510735,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 02 00 ff ff 00 00 00"
+        },
+        {
+          "time": 96683.37850946,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 ff ff 00 00 00 00 00"
+        },
+        {
+          "time": 96683.386510168,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 fe ff 01 00 00 00 00"
+        },
+        {
+          "time": 96683.394509524,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 fe ff 00 00 00 00 00"
+        },
+        {
+          "time": 96683.402521724,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 fd ff 01 00 00 00 00"
+        },
+        {
+          "time": 96683.410510109,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 fc ff 00 00 00 00 00"
+        },
+        {
+          "time": 96683.418508813,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 f7 ff 01 00 00 00 00"
+        },
+        {
+          "time": 96683.426515904,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 f6 ff 00 00 00 00 00"
+        },
+        {
+          "time": 96683.43451589,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 f5 ff 00 00 00 00 00"
+        },
+        {
+          "time": 96683.442517651,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 f7 ff fe ff 00 00 00"
+        },
+        {
+          "time": 96683.450511416,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 fb ff fb ff 00 00 00"
+        },
+        {
+          "time": 96683.458511412,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 fc ff fe ff 00 00 00"
+        },
+        {
+          "time": 96683.46752116,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 00 00 fd ff 00 00 00"
+        },
+        {
+          "time": 96683.475511679,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 00 00 ff ff 00 00 00"
+        },
+        {
+          "time": 96683.915566502,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 02 00 00 00 00 00 00"
+        },
+        {
+          "time": 96683.923529188,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 03 00 01 00 00 00 00"
+        },
+        {
+          "time": 96683.931539645,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 03 00 01 00 00 00 00"
+        },
+        {
+          "time": 96683.939526456,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 03 00 02 00 00 00 00"
+        },
+        {
+          "time": 96683.947528447,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 04 00 01 00 00 00 00"
+        },
+        {
+          "time": 96683.955524677,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 08 00 03 00 00 00 00"
+        },
+        {
+          "time": 96683.96352789,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 08 00 03 00 00 00 00"
+        },
+        {
+          "time": 96683.971528728,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 06 00 02 00 00 00 00"
+        },
+        {
+          "time": 96683.979529246,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 03 00 01 00 00 00 00"
+        },
+        {
+          "time": 96683.987524945,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 01 00 fe ff 00 00 00"
+        },
+        {
+          "time": 96683.995525653,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 ff ff fc ff 00 00 00"
+        },
+        {
+          "time": 96684.003528235,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 ff ff fc ff 00 00 00"
+        },
+        {
+          "time": 96684.01152726,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 00 00 fb ff 00 00 00"
+        },
+        {
+          "time": 96684.019526035,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 00 00 fb ff 00 00 00"
+        },
+        {
+          "time": 96684.027531201,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 02 00 fc ff 00 00 00"
+        },
+        {
+          "time": 96684.035531068,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 01 00 fe ff 00 00 00"
+        },
+        {
+          "time": 96684.043532107,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 03 00 ff ff 00 00 00"
+        },
+        {
+          "time": 96684.051527575,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 02 00 01 00 00 00 00"
+        },
+        {
+          "time": 96684.059524656,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 02 00 05 00 00 00 00"
+        },
+        {
+          "time": 96684.067528571,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 03 00 08 00 00 00 00"
+        },
+        {
+          "time": 96684.075535471,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 03 00 06 00 00 00 00"
+        },
+        {
+          "time": 96684.083532883,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 04 00 03 00 00 00 00"
+        },
+        {
+          "time": 96684.091528962,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 01 00 01 00 00 00 00"
+        },
+        {
+          "time": 96684.099535,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 00 00 ff ff 00 00 00"
+        },
+        {
+          "time": 96684.107528625,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 00 00 ff ff 00 00 00"
+        },
+        {
+          "time": 96684.115528873,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 ff ff ff ff 00 00 00"
+        },
+        {
+          "time": 96684.12352923,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 00 00 ff ff 00 00 00"
+        },
+        {
+          "time": 96684.131537593,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 00 00 fe ff 00 00 00"
+        },
+        {
+          "time": 96684.139544222,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 01 00 00 00 00 00 00"
+        },
+        {
+          "time": 96684.14753415,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 01 00 ff ff 00 00 00"
+        },
+        {
+          "time": 96684.155532554,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 00 00 ff ff 00 00 00"
+        },
+        {
+          "time": 96684.163527431,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 01 00 00 00 00 00 00"
+        },
+        {
+          "time": 96684.219548229,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 00 00 01 00 00 00 00"
+        },
+        {
+          "time": 96684.22753477,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 01 00 00 00 00 00 00"
+        },
+        {
+          "time": 96684.235538234,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 00 00 01 00 00 00 00"
+        },
+        {
+          "time": 96684.243542608,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 01 00 00 00 00 00 00"
+        },
+        {
+          "time": 96684.251542736,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 00 00 01 00 00 00 00"
+        },
+        {
+          "time": 96684.267536397,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 ff ff 00 00 00 00 00"
+        },
+        {
+          "time": 96684.283543264,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 ff ff 00 00 00 00 00"
+        },
+        {
+          "time": 96684.291536668,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 ff ff 00 00 00 00 00"
+        },
+        {
+          "time": 96684.299534351,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 ff ff 00 00 00 00 00"
+        },
+        {
+          "time": 96684.307537524,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 ff ff 00 00 00 00 00"
+        },
+        {
+          "time": 96684.315534675,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 ff ff 00 00 00 00 00"
+        },
+        {
+          "time": 96684.323537898,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 ff ff 00 00 00 00 00"
+        },
+        {
+          "time": 96684.331541522,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 fe ff 00 00 00 00 00"
+        },
+        {
+          "time": 96684.339534516,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 fc ff fd ff 00 00 00"
+        },
+        {
+          "time": 96684.347538921,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 fb ff fb ff 00 00 00"
+        },
+        {
+          "time": 96684.355537215,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 fc ff f6 ff 00 00 00"
+        },
+        {
+          "time": 96684.36353636,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 ff ff f8 ff 00 00 00"
+        },
+        {
+          "time": 96685.051598359,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 01"
+        },
+        {
+          "time": 96685.219603694,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 00"
+        },
+        {
+          "time": 96685.507616344,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 01"
+        },
+        {
+          "time": 96685.652610919,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 00"
+        },
+        {
+          "time": 96685.955637077,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 01"
+        },
+        {
+          "time": 96686.059606007,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 00"
+        },
+        {
+          "time": 96686.386627137,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 01"
+        },
+        {
+          "time": 96686.522636571,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 00"
+        },
+        {
+          "time": 96686.859657581,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 01"
+        },
+        {
+          "time": 96687.019662607,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 00"
+        },
+        {
+          "time": 96687.284655271,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 01"
+        },
+        {
+          "time": 96687.436649019,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 00"
+        },
+        {
+          "time": 96687.723687546,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 01"
+        },
+        {
+          "time": 96687.883672404,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 00"
+        },
+        {
+          "time": 96688.139681862,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 01"
+        },
+        {
+          "time": 96688.283686383,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 00"
+        },
+        {
+          "time": 96688.52369303,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 01"
+        },
+        {
+          "time": 96688.691693565,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 00"
+        },
+        {
+          "time": 96688.955697538,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 01"
+        },
+        {
+          "time": 96689.090694416,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 00"
+        },
+        {
+          "time": 96692.211788567,
+          "path": "/dev/hidraw5",
+          "length": 3,
+          "report_id": "0x17",
+          "raw_hex": "17 64 00"
+        },
+        {
+          "time": 96693.715831903,
+          "path": "/dev/hidraw5",
+          "length": 3,
+          "report_id": "0x17",
+          "raw_hex": "17 64 00"
+        }
+      ],
+      "key_events": [],
+      "summary": {
+        "report_counts": {
+          "0x1b": 142,
+          "0x03": 20,
+          "0x17": 2
+        },
+        "report03_seen": true,
+        "expected_report03_mask": "0x01",
+        "report03_expected_mask_seen": true,
+        "report03_bitmaps": [
+          "0x00",
+          "0x01"
+        ],
+        "report1b_button_values": {
+          "0x00": 142
+        }
+      }
+    },
+    {
+      "sequence": 3,
+      "stage": 3,
+      "name": "host-index-2",
+      "slot": 7,
+      "physical_button": "radial",
+      "expected_report03_mask": "0x02",
+      "mapping_wire_value": "0x2a",
+      "report10_hex": "10 00 1c 1f 01 ff 00 00 00 00 00 00 00 00 00 00 00 00 00 0a 0b 0c 0c 0e 0d 2a 00 1e 00 00 00 01",
+      "capture_started_at": "2026-09-23T03:47:23.447120+00:00",
+      "raw_reports": [
+        {
+          "time": 96699.077986215,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 01 00 00 00 00 00 00"
+        },
+        {
+          "time": 96699.085948049,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 02 00 00 00 00 00 00"
+        },
+        {
+          "time": 96699.17296305,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 02 00 00 00 00 00 00"
+        },
+        {
+          "time": 96699.180952246,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 02 00 00 00 00 00 00"
+        },
+        {
+          "time": 96699.187948724,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 04 00 00 00 00 00 00"
+        },
+        {
+          "time": 96699.195951966,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 f8 ff fe ff 00 00 00"
+        },
+        {
+          "time": 96700.939036571,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 02"
+        },
+        {
+          "time": 96701.091029504,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 00"
+        },
+        {
+          "time": 96701.219029812,
+          "path": "/dev/hidraw5",
+          "length": 3,
+          "report_id": "0x17",
+          "raw_hex": "17 64 00"
+        },
+        {
+          "time": 96701.331025286,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 02"
+        },
+        {
+          "time": 96701.467027374,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 00"
+        },
+        {
+          "time": 96701.70704174,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 02"
+        },
+        {
+          "time": 96701.899046019,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 00"
+        },
+        {
+          "time": 96702.131053426,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 02"
+        },
+        {
+          "time": 96702.284062411,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 00"
+        },
+        {
+          "time": 96702.539073723,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 02"
+        },
+        {
+          "time": 96702.691071585,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 00"
+        },
+        {
+          "time": 96702.715056617,
+          "path": "/dev/hidraw5",
+          "length": 3,
+          "report_id": "0x17",
+          "raw_hex": "17 64 00"
+        },
+        {
+          "time": 96702.931080141,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 02"
+        },
+        {
+          "time": 96703.099078407,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 00"
+        },
+        {
+          "time": 96703.347100615,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 02"
+        },
+        {
+          "time": 96703.507093294,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 00"
+        },
+        {
+          "time": 96703.755107016,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 02"
+        },
+        {
+          "time": 96703.891101398,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 00"
+        },
+        {
+          "time": 96704.171121589,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 02"
+        },
+        {
+          "time": 96704.33911792,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 00"
+        },
+        {
+          "time": 96704.611120802,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 02"
+        },
+        {
+          "time": 96704.77213834,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 00"
+        },
+        {
+          "time": 96707.219198074,
+          "path": "/dev/hidraw5",
+          "length": 3,
+          "report_id": "0x17",
+          "raw_hex": "17 64 00"
+        },
+        {
+          "time": 96708.71526542,
+          "path": "/dev/hidraw5",
+          "length": 3,
+          "report_id": "0x17",
+          "raw_hex": "17 64 00"
+        }
+      ],
+      "key_events": [],
+      "summary": {
+        "report_counts": {
+          "0x1b": 6,
+          "0x03": 20,
+          "0x17": 4
+        },
+        "report03_seen": true,
+        "expected_report03_mask": "0x02",
+        "report03_expected_mask_seen": true,
+        "report03_bitmaps": [
+          "0x00",
+          "0x02"
+        ],
+        "report1b_button_values": {
+          "0x00": 6
+        }
+      }
+    },
+    {
+      "sequence": 4,
+      "stage": 3,
+      "name": "host-index-7",
+      "slot": 7,
+      "physical_button": "radial",
+      "expected_report03_mask": "0x40",
+      "mapping_wire_value": "0x2f",
+      "report10_hex": "10 00 1c 1f 01 ff 00 00 00 00 00 00 00 00 00 00 00 00 00 0a 0b 0c 0c 0e 0d 2f 00 1e 00 00 00 01",
+      "capture_started_at": "2026-09-23T03:47:43.036669+00:00",
+      "raw_reports": [
+        {
+          "time": 96719.22053465,
+          "path": "/dev/hidraw5",
+          "length": 3,
+          "report_id": "0x17",
+          "raw_hex": "17 64 00"
+        },
+        {
+          "time": 96719.356509683,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 02"
+        },
+        {
+          "time": 96719.531527846,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 00"
+        },
+        {
+          "time": 96719.753536328,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 40"
+        },
+        {
+          "time": 96719.913527971,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 00"
+        },
+        {
+          "time": 96720.12854773,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 40"
+        },
+        {
+          "time": 96720.257551241,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 00"
+        },
+        {
+          "time": 96720.521552195,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 40"
+        },
+        {
+          "time": 96720.697573508,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 00"
+        },
+        {
+          "time": 96720.721550092,
+          "path": "/dev/hidraw5",
+          "length": 3,
+          "report_id": "0x17",
+          "raw_hex": "17 64 00"
+        },
+        {
+          "time": 96720.913574984,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 40"
+        },
+        {
+          "time": 96721.081579667,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 00"
+        },
+        {
+          "time": 96721.352596024,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 40"
+        },
+        {
+          "time": 96721.521593045,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 00"
+        },
+        {
+          "time": 96721.761616111,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 40"
+        },
+        {
+          "time": 96721.913595434,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 00"
+        },
+        {
+          "time": 96722.161600152,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 40"
+        },
+        {
+          "time": 96722.217580239,
+          "path": "/dev/hidraw5",
+          "length": 3,
+          "report_id": "0x17",
+          "raw_hex": "17 64 00"
+        },
+        {
+          "time": 96722.32958664,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 00"
+        },
+        {
+          "time": 96722.585608927,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 40"
+        },
+        {
+          "time": 96722.7456382,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 00"
+        },
+        {
+          "time": 96722.952617626,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 40"
+        },
+        {
+          "time": 96723.137621191,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 00"
+        },
+        {
+          "time": 96723.865663474,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 00 00 ff ff 00 00 00"
+        },
+        {
+          "time": 96723.873625959,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 00 00 ff ff 00 00 00"
+        },
+        {
+          "time": 96723.881622498,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 ff ff 00 00 00 00 00"
+        },
+        {
+          "time": 96723.889620852,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 00 00 ff ff 00 00 00"
+        },
+        {
+          "time": 96723.921631968,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 00 00 01 00 00 00 00"
+        },
+        {
+          "time": 96723.929617447,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 00 00 01 00 00 00 00"
+        },
+        {
+          "time": 96723.937609729,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 00 00 01 00 00 00 00"
+        },
+        {
+          "time": 96723.945610697,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 00 00 01 00 00 00 00"
+        },
+        {
+          "time": 96723.953622827,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 00 00 01 00 00 00 00"
+        },
+        {
+          "time": 96723.9616162,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 00 00 01 00 00 00 00"
+        },
+        {
+          "time": 96723.969621497,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 00 00 01 00 00 00 00"
+        },
+        {
+          "time": 96723.977616063,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 00 00 01 00 00 00 00"
+        },
+        {
+          "time": 96723.985609146,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 00 00 02 00 00 00 00"
+        },
+        {
+          "time": 96723.99361294,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 00 00 02 00 00 00 00"
+        },
+        {
+          "time": 96724.001616122,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 ff ff 00 00 00 00 00"
+        },
+        {
+          "time": 96724.009609185,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 00 00 01 00 00 00 00"
+        },
+        {
+          "time": 96724.017610614,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 ff ff 00 00 00 00 00"
+        },
+        {
+          "time": 96724.025610761,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 ff ff 01 00 00 00 00"
+        },
+        {
+          "time": 96724.04963169,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 ff ff 00 00 00 00 00"
+        },
+        {
+          "time": 96724.073624105,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 ff ff 00 00 00 00 00"
+        },
+        {
+          "time": 96724.08162353,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 00 00 01 00 00 00 00"
+        },
+        {
+          "time": 96724.329658655,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 ff ff 00 00 00 00 00"
+        },
+        {
+          "time": 96724.345636395,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 ff ff 00 00 00 00 00"
+        },
+        {
+          "time": 96724.369638799,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 ff ff 01 00 00 00 00"
+        },
+        {
+          "time": 96724.377628957,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 ff ff 00 00 00 00 00"
+        },
+        {
+          "time": 96724.385623983,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 ff ff 00 00 00 00 00"
+        },
+        {
+          "time": 96724.393625102,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 00 00 01 00 00 00 00"
+        },
+        {
+          "time": 96728.216768267,
+          "path": "/dev/hidraw5",
+          "length": 3,
+          "report_id": "0x17",
+          "raw_hex": "17 64 00"
+        },
+        {
+          "time": 96729.721820477,
+          "path": "/dev/hidraw5",
+          "length": 3,
+          "report_id": "0x17",
+          "raw_hex": "17 64 00"
+        }
+      ],
+      "key_events": [],
+      "summary": {
+        "report_counts": {
+          "0x17": 5,
+          "0x03": 20,
+          "0x1b": 27
+        },
+        "report03_seen": true,
+        "expected_report03_mask": "0x40",
+        "report03_expected_mask_seen": true,
+        "report03_bitmaps": [
+          "0x00",
+          "0x02",
+          "0x40"
+        ],
+        "report1b_button_values": {
+          "0x00": 27
+        }
+      }
+    },
+    {
+      "sequence": 5,
+      "stage": 3,
+      "name": "host-index-215",
+      "slot": 7,
+      "physical_button": "radial",
+      "expected_report03_mask": null,
+      "mapping_wire_value": "0xff",
+      "report10_hex": "10 00 1c 1f 01 ff 00 00 00 00 00 00 00 00 00 00 00 00 00 0a 0b 0c 0c 0e 0d ff 00 1e 00 00 00 01",
+      "capture_started_at": "2026-09-23T03:47:58.631055+00:00",
+      "raw_reports": [
+        {
+          "time": 96734.218946419,
+          "path": "/dev/hidraw5",
+          "length": 3,
+          "report_id": "0x17",
+          "raw_hex": "17 64 00"
+        },
+        {
+          "time": 96735.721964215,
+          "path": "/dev/hidraw5",
+          "length": 3,
+          "report_id": "0x17",
+          "raw_hex": "17 64 00"
+        },
+        {
+          "time": 96737.216009041,
+          "path": "/dev/hidraw5",
+          "length": 3,
+          "report_id": "0x17",
+          "raw_hex": "17 64 00"
+        },
+        {
+          "time": 96738.720046951,
+          "path": "/dev/hidraw5",
+          "length": 3,
+          "report_id": "0x17",
+          "raw_hex": "17 64 00"
+        },
+        {
+          "time": 96743.216183002,
+          "path": "/dev/hidraw5",
+          "length": 3,
+          "report_id": "0x17",
+          "raw_hex": "17 64 00"
+        },
+        {
+          "time": 96744.719209564,
+          "path": "/dev/hidraw5",
+          "length": 3,
+          "report_id": "0x17",
+          "raw_hex": "17 64 00"
+        }
+      ],
+      "key_events": [],
+      "summary": {
+        "report_counts": {
+          "0x17": 6
+        },
+        "report03_seen": false,
+        "expected_report03_mask": null,
+        "report03_expected_mask_seen": false,
+        "report03_bitmaps": [],
+        "report1b_button_values": {}
+      }
+    },
+    {
+      "sequence": 6,
+      "stage": 4,
+      "name": "left-host-index-1",
+      "slot": 1,
+      "physical_button": "left",
+      "expected_report03_mask": "0x01",
+      "mapping_wire_value": "0x29",
+      "report10_hex": "10 00 1c 1f 01 ff 00 00 00 00 00 00 00 00 00 00 00 00 00 29 0b 0c 0c 0e 0d 0c 00 1e 00 00 00 01",
+      "capture_started_at": "2026-09-23T03:48:15.992529+00:00",
+      "raw_reports": [
+        {
+          "time": 96752.224416424,
+          "path": "/dev/hidraw5",
+          "length": 3,
+          "report_id": "0x17",
+          "raw_hex": "17 64 00"
+        },
+        {
+          "time": 96753.718457328,
+          "path": "/dev/hidraw5",
+          "length": 3,
+          "report_id": "0x17",
+          "raw_hex": "17 64 00"
+        },
+        {
+          "time": 96753.982455504,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 01 00 00 00 00 00 00 00"
+        },
+        {
+          "time": 96754.078448894,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 00 00 00 00 00 00 00"
+        },
+        {
+          "time": 96754.406473568,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 01"
+        },
+        {
+          "time": 96754.534462854,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 00"
+        },
+        {
+          "time": 96754.797490243,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 01"
+        },
+        {
+          "time": 96754.90947585,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 00"
+        },
+        {
+          "time": 96755.189487933,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 01"
+        },
+        {
+          "time": 96755.221472318,
+          "path": "/dev/hidraw5",
+          "length": 3,
+          "report_id": "0x17",
+          "raw_hex": "17 64 00"
+        },
+        {
+          "time": 96755.301481455,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 00"
+        },
+        {
+          "time": 96755.597522335,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 01"
+        },
+        {
+          "time": 96755.726508667,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 00"
+        },
+        {
+          "time": 96755.997531433,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 01"
+        },
+        {
+          "time": 96756.133513521,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 00"
+        },
+        {
+          "time": 96756.446525069,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 01"
+        },
+        {
+          "time": 96756.558516988,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 00"
+        },
+        {
+          "time": 96756.726534827,
+          "path": "/dev/hidraw5",
+          "length": 3,
+          "report_id": "0x17",
+          "raw_hex": "17 64 00"
+        },
+        {
+          "time": 96756.919548299,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 01"
+        },
+        {
+          "time": 96757.02352908,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 00"
+        },
+        {
+          "time": 96757.33555843,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 01"
+        },
+        {
+          "time": 96757.447548134,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 00"
+        },
+        {
+          "time": 96757.775568909,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 01"
+        },
+        {
+          "time": 96757.887558633,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 00"
+        },
+        {
+          "time": 96761.22366438,
+          "path": "/dev/hidraw5",
+          "length": 3,
+          "report_id": "0x17",
+          "raw_hex": "17 64 00"
+        },
+        {
+          "time": 96762.719716448,
+          "path": "/dev/hidraw5",
+          "length": 3,
+          "report_id": "0x17",
+          "raw_hex": "17 64 00"
+        }
+      ],
+      "key_events": [
+        {
+          "time": 96753.982477015,
+          "kernel_time": "1790135298.839886",
+          "path": "/dev/input/event11",
+          "type": 1,
+          "code": 272,
+          "value": 1
+        },
+        {
+          "time": 96754.078468742,
+          "kernel_time": "1790135298.935884",
+          "path": "/dev/input/event11",
+          "type": 1,
+          "code": 272,
+          "value": 0
+        }
+      ],
+      "summary": {
+        "report_counts": {
+          "0x17": 6,
+          "0x1b": 2,
+          "0x03": 18
+        },
+        "report03_seen": true,
+        "expected_report03_mask": "0x01",
+        "report03_expected_mask_seen": true,
+        "report03_bitmaps": [
+          "0x00",
+          "0x01"
+        ],
+        "report1b_button_values": {
+          "0x01": 1,
+          "0x00": 1
+        }
+      }
+    },
+    {
+      "sequence": 7,
+      "stage": 4,
+      "name": "right-host-index-1",
+      "slot": 2,
+      "physical_button": "right",
+      "expected_report03_mask": "0x01",
+      "mapping_wire_value": "0x29",
+      "report10_hex": "10 00 1c 1f 01 ff 00 00 00 00 00 00 00 00 00 00 00 00 00 0a 29 0c 0c 0e 0d 0c 00 1e 00 00 00 01",
+      "capture_started_at": "2026-09-23T03:48:30.713926+00:00",
+      "raw_reports": [
+        {
+          "time": 96766.97182285,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 ff ff 00 00 00 00 00"
+        },
+        {
+          "time": 96766.987790691,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 ff ff 00 00 00 00 00"
+        },
+        {
+          "time": 96767.073829786,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 00 00 01 00 00 00 00"
+        },
+        {
+          "time": 96767.082796921,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 ff ff 00 00 00 00 00"
+        },
+        {
+          "time": 96767.224815969,
+          "path": "/dev/hidraw5",
+          "length": 3,
+          "report_id": "0x17",
+          "raw_hex": "17 64 00"
+        },
+        {
+          "time": 96768.281859569,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 ff ff 00 00 00 00 00"
+        },
+        {
+          "time": 96768.289813687,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 ff ff 00 00 00 00 00"
+        },
+        {
+          "time": 96768.297826267,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 ff ff 00 00 00 00 00"
+        },
+        {
+          "time": 96768.305811114,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 ff ff 00 00 00 00 00"
+        },
+        {
+          "time": 96768.313819416,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 ff ff 00 00 00 00 00"
+        },
+        {
+          "time": 96768.329818195,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 ff ff 00 00 00 00 00"
+        },
+        {
+          "time": 96768.44082634,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 01"
+        },
+        {
+          "time": 96768.616850375,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 00"
+        },
+        {
+          "time": 96768.720868966,
+          "path": "/dev/hidraw5",
+          "length": 3,
+          "report_id": "0x17",
+          "raw_hex": "17 64 00"
+        },
+        {
+          "time": 96769.032865418,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 01"
+        },
+        {
+          "time": 96769.144863446,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 00"
+        },
+        {
+          "time": 96769.472880669,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 01"
+        },
+        {
+          "time": 96769.600880883,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 00"
+        },
+        {
+          "time": 96769.913895571,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 01"
+        },
+        {
+          "time": 96770.025902005,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 00"
+        },
+        {
+          "time": 96770.384921552,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 01"
+        },
+        {
+          "time": 96770.480905251,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 00"
+        },
+        {
+          "time": 96770.808918105,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 01"
+        },
+        {
+          "time": 96770.92892726,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 00"
+        },
+        {
+          "time": 96771.288940617,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 01"
+        },
+        {
+          "time": 96771.400935098,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 00"
+        },
+        {
+          "time": 96771.712957378,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 01"
+        },
+        {
+          "time": 96771.8249367,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 00"
+        },
+        {
+          "time": 96772.168967229,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 01"
+        },
+        {
+          "time": 96772.304951057,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 00"
+        },
+        {
+          "time": 96772.639972229,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 01"
+        },
+        {
+          "time": 96772.776983712,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 00"
+        },
+        {
+          "time": 96776.225072566,
+          "path": "/dev/hidraw5",
+          "length": 3,
+          "report_id": "0x17",
+          "raw_hex": "17 64 00"
+        },
+        {
+          "time": 96777.721171234,
+          "path": "/dev/hidraw5",
+          "length": 3,
+          "report_id": "0x17",
+          "raw_hex": "17 64 00"
+        }
+      ],
+      "key_events": [],
+      "summary": {
+        "report_counts": {
+          "0x1b": 10,
+          "0x17": 4,
+          "0x03": 20
+        },
+        "report03_seen": true,
+        "expected_report03_mask": "0x01",
+        "report03_expected_mask_seen": true,
+        "report03_bitmaps": [
+          "0x00",
+          "0x01"
+        ],
+        "report1b_button_values": {
+          "0x00": 10
+        }
+      }
+    },
+    {
+      "sequence": 8,
+      "stage": 4,
+      "name": "middle-host-index-1",
+      "slot": 3,
+      "physical_button": "middle",
+      "expected_report03_mask": "0x01",
+      "mapping_wire_value": "0x29",
+      "report10_hex": "10 00 1c 1f 01 ff 00 00 00 00 00 00 00 00 00 00 00 00 00 0a 0b 29 0c 0e 0d 0c 00 1e 00 00 00 01",
+      "capture_started_at": "2026-09-23T03:48:49.037429+00:00",
+      "raw_reports": [
+        {
+          "time": 96785.127316552,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 04 00 00 00 00 00 00 00"
+        },
+        {
+          "time": 96785.221303622,
+          "path": "/dev/hidraw5",
+          "length": 3,
+          "report_id": "0x17",
+          "raw_hex": "17 64 00"
+        },
+        {
+          "time": 96785.238278938,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 00 00 00 00 00 00 00"
+        },
+        {
+          "time": 96785.692319505,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 01"
+        },
+        {
+          "time": 96785.779330226,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 00"
+        },
+        {
+          "time": 96786.411347086,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 01"
+        },
+        {
+          "time": 96786.508332007,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 00"
+        },
+        {
+          "time": 96786.724348101,
+          "path": "/dev/hidraw5",
+          "length": 3,
+          "report_id": "0x17",
+          "raw_hex": "17 64 00"
+        },
+        {
+          "time": 96786.892352949,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 01"
+        },
+        {
+          "time": 96786.988334842,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 00"
+        },
+        {
+          "time": 96787.308374955,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 01"
+        },
+        {
+          "time": 96787.404364342,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 00"
+        },
+        {
+          "time": 96787.731381805,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 01"
+        },
+        {
+          "time": 96787.851378955,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 00"
+        },
+        {
+          "time": 96788.187393981,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 01"
+        },
+        {
+          "time": 96788.307399656,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 00"
+        },
+        {
+          "time": 96788.667414388,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 01"
+        },
+        {
+          "time": 96788.780392277,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 00"
+        },
+        {
+          "time": 96789.147442089,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 01"
+        },
+        {
+          "time": 96789.267436553,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 00"
+        },
+        {
+          "time": 96789.667443778,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 01"
+        },
+        {
+          "time": 96789.803420369,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 00"
+        },
+        {
+          "time": 96792.723532891,
+          "path": "/dev/hidraw5",
+          "length": 3,
+          "report_id": "0x17",
+          "raw_hex": "17 64 00"
+        },
+        {
+          "time": 96794.220559208,
+          "path": "/dev/hidraw5",
+          "length": 3,
+          "report_id": "0x17",
+          "raw_hex": "17 64 00"
+        }
+      ],
+      "key_events": [
+        {
+          "time": 96785.127342842,
+          "kernel_time": "1790135329.984734",
+          "path": "/dev/input/event11",
+          "type": 1,
+          "code": 274,
+          "value": 1
+        },
+        {
+          "time": 96785.238292303,
+          "kernel_time": "1790135330.095722",
+          "path": "/dev/input/event11",
+          "type": 1,
+          "code": 274,
+          "value": 0
+        }
+      ],
+      "summary": {
+        "report_counts": {
+          "0x1b": 2,
+          "0x17": 4,
+          "0x03": 18
+        },
+        "report03_seen": true,
+        "expected_report03_mask": "0x01",
+        "report03_expected_mask_seen": true,
+        "report03_bitmaps": [
+          "0x00",
+          "0x01"
+        ],
+        "report1b_button_values": {
+          "0x04": 1,
+          "0x00": 1
+        }
+      }
+    },
+    {
+      "sequence": 9,
+      "stage": 4,
+      "name": "wheel-host-index-1",
+      "slot": 4,
+      "physical_button": "wheel",
+      "expected_report03_mask": "0x01",
+      "mapping_wire_value": "0x29",
+      "report10_hex": "10 00 1c 1f 01 ff 00 00 00 00 00 00 00 00 00 00 00 00 00 0a 0b 0c 29 0e 0d 0c 00 1e 00 00 00 01",
+      "capture_started_at": "2026-09-23T03:49:01.041716+00:00",
+      "raw_reports": [
+        {
+          "time": 96797.229649934,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 00 00 01 00 00 00 00"
+        },
+        {
+          "time": 96797.237596979,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 ff ff 01 00 00 00 00"
+        },
+        {
+          "time": 96797.323620741,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 ff ff 00 00 00 00 00"
+        },
+        {
+          "time": 96797.330598232,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 00 00 01 00 00 00 00"
+        },
+        {
+          "time": 96797.338598889,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 ff ff 00 00 00 00 00"
+        },
+        {
+          "time": 96797.346595338,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 ff ff 00 00 00 00 00"
+        },
+        {
+          "time": 96797.354594341,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 00 00 01 00 00 00 00"
+        },
+        {
+          "time": 96797.362592113,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 ff ff 00 00 00 00 00"
+        },
+        {
+          "time": 96797.434652948,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 ff ff 00 00 00 00 00"
+        },
+        {
+          "time": 96797.442603901,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 00 00 01 00 00 00 00"
+        },
+        {
+          "time": 96797.450600249,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 ff ff 00 00 00 00 00"
+        },
+        {
+          "time": 96797.506635765,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 ff ff 01 00 00 00 00"
+        },
+        {
+          "time": 96797.554622894,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 ff ff 01 00 00 00 00"
+        },
+        {
+          "time": 96797.586625171,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 00 00 01 00 00 00 00"
+        },
+        {
+          "time": 96797.594614055,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 ff ff 00 00 00 00 00"
+        },
+        {
+          "time": 96797.642615761,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 00 00 01 00 00 00 00"
+        },
+        {
+          "time": 96797.682615899,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 00 00 01 00 00 00 00"
+        },
+        {
+          "time": 96797.706613742,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 00 00 01 00 00 00 00"
+        },
+        {
+          "time": 96797.72260708,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 00 00 01 00 00 00 00"
+        },
+        {
+          "time": 96797.738605919,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 00 00 01 00 00 00 00"
+        },
+        {
+          "time": 96797.746610994,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 00 00 01 00 00 00 00"
+        },
+        {
+          "time": 96797.754605069,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 00 00 01 00 00 00 00"
+        },
+        {
+          "time": 96797.76260797,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 00 00 01 00 00 00 00"
+        },
+        {
+          "time": 96797.770612584,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 00 00 01 00 00 00 00"
+        },
+        {
+          "time": 96797.778608953,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 00 00 01 00 00 00 00"
+        },
+        {
+          "time": 96797.786617935,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 00 00 01 00 00 00 00"
+        },
+        {
+          "time": 96797.794617671,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 00 00 01 00 00 00 00"
+        },
+        {
+          "time": 96797.802611244,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 02 00 01 00 00 00 00"
+        },
+        {
+          "time": 96797.810603775,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 01 00 01 00 00 00 00"
+        },
+        {
+          "time": 96797.818610644,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 01 00 01 00 00 00 00"
+        },
+        {
+          "time": 96797.826607032,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 00 00 01 00 00 00 00"
+        },
+        {
+          "time": 96797.834607699,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 01 00 01 00 00 00 00"
+        },
+        {
+          "time": 96797.842606062,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 01 00 00 00 00 00 00"
+        },
+        {
+          "time": 96797.850611057,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 00 00 01 00 00 00 00"
+        },
+        {
+          "time": 96797.858608477,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 01 00 00 00 00 00 00"
+        },
+        {
+          "time": 96797.898613625,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 01 00 00 00 00 00 00"
+        },
+        {
+          "time": 96797.90661321,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 01 00 00 00 00 00 00"
+        },
+        {
+          "time": 96797.914609177,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 01 00 00 00 00 00 00"
+        },
+        {
+          "time": 96797.922610135,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 01 00 00 00 00 00 00"
+        },
+        {
+          "time": 96797.930621382,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 02 00 ff ff 00 00 00"
+        },
+        {
+          "time": 96797.938620676,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 01 00 00 00 00 00 00"
+        },
+        {
+          "time": 96797.946613608,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 03 00 ff ff 00 00 00"
+        },
+        {
+          "time": 96797.954613113,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 01 00 ff ff 00 00 00"
+        },
+        {
+          "time": 96797.962611706,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 02 00 ff ff 00 00 00"
+        },
+        {
+          "time": 96797.970622111,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 02 00 ff ff 00 00 00"
+        },
+        {
+          "time": 96797.978614101,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 01 00 ff ff 00 00 00"
+        },
+        {
+          "time": 96797.986623314,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 01 00 00 00 00 00 00"
+        },
+        {
+          "time": 96797.994620124,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 00 00 ff ff 00 00 00"
+        },
+        {
+          "time": 96798.002618967,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 01 00 00 00 00 00 00"
+        },
+        {
+          "time": 96798.010615837,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 01 00 00 00 00 00 00"
+        },
+        {
+          "time": 96798.018618547,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 00 00 ff ff 00 00 00"
+        },
+        {
+          "time": 96798.0266117,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 01 00 00 00 00 00 00"
+        },
+        {
+          "time": 96798.034630782,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 00 00 ff ff 00 00 00"
+        },
+        {
+          "time": 96798.042628202,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 02 00 00 00 00 00 00"
+        },
+        {
+          "time": 96798.05061857,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 01 00 ff ff 00 00 00"
+        },
+        {
+          "time": 96798.058613175,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 02 00 ff ff 00 00 00"
+        },
+        {
+          "time": 96798.06661278,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 03 00 fe ff 00 00 00"
+        },
+        {
+          "time": 96798.074625569,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 03 00 ff ff 00 00 00"
+        },
+        {
+          "time": 96798.082624703,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 01 00 00 00 00 00 00"
+        },
+        {
+          "time": 96798.090622675,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 02 00 ff ff 00 00 00"
+        },
+        {
+          "time": 96798.098628281,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 03 00 ff ff 00 00 00"
+        },
+        {
+          "time": 96798.106622025,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 03 00 ff ff 00 00 00"
+        },
+        {
+          "time": 96798.11462184,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 02 00 00 00 00 00 00"
+        },
+        {
+          "time": 96798.122619221,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 00 00 ff ff 00 00 00"
+        },
+        {
+          "time": 96798.72267431,
+          "path": "/dev/hidraw5",
+          "length": 3,
+          "report_id": "0x17",
+          "raw_hex": "17 64 00"
+        },
+        {
+          "time": 96800.225720244,
+          "path": "/dev/hidraw5",
+          "length": 3,
+          "report_id": "0x17",
+          "raw_hex": "17 64 00"
+        },
+        {
+          "time": 96801.721774457,
+          "path": "/dev/hidraw5",
+          "length": 3,
+          "report_id": "0x17",
+          "raw_hex": "17 64 00"
+        },
+        {
+          "time": 96802.449787712,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 01"
+        },
+        {
+          "time": 96802.609788032,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 00"
+        },
+        {
+          "time": 96802.897789001,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 01"
+        },
+        {
+          "time": 96803.033799224,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 00"
+        },
+        {
+          "time": 96803.22580145,
+          "path": "/dev/hidraw5",
+          "length": 3,
+          "report_id": "0x17",
+          "raw_hex": "17 64 00"
+        },
+        {
+          "time": 96803.305791867,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 01"
+        },
+        {
+          "time": 96803.417813444,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 00"
+        },
+        {
+          "time": 96803.729818918,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 01"
+        },
+        {
+          "time": 96803.865823941,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 00"
+        },
+        {
+          "time": 96804.121821662,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 01"
+        },
+        {
+          "time": 96804.25782441,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 00"
+        },
+        {
+          "time": 96804.497834343,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 01"
+        },
+        {
+          "time": 96804.650824951,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 00"
+        },
+        {
+          "time": 96804.722818749,
+          "path": "/dev/hidraw5",
+          "length": 3,
+          "report_id": "0x17",
+          "raw_hex": "17 64 00"
+        },
+        {
+          "time": 96804.889824753,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 01"
+        },
+        {
+          "time": 96805.049857204,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 00"
+        },
+        {
+          "time": 96805.329851504,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 01"
+        },
+        {
+          "time": 96805.481851207,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 00"
+        },
+        {
+          "time": 96805.737867593,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 01"
+        },
+        {
+          "time": 96805.857851184,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 00"
+        },
+        {
+          "time": 96806.161880237,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 01"
+        },
+        {
+          "time": 96806.289871768,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 00"
+        },
+        {
+          "time": 96806.817892597,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 00 00 01 00 00 00 00"
+        },
+        {
+          "time": 96806.825862064,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 00 00 02 00 00 00 00"
+        },
+        {
+          "time": 96806.833855557,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 00 00 02 00 00 00 00"
+        },
+        {
+          "time": 96806.841847918,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 00 00 01 00 00 00 00"
+        },
+        {
+          "time": 96806.849854937,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 00 00 01 00 00 00 00"
+        },
+        {
+          "time": 96806.873871835,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 00 00 01 00 00 00 00"
+        },
+        {
+          "time": 96806.881863765,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 01 00 01 00 00 00 00"
+        },
+        {
+          "time": 96806.889854203,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 00 00 01 00 00 00 00"
+        },
+        {
+          "time": 96806.897862203,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 01 00 00 00 00 00 00"
+        }
+      ],
+      "key_events": [],
+      "summary": {
+        "report_counts": {
+          "0x1b": 73,
+          "0x17": 5,
+          "0x03": 20
+        },
+        "report03_seen": true,
+        "expected_report03_mask": "0x01",
+        "report03_expected_mask_seen": true,
+        "report03_bitmaps": [
+          "0x00",
+          "0x01"
+        ],
+        "report1b_button_values": {
+          "0x00": 73
+        }
+      }
+    },
+    {
+      "sequence": 10,
+      "stage": 4,
+      "name": "forward-host-index-1",
+      "slot": 5,
+      "physical_button": "forward",
+      "expected_report03_mask": "0x01",
+      "mapping_wire_value": "0x29",
+      "report10_hex": "10 00 1c 1f 01 ff 00 00 00 00 00 00 00 00 00 00 00 00 00 0a 0b 0c 0c 29 0d 0c 00 1e 00 00 00 01",
+      "capture_started_at": "2026-09-23T03:49:17.671214+00:00",
+      "raw_reports": [
+        {
+          "time": 96813.765096174,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 00 00 01 00 00 00 00"
+        },
+        {
+          "time": 96813.772053757,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 ff ff 01 00 00 00 00"
+        },
+        {
+          "time": 96813.780045717,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 fe ff 01 00 00 00 00"
+        },
+        {
+          "time": 96813.868056617,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 ff ff 01 00 00 00 00"
+        },
+        {
+          "time": 96813.875051901,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 00 00 01 00 00 00 00"
+        },
+        {
+          "time": 96813.883041697,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 fe ff 02 00 00 00 00"
+        },
+        {
+          "time": 96815.010121463,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 01"
+        },
+        {
+          "time": 96815.162112899,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 00"
+        },
+        {
+          "time": 96815.226102161,
+          "path": "/dev/hidraw5",
+          "length": 3,
+          "report_id": "0x17",
+          "raw_hex": "17 64 00"
+        },
+        {
+          "time": 96815.474133397,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 01"
+        },
+        {
+          "time": 96815.626127407,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 00"
+        },
+        {
+          "time": 96815.94613726,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 01"
+        },
+        {
+          "time": 96816.085137698,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 00"
+        },
+        {
+          "time": 96816.365155359,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 01"
+        },
+        {
+          "time": 96816.493161045,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 00"
+        },
+        {
+          "time": 96816.725160539,
+          "path": "/dev/hidraw5",
+          "length": 3,
+          "report_id": "0x17",
+          "raw_hex": "17 64 00"
+        },
+        {
+          "time": 96816.829159206,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 01"
+        },
+        {
+          "time": 96816.95716361,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 00"
+        },
+        {
+          "time": 96817.277189623,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 01"
+        },
+        {
+          "time": 96817.397171659,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 00"
+        },
+        {
+          "time": 96817.709197276,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 01"
+        },
+        {
+          "time": 96817.837187562,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 00"
+        },
+        {
+          "time": 96818.141207303,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 01"
+        },
+        {
+          "time": 96818.277191393,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 00"
+        },
+        {
+          "time": 96818.597208709,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 01"
+        },
+        {
+          "time": 96818.717196175,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 00"
+        },
+        {
+          "time": 96819.045223344,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 01"
+        },
+        {
+          "time": 96819.17322929,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 00"
+        },
+        {
+          "time": 96819.213212826,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 01 00 00 00 00 00 00"
+        },
+        {
+          "time": 96819.350217146,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 00 00 ff ff 00 00 00"
+        },
+        {
+          "time": 96819.45325206,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 01 00 00 00 00 00 00"
+        },
+        {
+          "time": 96819.461206929,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 01 00 01 00 00 00 00"
+        },
+        {
+          "time": 96819.469205652,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 01 00 00 00 00 00 00"
+        },
+        {
+          "time": 96819.477193124,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 01 00 00 00 00 00 00"
+        },
+        {
+          "time": 96819.485205603,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 01 00 01 00 00 00 00"
+        },
+        {
+          "time": 96819.493204937,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 01 00 00 00 00 00 00"
+        },
+        {
+          "time": 96819.501209501,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 01 00 00 00 00 00 00"
+        },
+        {
+          "time": 96819.509193516,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 01 00 01 00 00 00 00"
+        },
+        {
+          "time": 96819.517207357,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 01 00 00 00 00 00 00"
+        },
+        {
+          "time": 96819.525195761,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 01 00 00 00 00 00 00"
+        },
+        {
+          "time": 96819.533200124,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 00 00 01 00 00 00 00"
+        },
+        {
+          "time": 96821.229300069,
+          "path": "/dev/hidraw5",
+          "length": 3,
+          "report_id": "0x17",
+          "raw_hex": "17 64 00"
+        },
+        {
+          "time": 96822.725326599,
+          "path": "/dev/hidraw5",
+          "length": 3,
+          "report_id": "0x17",
+          "raw_hex": "17 64 00"
+        }
+      ],
+      "key_events": [],
+      "summary": {
+        "report_counts": {
+          "0x1b": 19,
+          "0x03": 20,
+          "0x17": 4
+        },
+        "report03_seen": true,
+        "expected_report03_mask": "0x01",
+        "report03_expected_mask_seen": true,
+        "report03_bitmaps": [
+          "0x00",
+          "0x01"
+        ],
+        "report1b_button_values": {
+          "0x00": 19
+        }
+      }
+    },
+    {
+      "sequence": 11,
+      "stage": 4,
+      "name": "back-host-index-1",
+      "slot": 6,
+      "physical_button": "back",
+      "expected_report03_mask": "0x01",
+      "mapping_wire_value": "0x29",
+      "report10_hex": "10 00 1c 1f 01 ff 00 00 00 00 00 00 00 00 00 00 00 00 00 0a 0b 0c 0c 0e 29 0c 00 1e 00 00 00 01",
+      "capture_started_at": "2026-09-23T03:49:32.770613+00:00",
+      "raw_reports": [
+        {
+          "time": 96828.726485793,
+          "path": "/dev/hidraw5",
+          "length": 3,
+          "report_id": "0x17",
+          "raw_hex": "17 64 00"
+        },
+        {
+          "time": 96830.229527812,
+          "path": "/dev/hidraw5",
+          "length": 3,
+          "report_id": "0x17",
+          "raw_hex": "17 64 00"
+        },
+        {
+          "time": 96830.763553415,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 01"
+        },
+        {
+          "time": 96830.787516861,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 00 00 ff ff 00 00 00"
+        },
+        {
+          "time": 96830.79551342,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 01 00 ff ff 00 00 00"
+        },
+        {
+          "time": 96830.803503847,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 01 00 00 00 00 00 00"
+        },
+        {
+          "time": 96830.811500125,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 00 00 ff ff 00 00 00"
+        },
+        {
+          "time": 96830.923556295,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 00"
+        },
+        {
+          "time": 96831.123550504,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 01"
+        },
+        {
+          "time": 96831.267547321,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 00"
+        },
+        {
+          "time": 96831.587565263,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 01"
+        },
+        {
+          "time": 96831.643556924,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 00 00 ff ff 00 00 00"
+        },
+        {
+          "time": 96831.651524537,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 00 00 ff ff 00 00 00"
+        },
+        {
+          "time": 96831.667533505,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 00 00 ff ff 00 00 00"
+        },
+        {
+          "time": 96831.723537108,
+          "path": "/dev/hidraw5",
+          "length": 3,
+          "report_id": "0x17",
+          "raw_hex": "17 64 00"
+        },
+        {
+          "time": 96831.739528903,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 00"
+        },
+        {
+          "time": 96832.011577932,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 01"
+        },
+        {
+          "time": 96832.147575817,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 00 00 ff ff 00 00 00"
+        },
+        {
+          "time": 96832.155539924,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 ff ff 00 00 00 00 00"
+        },
+        {
+          "time": 96832.171546056,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 00"
+        },
+        {
+          "time": 96832.475598492,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 01"
+        },
+        {
+          "time": 96832.595576549,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 00"
+        },
+        {
+          "time": 96832.603549032,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 ff ff 00 00 00 00 00"
+        },
+        {
+          "time": 96832.619555164,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 ff ff ff ff 00 00 00"
+        },
+        {
+          "time": 96832.890605313,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 01"
+        },
+        {
+          "time": 96833.011597859,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 00"
+        },
+        {
+          "time": 96833.227608399,
+          "path": "/dev/hidraw5",
+          "length": 3,
+          "report_id": "0x17",
+          "raw_hex": "17 64 00"
+        },
+        {
+          "time": 96833.354600645,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 01"
+        },
+        {
+          "time": 96833.467612071,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 00"
+        },
+        {
+          "time": 96833.795610189,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 01"
+        },
+        {
+          "time": 96833.91562245,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 00"
+        },
+        {
+          "time": 96834.211631629,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 01"
+        },
+        {
+          "time": 96834.339637993,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 00"
+        },
+        {
+          "time": 96834.627645343,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 01"
+        },
+        {
+          "time": 96834.659620346,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 00 00 ff ff 00 00 00"
+        },
+        {
+          "time": 96834.667608769,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 00 00 fe ff 00 00 00"
+        },
+        {
+          "time": 96834.675598775,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 00 00 ff ff 00 00 00"
+        },
+        {
+          "time": 96834.75563162,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 ff ff 00 00 00 00 00"
+        },
+        {
+          "time": 96834.763612629,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 00"
+        },
+        {
+          "time": 96834.771612493,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 ff ff 00 00 00 00 00"
+        },
+        {
+          "time": 96834.779615825,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 ff ff 00 00 00 00 00"
+        },
+        {
+          "time": 96834.78762083,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 00 00 ff ff 00 00 00"
+        },
+        {
+          "time": 96837.723735447,
+          "path": "/dev/hidraw5",
+          "length": 3,
+          "report_id": "0x17",
+          "raw_hex": "17 64 00"
+        },
+        {
+          "time": 96839.227775668,
+          "path": "/dev/hidraw5",
+          "length": 3,
+          "report_id": "0x17",
+          "raw_hex": "17 64 00"
+        }
+      ],
+      "key_events": [],
+      "summary": {
+        "report_counts": {
+          "0x17": 6,
+          "0x03": 20,
+          "0x1b": 18
+        },
+        "report03_seen": true,
+        "expected_report03_mask": "0x01",
+        "report03_expected_mask_seen": true,
+        "report03_bitmaps": [
+          "0x00",
+          "0x01"
+        ],
+        "report1b_button_values": {
+          "0x00": 18
+        }
+      }
+    },
+    {
+      "sequence": 12,
+      "stage": 4,
+      "name": "radial-host-index-1",
+      "slot": 7,
+      "physical_button": "radial",
+      "expected_report03_mask": "0x01",
+      "mapping_wire_value": "0x29",
+      "report10_hex": "10 00 1c 1f 01 ff 00 00 00 00 00 00 00 00 00 00 00 00 00 0a 0b 0c 0c 0e 0d 29 00 1e 00 00 00 01",
+      "capture_started_at": "2026-09-23T03:49:47.786994+00:00",
+      "raw_reports": [
+        {
+          "time": 96843.732882519,
+          "path": "/dev/hidraw5",
+          "length": 3,
+          "report_id": "0x17",
+          "raw_hex": "17 64 00"
+        },
+        {
+          "time": 96844.035893922,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 04 00 00 00 00 00 00 00"
+        },
+        {
+          "time": 96844.218892123,
+          "path": "/dev/hidraw5",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 00 00 00 00 00 00 00"
+        },
+        {
+          "time": 96844.793912273,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 01"
+        },
+        {
+          "time": 96844.937919418,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 00"
+        },
+        {
+          "time": 96845.225923468,
+          "path": "/dev/hidraw5",
+          "length": 3,
+          "report_id": "0x17",
+          "raw_hex": "17 64 00"
+        },
+        {
+          "time": 96845.249902763,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 01"
+        },
+        {
+          "time": 96845.401915083,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 00"
+        },
+        {
+          "time": 96845.696938712,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 01"
+        },
+        {
+          "time": 96845.881939352,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 00"
+        },
+        {
+          "time": 96846.113944859,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 01"
+        },
+        {
+          "time": 96846.28996556,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 00"
+        },
+        {
+          "time": 96846.5459651,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 01"
+        },
+        {
+          "time": 96846.705960292,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 00"
+        },
+        {
+          "time": 96846.729941621,
+          "path": "/dev/hidraw5",
+          "length": 3,
+          "report_id": "0x17",
+          "raw_hex": "17 64 00"
+        },
+        {
+          "time": 96847.033974966,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 01"
+        },
+        {
+          "time": 96847.184984898,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 00"
+        },
+        {
+          "time": 96847.48898464,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 01"
+        },
+        {
+          "time": 96847.632990371,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 00"
+        },
+        {
+          "time": 96847.986015021,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 01"
+        },
+        {
+          "time": 96848.120990137,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 00"
+        },
+        {
+          "time": 96848.442019586,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 01"
+        },
+        {
+          "time": 96848.569046676,
+          "path": "/dev/hidraw5",
+          "length": 2,
+          "report_id": "0x03",
+          "raw_hex": "03 00"
+        },
+        {
+          "time": 96851.225105994,
+          "path": "/dev/hidraw5",
+          "length": 3,
+          "report_id": "0x17",
+          "raw_hex": "17 64 00"
+        },
+        {
+          "time": 96852.729142101,
+          "path": "/dev/hidraw5",
+          "length": 3,
+          "report_id": "0x17",
+          "raw_hex": "17 64 00"
+        }
+      ],
+      "key_events": [
+        {
+          "time": 96844.035917487,
+          "kernel_time": "1790135388.893318",
+          "path": "/dev/input/event11",
+          "type": 1,
+          "code": 274,
+          "value": 1
+        },
+        {
+          "time": 96844.218914926,
+          "kernel_time": "1790135389.076319",
+          "path": "/dev/input/event11",
+          "type": 1,
+          "code": 274,
+          "value": 0
+        }
+      ],
+      "summary": {
+        "report_counts": {
+          "0x17": 5,
+          "0x1b": 2,
+          "0x03": 18
+        },
+        "report03_seen": true,
+        "expected_report03_mask": "0x01",
+        "report03_expected_mask_seen": true,
+        "report03_bitmaps": [
+          "0x00",
+          "0x01"
+        ],
+        "report1b_button_values": {
+          "0x04": 1,
+          "0x00": 1
+        }
+      }
+    }
+  ],
+  "baseline_restored": true,
+  "failure": null,
+  "finished_at": "2026-09-23T03:49:59.797464+00:00",
+  "report03_seen_anywhere": true,
+  "success": true
+}

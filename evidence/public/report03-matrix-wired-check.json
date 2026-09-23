@@ -1,0 +1,318 @@
+{
+  "failure": null,
+  "baseline_restored": true,
+  "report03_seen_anywhere": true,
+  "phases": [
+    {
+      "stage": 1,
+      "name": "direct-right-control",
+      "slot": 7,
+      "mapping_wire_value": "0x0b",
+      "summary": {
+        "report_counts": {
+          "0x1b": 920,
+          "0x17": 4
+        },
+        "report03_seen": false,
+        "report03_target_mask_seen": false,
+        "report03_bitmaps": [],
+        "report1b_button_values": {
+          "0x00": 907,
+          "0x02": 13
+        }
+      }
+    },
+    {
+      "stage": 1,
+      "name": "host-index-0",
+      "slot": 7,
+      "mapping_wire_value": "0x28",
+      "summary": {
+        "report_counts": {
+          "0x1b": 722,
+          "0x17": 3
+        },
+        "report03_seen": false,
+        "report03_target_mask_seen": false,
+        "report03_bitmaps": [],
+        "report1b_button_values": {
+          "0x00": 722
+        }
+      }
+    },
+    {
+      "stage": 1,
+      "name": "host-index-1",
+      "slot": 7,
+      "mapping_wire_value": "0x29",
+      "summary": {
+        "report_counts": {
+          "0x1b": 593,
+          "0x03": 20
+        },
+        "report03_seen": true,
+        "report03_target_mask_seen": false,
+        "report03_bitmaps": [
+          "0x00",
+          "0x01"
+        ],
+        "report1b_button_values": {
+          "0x00": 593
+        }
+      }
+    },
+    {
+      "stage": 1,
+      "name": "unknown-direct-code-6",
+      "slot": 7,
+      "mapping_wire_value": "0x0f",
+      "summary": {
+        "report_counts": {
+          "0x17": 3,
+          "0x1b": 53
+        },
+        "report03_seen": false,
+        "report03_target_mask_seen": false,
+        "report03_bitmaps": [],
+        "report1b_button_values": {
+          "0x20": 11,
+          "0x00": 42
+        }
+      }
+    },
+    {
+      "stage": 2,
+      "name": "wired-or-selected-direct-right-control",
+      "slot": 7,
+      "mapping_wire_value": "0x0b",
+      "summary": {
+        "report_counts": {
+          "0x1b": 101,
+          "0x17": 5
+        },
+        "report03_seen": false,
+        "report03_target_mask_seen": false,
+        "report03_bitmaps": [],
+        "report1b_button_values": {
+          "0x00": 86,
+          "0x02": 15
+        }
+      }
+    },
+    {
+      "stage": 2,
+      "name": "wired-or-selected-host-index-0-repeat",
+      "slot": 7,
+      "mapping_wire_value": "0x28",
+      "summary": {
+        "report_counts": {
+          "0x1b": 818,
+          "0x17": 3
+        },
+        "report03_seen": false,
+        "report03_target_mask_seen": false,
+        "report03_bitmaps": [],
+        "report1b_button_values": {
+          "0x00": 818
+        }
+      }
+    },
+    {
+      "stage": 3,
+      "name": "host-index-0",
+      "slot": 7,
+      "mapping_wire_value": "0x28",
+      "summary": {
+        "report_counts": {
+          "0x1b": 129,
+          "0x17": 2
+        },
+        "report03_seen": false,
+        "report03_target_mask_seen": false,
+        "report03_bitmaps": [],
+        "report1b_button_values": {
+          "0x00": 129
+        }
+      }
+    },
+    {
+      "stage": 3,
+      "name": "host-index-1",
+      "slot": 7,
+      "mapping_wire_value": "0x29",
+      "summary": {
+        "report_counts": {
+          "0x17": 5,
+          "0x03": 20
+        },
+        "report03_seen": true,
+        "report03_target_mask_seen": false,
+        "report03_bitmaps": [
+          "0x00",
+          "0x01"
+        ],
+        "report1b_button_values": {}
+      }
+    },
+    {
+      "stage": 3,
+      "name": "host-index-2",
+      "slot": 7,
+      "mapping_wire_value": "0x2a",
+      "summary": {
+        "report_counts": {
+          "0x17": 5,
+          "0x03": 20
+        },
+        "report03_seen": true,
+        "report03_target_mask_seen": false,
+        "report03_bitmaps": [
+          "0x00",
+          "0x02"
+        ],
+        "report1b_button_values": {}
+      }
+    },
+    {
+      "stage": 3,
+      "name": "host-index-215",
+      "slot": 7,
+      "mapping_wire_value": "0xff",
+      "summary": {
+        "report_counts": {
+          "0x17": 6,
+          "0x1b": 247
+        },
+        "report03_seen": false,
+        "report03_target_mask_seen": false,
+        "report03_bitmaps": [],
+        "report1b_button_values": {
+          "0x00": 247
+        }
+      }
+    },
+    {
+      "stage": 4,
+      "name": "slot-1-host-index-0",
+      "slot": 1,
+      "mapping_wire_value": "0x28",
+      "summary": {
+        "report_counts": {
+          "0x17": 6,
+          "0x1b": 20
+        },
+        "report03_seen": false,
+        "report03_target_mask_seen": false,
+        "report03_bitmaps": [],
+        "report1b_button_values": {
+          "0x01": 10,
+          "0x00": 10
+        }
+      }
+    },
+    {
+      "stage": 4,
+      "name": "slot-2-host-index-0",
+      "slot": 2,
+      "mapping_wire_value": "0x28",
+      "summary": {
+        "report_counts": {
+          "0x17": 6
+        },
+        "report03_seen": false,
+        "report03_target_mask_seen": false,
+        "report03_bitmaps": [],
+        "report1b_button_values": {}
+      }
+    },
+    {
+      "stage": 4,
+      "name": "slot-3-host-index-0",
+      "slot": 3,
+      "mapping_wire_value": "0x28",
+      "summary": {
+        "report_counts": {
+          "0x17": 6
+        },
+        "report03_seen": false,
+        "report03_target_mask_seen": false,
+        "report03_bitmaps": [],
+        "report1b_button_values": {}
+      }
+    },
+    {
+      "stage": 4,
+      "name": "slot-4-host-index-0",
+      "slot": 4,
+      "mapping_wire_value": "0x28",
+      "summary": {
+        "report_counts": {
+          "0x17": 4,
+          "0x1b": 2
+        },
+        "report03_seen": false,
+        "report03_target_mask_seen": false,
+        "report03_bitmaps": [],
+        "report1b_button_values": {
+          "0x00": 2
+        }
+      }
+    },
+    {
+      "stage": 4,
+      "name": "slot-5-host-index-0",
+      "slot": 5,
+      "mapping_wire_value": "0x28",
+      "summary": {
+        "report_counts": {
+          "0x17": 6,
+          "0x1b": 124
+        },
+        "report03_seen": false,
+        "report03_target_mask_seen": false,
+        "report03_bitmaps": [],
+        "report1b_button_values": {
+          "0x08": 46,
+          "0x00": 78
+        }
+      }
+    },
+    {
+      "stage": 4,
+      "name": "slot-6-host-index-0",
+      "slot": 6,
+      "mapping_wire_value": "0x28",
+      "summary": {
+        "report_counts": {
+          "0x17": 4,
+          "0x1b": 91
+        },
+        "report03_seen": false,
+        "report03_target_mask_seen": false,
+        "report03_bitmaps": [],
+        "report1b_button_values": {
+          "0x10": 51,
+          "0x00": 40
+        }
+      }
+    },
+    {
+      "stage": 4,
+      "name": "slot-7-host-index-0",
+      "slot": 7,
+      "mapping_wire_value": "0x28",
+      "summary": {
+        "report_counts": {
+          "0x17": 5,
+          "0x1b": 1
+        },
+        "report03_seen": false,
+        "report03_target_mask_seen": false,
+        "report03_bitmaps": [],
+        "report1b_button_values": {
+          "0x00": 1
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+id,topic,claim,evidence_type,status,confidence,source,next_action
+DA01,Direct Action,direct wire byte equals 0x09 plus action_code,independent static,confirmed,high,HIDDev.dll SBHID_SendPIDConfig_2DMouse,none
+DA02,Direct Action,host-routed wire byte equals 0x28 plus action_code,independent static and hardware,confirmed,high,HIDDev.dll 3DxService.exe and matrix audits,none
+DA03,Direct Action,codes 1 through 5 are named and reachable for C658,independent static and hardware,confirmed,high,direct_action_table.csv and direct-action-probe JSON,none
+DA04,Direct Action,code 6 wire 0x0f is written by the C658 default initializer,independent static,confirmed,high,3DxService.exe default path,retain unknown formal name
+DA05,Direct Action,code 6 formal name is RadialMenu,inference,not confirmed,low,button-7 usage correlation only,do not publish as fact
+DA06,Direct Action,wire 0x10 through 0x27 have reachable C658 producers,independent static,negated,high,producer and xref census,do not expose as supported actions
+DA07,Direct Action,wire 0x10 produced BTN_MIDDLE in latest awake receiver test,hardware observation,observed once,medium,direct-action-independent-20260922T140202Z.json,repeat only for firmware-capability research
+DA08,Direct Action,wire 0x11 produced BTN_BACK in latest awake receiver test,hardware observation,observed once,medium,direct-action-independent-20260922T140202Z.json,repeat only for firmware-capability research
+R1001,Report 0x10,31-byte complete configuration snapshot,independent static,confirmed,high,report10_fields.csv,none
+R1002,Report 0x10,GET_FEATURE can recover current or factory C658 configuration,hardware,negated on tested device,high,EPIPE and zero-response observations,use host-side source of truth
+R1003,Report 0x10,DPI encoding and clamp,independent static,confirmed,high,HIDDev.dll,device-side motion validation optional
+R1004,Report 0x10,wheel normal and inertial constants,independent static,confirmed,high,HIDDev.dll and SmartUi,validate physical behaviour
+R1005,Report 0x10,C658 SmartUi exposes Lift Detection,independent static,negated,high,HasLiftDetection c650-only,do not expose as verified C658 setting
+R1006,Report 0x10,polling divider 1 2 4 8,independent static,confirmed,high,HIDDev.dll and SmartUi,measure actual report rate
+RX01,Receiver,C658 paired-device node can be identified by GET 0x08 response byte1 0x59,Linux hardware,confirmed on tested receiver,high,08 59 <ANONYMIZED:DEVICE_ID_A:6_BYTES>,use for Linux discovery with fallback diagnostics
+RX02,Receiver,3DxWare HIDDev normal path performs GET 0x08,independent static,not found,high,HidD_GetFeature xref census,do not attribute RX01 to this call chain
+RX03,Receiver,send same Report 0x10 to selected paired-device handle,Linux hardware and prior static,confirmed,high,successful receiver test,implement
+RX04,Receiver,Report 0x42 is a functional pairing-table operation,independent static,negated,high,HID API xref census,omit
+RX05,Receiver,pairing table uses GET 0x43 plus slot,independent static,confirmed,high,HIDDev GetPairingTable,audit real receiver with read-only receiver-slots
+RX06,Receiver,Report 0x50 flags and Report 0x60 fields are required for normal CLI,independent static,not supported,medium-high,no reachable specific reader,omit initially
+SL01,Receiver sleep,successful HIDIOCSFEATURE guarantees application to wireless mouse,hardware observation,not supported,medium,failed preflight followed by awake success,add activity and confirmation safeguards
+SL02,Receiver sleep,sleeping mouse definitively drops configuration,hardware inference,unconfirmed,medium,no controlled asleep-versus-awake trial,keep as inference
+LC01,Lifecycle,identical 31-byte blob is suppressed by last-successful cache,independent static,confirmed,high,HIDDev cache branch,none
+LC02,Lifecycle,send failure clears cache,independent static,confirmed,high,HIDDev failure branch,none
+LC03,Lifecycle,generator performs wake retry delay or backoff,independent static,negated,high,HIDDev generator,implement Linux policy independently
+LC04,Lifecycle,resend on every startup reconnect resume and profile change,independent static,unknown,medium,incomplete state edges,further static analysis or controlled tests
+PAIR01,Pairing,start stop uses report 0x41 subcommand 0x02,prior static and Linux hardware,confirmed,high,pairing.json successful new slot and stop_sent,none
+PAIR02,Pairing,unpair uses report 0x41 subcommand 0x04 with slot,prior static and Linux hardware,confirmed,high,unpair.json followed by empty table and successful re-pair,none
+PAIR03,Pairing,unpair ioctl can return EPIPE after the bond was removed,Linux hardware,confirmed observation,high,unpair.json plus subsequent pairing before snapshot,continue polling and use empty target slot as effect confirmation
+LINUX01,Linux integration,keeping wired C658 hidraw open prevents observed ordinary input stoppage,Linux hardware observation,observed,medium,manual keep-open hardware tests,validate reconnect-aware systemd service
+LINUX02,Linux integration,exact cause of wired input stoppage is a kernel firmware or interface lifetime requirement,unknown,not determined,low,no controlled root-cause isolation,retain explicitly unknown cause
+LINUX03,Linux integration,systemd user service holds wired C658 interfaces while ordinary USB mouse input remains functional,SDK implementation and Linux hardware,confirmed,high,SDK v0.6.1 deployment and user hardware confirmation,none
+LINUX04,Linux integration,kernel protection directives are portable in a systemd user unit,Linux deployment,negated on tested host,high,status 218 CAPABILITIES in v0.6.0,removed ProtectKernelModules ProtectKernelTunables and ProtectControlGroups in v0.6.1
+LINUX05,Linux integration,hold-open service releases old paths and opens new paths after live USB reconnect,SDK unit tests,implemented pending hardware validation,medium,SDK reconcile tests,perform one unplug reconnect test and inspect journal
+R0301,Report 0x03,bitmap identifies host action index rather than physical button slot,wired and receiver hardware,confirmed,high,Report 0x03 matrix audits,none
+R0302,Report 0x03,host index 1 produces 03 01 and release 03 00,wired and receiver hardware,confirmed,high,ten-cycle matrix phases,none
+R0303,Report 0x03,host index 2 produces 03 02 and release 03 00,wired and receiver hardware,confirmed,high,ten-cycle matrix phases,none
+R0304,Report 0x03,host index 7 produces 03 40 and release 03 00,wired and receiver hardware,confirmed,high,matrix phase,none
+R0305,Report 0x03,host indices 0 and 215 produce no Report 0x03,wired hardware,observed negative,medium,matrix negative controls,retain as observation
+R0306,Report 0x03,host indices 3 through 6 follow remaining bitmap powers of two,inference,not verified,medium,static mask table,test only if needed
+R0307,Report 0x03,left right middle wheel forward back and radial can carry host index 1,wired and receiver hardware,confirmed,high,stage four matrix,none
+SL03,Receiver sleep,first input after write can retain old mapping after fixed two-second wait,receiver hardware,confirmed observation,high,matrix audits,use post-write movement detection and expected-input completion
+SL04,Receiver sleep,post-write motion-bearing Report 0x1b provides a transfer opportunity,implementation policy,implemented,medium,SDK matrix probe,do not claim exact firmware acknowledgement
+R1701,Report 0x17,17 64 01 correlates with active charging indication and 17 64 00 with completion or receiver use,hardware correlation,observed,medium,charger and USB observations,retain unknown field name
+DA09,Direct Action,unknown direct code 6 produces Report 0x1b button bit 0x20,hardware observation,observed,medium,direct code6 probe,retain unknown formal action name
