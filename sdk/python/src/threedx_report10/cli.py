@@ -4,11 +4,13 @@ from __future__ import annotations
 
 import argparse
 import errno
+import hashlib
 import json
 import os
 import selectors
 import sys
 import time
+import subprocess
 from dataclasses import asdict, replace
 from datetime import datetime, timezone
 from pathlib import Path
@@ -16,7 +18,6 @@ from typing import Sequence
 
 from .input_events import (
     BTN_EXTRA,
-    BTN_FORWARD,
     BTN_LEFT,
     BTN_MIDDLE,
     BTN_RIGHT,
@@ -32,11 +33,14 @@ from .linux_hidraw import (
     discover_wired_c658,
     enumerate_hidraw,
     validate_report10_target,
+    _read_descriptor,
 )
 from .hold_open import run_wired_hold_open
 from .matrix_probe import (
     MultiInputCapture,
     count_expected_press_transitions,
+    evaluate_phase,
+    matrix_success,
     summarize_capture,
 )
 from .receiver import (
@@ -76,8 +80,6 @@ EXPECTED_LINUX_CODES = {
     DirectAction.HID_MOUSE_MIDDLE_OR_WHEEL_BUTTON: BTN_MIDDLE,
     DirectAction.HID_MOUSE_BACKWARD: BTN_SIDE,
     DirectAction.HID_MOUSE_FORWARD: BTN_EXTRA,
-    # Latest awake receiver observation only; not a formal action name.
-    DirectAction.UNKNOWN_DIRECT_CODE_6: BTN_FORWARD,
 }
 
 BASELINE_SLOT_ACTIONS = (
@@ -105,6 +107,28 @@ PHYSICAL_BUTTON_NAMES = (
 
 def _utc_now() -> str:
     return datetime.now(timezone.utc).isoformat()
+
+
+def _audit_identity(path: str, command: str, options: dict[str, object],
+                    transport: str = "receiver", pid: str = "c652") -> dict[str, object]:
+    try:
+        revision = subprocess.check_output(["git", "rev-parse", "HEAD"],
+                                           stderr=subprocess.DEVNULL, text=True).strip()
+    except (OSError, subprocess.CalledProcessError):
+        revision = "unknown"
+    try:
+        fd = os.open(path, os.O_RDONLY | os.O_CLOEXEC)
+        try:
+            descriptor_hash = hashlib.sha256(_read_descriptor(fd)).hexdigest()
+        finally:
+            os.close(fd)
+    except OSError:
+        descriptor_hash = None
+    return {
+        "tool_git_commit": revision, "transport": transport, "vid": "256f",
+        "pid": pid, "hidraw": path, "hid_descriptor_sha256": descriptor_hash,
+        "subcommand": command, "options": options,
+    }
 
 
 def _parse_mapping(token: str) -> ButtonMapping:
@@ -395,11 +419,33 @@ def _parse_stages(value: str) -> tuple[int, ...]:
     return stages
 
 
-def _matrix_config(slot: int, mapping: ButtonMapping) -> Report10Config:
-    baseline = Report10Config.latest_software_baseline()
-    buttons = list(baseline.buttons)
-    buttons[slot - 1] = mapping
-    return replace(baseline, buttons=tuple(buttons))
+def _probe_baseline(args: argparse.Namespace) -> bytes:
+    supplied = getattr(args, "baseline_report10_hex", None)
+    if supplied:
+        try:
+            report = bytes.fromhex(supplied)
+        except ValueError as exc:
+            raise RuntimeError("baseline Report 0x10 must be hex bytes") from exc
+        if len(report) != 32 or report[0] != 0x10:
+            raise RuntimeError("baseline Report 0x10 must contain 32 bytes beginning with 10")
+        return report
+    if getattr(args, "accept_test_fixture", False):
+        return Report10Config.latest_software_baseline().to_wire_report()
+    raise RuntimeError("supply --baseline-report10-hex or explicitly accept --accept-test-fixture")
+
+
+def _mapped_report(baseline: bytes, slot: int, mapping: ButtonMapping) -> bytes:
+    report = bytearray(baseline)
+    report[19 + slot - 1] = mapping.wire_value
+    return bytes(report)
+
+
+def _baseline_expected_code(baseline: bytes, slot: int) -> int:
+    wire = baseline[19 + slot - 1]
+    try:
+        return EXPECTED_LINUX_CODES[DirectAction(wire - 0x09)]
+    except (ValueError, KeyError) as exc:
+        raise RuntimeError("selected baseline physical button needs a known direct mapping for restore check") from exc
 
 
 def _matrix_phases(stages: tuple[int, ...], selected_slot: int) -> list[dict[str, object]]:
@@ -409,7 +455,7 @@ def _matrix_phases(stages: tuple[int, ...], selected_slot: int) -> list[dict[str
             {"stage": 1, "name": "direct-right-control", "slot": selected_slot,
              "mapping": ButtonMapping.direct(DirectAction.HID_MOUSE_RIGHT)},
             {"stage": 1, "name": "host-index-0", "slot": selected_slot,
-             "mapping": ButtonMapping.host_routed(0)},
+             "mapping": ButtonMapping.host_routed(0), "negative_control": True},
             {"stage": 1, "name": "host-index-1", "slot": selected_slot,
              "mapping": ButtonMapping.host_routed(1)},
             {"stage": 1, "name": "unknown-direct-code-6", "slot": selected_slot,
@@ -423,14 +469,26 @@ def _matrix_phases(stages: tuple[int, ...], selected_slot: int) -> list[dict[str
              "mapping": ButtonMapping.host_routed(1)},
         ])
     if 3 in stages:
-        for index in (0, 1, 2, 7, 215):
+        for index in range(0, 8):
+            if index == 0:
+                phases.append({"stage": 3, "name": "before-host-index-0-control", "slot": selected_slot,
+                               "mapping": ButtonMapping.host_routed(1)})
             phases.append({"stage": 3, "name": f"host-index-{index}", "slot": selected_slot,
-                           "mapping": ButtonMapping.host_routed(index)})
+                           "mapping": ButtonMapping.host_routed(index), "negative_control": index == 0})
+            if index == 0:
+                phases.append({"stage": 3, "name": "after-host-index-0-control", "slot": selected_slot,
+                               "mapping": ButtonMapping.host_routed(1)})
     if 4 in stages:
         for slot in range(1, 8):
             button = PHYSICAL_BUTTON_NAMES[slot - 1]
-            phases.append({"stage": 4, "name": f"{button}-host-index-1", "slot": slot,
-                           "mapping": ButtonMapping.host_routed(1)})
+            for index in range(1, 8):
+                for label, mapping in (
+                    ("before-control", ButtonMapping.direct(DirectAction.HID_MOUSE_RIGHT)),
+                    ("host", ButtonMapping.host_routed(index)),
+                    ("after-control", ButtonMapping.direct(DirectAction.HID_MOUSE_RIGHT)),
+                ):
+                    phases.append({"stage": 4, "name": f"{button}-{label}-index-{index}",
+                                   "slot": slot, "mapping": mapping})
     return phases
 
 
@@ -443,24 +501,17 @@ def _expected_report03_mask(mapping: ButtonMapping) -> int | None:
     return None
 
 
-def _expected_report1b_mask(mapping: ButtonMapping) -> int | None:
-    value = mapping.wire_value
-    if 0x0A <= value <= 0x0F:
-        return 1 << (value - 0x0A)
-    return None
-
-
 def _capture_until_expected(
     capture: MultiInputCapture,
     mapping: ButtonMapping,
     requested_presses: int,
     timeout_seconds: float,
+    expected_evdev_code: int | None = None,
 ) -> tuple[list[dict[str, object]], list[dict[str, object]], int, bool]:
     raw: list[dict[str, object]] = []
     keys: list[dict[str, object]] = []
     report03_mask = _expected_report03_mask(mapping)
-    report1b_mask = _expected_report1b_mask(mapping)
-    has_expected_input = report03_mask is not None or report1b_mask is not None
+    has_expected_input = report03_mask is not None or expected_evdev_code is not None
     deadline = time.monotonic() + timeout_seconds
     observed = 0
     while time.monotonic() < deadline:
@@ -468,35 +519,66 @@ def _capture_until_expected(
         raw.extend(result.raw_reports)
         keys.extend(result.key_events)
         if has_expected_input:
-            observed = count_expected_press_transitions(raw, report03_mask, report1b_mask)
-            if observed >= requested_presses:
-                return raw, keys, observed, True
-    return raw, keys, observed, not has_expected_input
+            observed = count_expected_press_transitions(raw, report03_mask, None)
+            releases = sum(
+                bytes.fromhex(str(item["raw_hex"]))[0] == 0x03
+                and bytes.fromhex(str(item["raw_hex"]))[1] == 0
+                for item in raw if len(bytes.fromhex(str(item["raw_hex"]))) >= 2
+            ) if report03_mask is not None else 0
+            if expected_evdev_code is not None:
+                observed = sum(e["code"] == expected_evdev_code and e["value"] == 1 for e in keys)
+                releases = sum(e["code"] == expected_evdev_code and e["value"] == 0 for e in keys)
+    return raw, keys, observed, bool(
+        has_expected_input and observed >= requested_presses and releases >= requested_presses
+    )
 
 
 def _cmd_probe_report03_matrix(args: argparse.Namespace) -> int:
     if not args.commit:
         print("probe-report03-matrix requires --commit because it writes Report 0x10", file=sys.stderr)
         return 2
-    validate_report10_target(args.device)
+    target = validate_report10_target(args.device)
     phases = _matrix_phases(args.stages, args.slot)
-    baseline = Report10Config.latest_software_baseline()
+    baseline = _probe_baseline(args)
+    baseline_code = _baseline_expected_code(baseline, args.slot)
+    try:
+        revision = subprocess.check_output(["git", "rev-parse", "HEAD"], stderr=subprocess.DEVNULL, text=True).strip()
+    except (OSError, subprocess.CalledProcessError):
+        revision = "unknown"
+    descriptor_hashes = {}
+    for path in dict.fromkeys([args.device, *args.input_hidraw]):
+        fd = os.open(path, os.O_RDONLY | os.O_CLOEXEC)
+        try:
+            descriptor_hashes[Path(path).name] = hashlib.sha256(_read_descriptor(fd)).hexdigest()
+        finally:
+            os.close(fd)
     audit: dict[str, object] = {
-        "schema": "c658-report03-matrix/v1",
+        "schema": "c658-report03-matrix/v2",
+        "tool_git_commit": revision,
         "started_at": _utc_now(),
+        "transport": "wired" if target.product_id == 0xC658 else "receiver",
+        "vid": f"{target.vendor_id:04x}",
+        "pid": f"{target.product_id:04x}",
+        "hid_descriptor_sha256": descriptor_hashes,
+        "subcommand": "probe-report03-matrix",
         "device": args.device,
         "input_hidraw": list(dict.fromkeys(args.input_hidraw)),
         "event": list(dict.fromkeys(args.event)),
         "stages": list(args.stages),
         "selected_slot": args.slot,
         "requested_presses_per_phase": args.presses,
+        "required_phase_count": len(phases),
         "capture_seconds_per_phase": args.phase_seconds,
         "settle_seconds_after_write": args.settle_seconds,
         "post_write_motion_timeout": args.motion_timeout,
         "evidence_note": "Report 0x17 byte2 remains UNKNOWN_CHARGING_STATE_CANDIDATE",
         "phases": [],
         "baseline_restored": False,
+        "baseline_report10_hex": baseline.hex(" "),
+        "baseline_expected_evdev_code": baseline_code,
+        "baseline_source": "provided-host-snapshot" if args.baseline_report10_hex else "explicit-test-fixture",
         "baseline_transfer_wait_completed": False,
+        "baseline_operation_confirmed": False,
         "failure": None,
     }
     try:
@@ -506,18 +588,24 @@ def _cmd_probe_report03_matrix(args: argparse.Namespace) -> int:
                     slot = int(specification["slot"])
                     button_name = PHYSICAL_BUTTON_NAMES[slot - 1]
                     mapping = specification["mapping"]
-                    config = _matrix_config(slot, mapping)
+                    config = _mapped_report(baseline, slot, mapping)
+                    negative = bool(specification.get("negative_control"))
                     print(
                         f"[matrix {number}/{len(phases)} stage {specification['stage']}] "
                         f"applying {specification['name']} for {button_name} button"
                     )
-                    device.apply_report10(config)
+                    device.set_feature(config)
                     capture.drain()
                     print(
                         "[transfer-wait] move the mouse now without pressing any button; "
                         "completion is automatic"
                     )
-                    motion_result = capture.wait_for_mouse_motion(args.motion_timeout)
+                    try:
+                        motion_result = capture.wait_for_mouse_motion(args.motion_timeout)
+                        transfer_ok = True
+                    except TimeoutError:
+                        motion_result = capture.capture(0.01)
+                        transfer_ok = False
                     settle_result = None
                     if args.settle_seconds > 0:
                         print(
@@ -526,13 +614,12 @@ def _cmd_probe_report03_matrix(args: argparse.Namespace) -> int:
                         )
                         settle_result = capture.capture(args.settle_seconds)
                         capture.drain()
-                    print(
-                        f"[capture] NOW press/release the {button_name} button "
-                        f"{args.presses} times within {args.phase_seconds:g} seconds"
-                    )
+                    print(f"[capture] NOW press/release {button_name} at least {args.presses} times "
+                          f"within {args.phase_seconds:g} seconds")
                     started = _utc_now()
+                    evdev_code = BTN_RIGHT if mapping.wire_value == 0x0B else None
                     raw, keys, observed_presses, expected_complete = _capture_until_expected(
-                        capture, mapping, args.presses, args.phase_seconds
+                        capture, mapping, args.presses, args.phase_seconds, evdev_code
                     )
                     phase_record = {
                         "sequence": number,
@@ -540,14 +627,19 @@ def _cmd_probe_report03_matrix(args: argparse.Namespace) -> int:
                         "name": specification["name"],
                         "slot": slot,
                         "physical_button": button_name,
+                        "required": mapping.wire_value != 0x0F,
+                        "negative_control": negative,
+                        "required_presses": args.presses,
+                        "expected_evdev_code": evdev_code,
                         "expected_report03_mask": (
                             None if _expected_report03_mask(mapping) is None
                             else f"0x{_expected_report03_mask(mapping):02x}"
                         ),
                         "mapping_wire_value": f"0x{mapping.wire_value:02x}",
-                        "report10_hex": config.to_wire_report().hex(" "),
+                        "report10_hex": config.hex(" "),
                         "capture_started_at": started,
-                        "transfer_wait_completed": True,
+                        "transfer_wait_completed": transfer_ok,
+                        "activity_confirmed": transfer_ok,
                         "transfer_wait_raw_reports": list(motion_result.raw_reports),
                         "transfer_wait_key_events": list(motion_result.key_events),
                         "settle_raw_reports": (
@@ -560,11 +652,24 @@ def _cmd_probe_report03_matrix(args: argparse.Namespace) -> int:
                         "key_events": keys,
                         "observed_expected_presses": observed_presses,
                         "expected_input_complete": expected_complete,
+                        "observation_window_complete": negative,
+                        "capture_interrupted": False,
                         "summary": summarize_capture(raw, _expected_report03_mask(mapping)),
                     }
+                    phase_record.update(evaluate_phase(phase_record))
                     audit["phases"].append(phase_record)
+                for index, phase in enumerate(audit["phases"]):
+                    if phase["negative_control"]:
+                        before = audit["phases"][index - 1] if index else None
+                        after = audit["phases"][index + 1] if index + 1 < len(audit["phases"]) else None
+                        phase["positive_controls_passed"] = bool(
+                            before and after and
+                            evaluate_phase(before)["phase_result"] == "PASS" and
+                            evaluate_phase(after)["phase_result"] == "PASS"
+                        )
+                    phase.update(evaluate_phase(phase))
             finally:
-                device.apply_report10(baseline)
+                device.set_feature(baseline)
                 audit["baseline_restored"] = True
                 capture.drain()
                 print(
@@ -575,18 +680,46 @@ def _cmd_probe_report03_matrix(args: argparse.Namespace) -> int:
                 audit["baseline_transfer_wait_completed"] = True
                 audit["baseline_transfer_wait_raw_reports"] = list(restore_motion.raw_reports)
                 audit["baseline_transfer_wait_key_events"] = list(restore_motion.key_events)
+                print(f"[restore-check] press/release {PHYSICAL_BUTTON_NAMES[args.slot - 1]} "
+                      f"{args.presses} times within {args.phase_seconds:g} seconds")
+                restore_result = capture.capture(args.phase_seconds)
+                audit["baseline_check_raw_reports"] = list(restore_result.raw_reports)
+                audit["baseline_check_key_events"] = list(restore_result.key_events)
+                restore_counts: dict[str, list[int]] = {}
+                for event in restore_result.key_events:
+                    if event["code"] != baseline_code:
+                        continue
+                    pair = restore_counts.setdefault(str(event["path"]), [0, 0])
+                    if event["value"] == 1:
+                        pair[0] += 1
+                    elif event["value"] == 0:
+                        pair[1] += 1
+                audit["baseline_observed_presses_releases"] = restore_counts
+                audit["baseline_operation_confirmed"] = (
+                    any(pair[0] >= args.presses and pair[1] >= args.presses
+                        for pair in restore_counts.values())
+                )
     except KeyboardInterrupt:
         audit["failure"] = "interrupted by user"
     except Exception as exc:
         audit["failure"] = str(exc)
+    if len(audit["phases"]) < len(phases):
+        pending = phases[len(audit["phases"])]
+        audit["phases"].append({
+            "sequence": len(audit["phases"]) + 1,
+            "stage": pending["stage"], "name": pending["name"],
+            "physical_button": PHYSICAL_BUTTON_NAMES[int(pending["slot"]) - 1],
+            "required": True, "phase_result": "INCONCLUSIVE",
+            "reasons": [str(audit["failure"] or "capture interrupted")],
+            "capture_interrupted": True, "transfer_wait_completed": False,
+            "expected_input_complete": False, "raw_reports": [], "key_events": [],
+            "observed_expected_presses": 0, "observed_expected_releases": 0,
+            "unexpected_input": [],
+        })
     audit["finished_at"] = _utc_now()
-    summaries = [phase["summary"] for phase in audit["phases"]]
+    summaries = [phase["summary"] for phase in audit["phases"] if "summary" in phase]
     audit["report03_seen_anywhere"] = any(item["report03_seen"] for item in summaries)
-    audit["success"] = (
-        audit["failure"] is None
-        and audit["baseline_restored"]
-        and audit["baseline_transfer_wait_completed"]
-    )
+    audit["success"] = matrix_success(audit)
     _write_audit(args.audit, audit)
     return 0 if audit["success"] else 1
 
@@ -604,7 +737,8 @@ def _cmd_probe_report03(args: argparse.Namespace) -> int:
     test_config = replace(baseline, buttons=tuple(buttons))
     baseline_code = EXPECTED_LINUX_CODES[BASELINE_SLOT_ACTIONS[args.slot - 1]]
     audit: dict[str, object] = {
-        "schema": "c658-report03-probe/v1",
+        "schema": "c658-report03-single-cycle-exploratory/v2",
+        "evidence_status": "OBSERVED; insufficient for matrix confirmation",
         "started_at": _utc_now(),
         "device": args.device,
         "input_hidraw": args.input_hidraw,
@@ -615,8 +749,8 @@ def _cmd_probe_report03(args: argparse.Namespace) -> int:
         "host_index": args.host_index,
         "test_report_hex": test_config.to_wire_report().hex(" "),
         "frames": [],
-        "report03_confirmed": False,
-        "baseline_restore_confirmed": False,
+        "report03_single_cycle_observed": False,
+        "baseline_restore_observed": False,
     }
     failure: str | None = None
     with Report03Reader(args.input_hidraw) as reader, HidrawDevice(args.device) as device:
@@ -630,7 +764,7 @@ def _cmd_probe_report03(args: argparse.Namespace) -> int:
             )
             confirmed, frames = reader.wait_for_host_index_cycle(args.host_index, args.timeout)
             audit["frames"] = [_frame_dict(frame) for frame in frames]
-            audit["report03_confirmed"] = confirmed
+            audit["report03_single_cycle_observed"] = confirmed
             if not confirmed:
                 failure = "Report 0x03 press/release cycle was not confirmed"
         except KeyboardInterrupt:
@@ -646,7 +780,7 @@ def _cmd_probe_report03(args: argparse.Namespace) -> int:
                     f"expect {KEY_NAMES.get(baseline_code, baseline_code)}"
                 )
                 observation = wait_for_key_press([args.event], baseline_code, args.timeout)
-                audit["baseline_restore_confirmed"] = observation is not None
+                audit["baseline_restore_observed"] = observation is not None
                 if observation is None and failure is None:
                     failure = "baseline restoration was not physically confirmed"
             except Exception as exc:
@@ -656,8 +790,8 @@ def _cmd_probe_report03(args: argparse.Namespace) -> int:
     audit["failure"] = failure
     audit["success"] = (
         failure is None
-        and bool(audit["report03_confirmed"])
-        and bool(audit["baseline_restore_confirmed"])
+        and bool(audit["report03_single_cycle_observed"])
+        and bool(audit["baseline_restore_observed"])
     )
     _write_audit(args.audit, audit)
     return 0 if audit["success"] else 1
@@ -762,7 +896,7 @@ def _cmd_pair(args: argparse.Namespace) -> int:
         "start_packet": PAIR_START.hex(" "),
         "stop_packet": PAIR_STOP.hex(" "),
         "before": [slot.to_dict() for slot in before],
-        "evidence": "prior-static; first Linux end-to-end validation required",
+        "evidence": "manual success reported; reproducible raw success audit absent",
     }
     if not args.commit_experimental_pairing:
         print(json.dumps(preview, indent=2, ensure_ascii=False))
@@ -780,6 +914,9 @@ def _cmd_pair(args: argparse.Namespace) -> int:
     audit: dict[str, object] = {
         "schema": "c652-experimental-pairing/v1",
         "started_at": _utc_now(),
+        **_audit_identity(args.device, "pair", {"timeout": args.timeout,
+                                             "poll_interval": args.poll_interval,
+                                             "expect_type": args.expect_type}),
         **preview,
         "snapshots": [],
         "new_slots": [],
@@ -884,7 +1021,7 @@ def _cmd_unpair(args: argparse.Namespace) -> int:
         "packet": packet.hex(" "),
         "target_before": target.to_dict(),
         "required_expect_raw": target.raw.hex(" "),
-        "evidence": "prior-static; first Linux end-to-end validation required",
+        "evidence": "manual success reported; reproducible raw success audit absent",
     }
     if not args.commit_experimental_unpair:
         print(json.dumps(preview, indent=2, ensure_ascii=False))
@@ -911,6 +1048,9 @@ def _cmd_unpair(args: argparse.Namespace) -> int:
     audit: dict[str, object] = {
         "schema": "c652-experimental-unpair/v2",
         "started_at": _utc_now(),
+        **_audit_identity(args.device, "unpair", {"slot": args.slot,
+                                               "timeout": args.timeout,
+                                               "poll_interval": args.poll_interval}),
         **preview,
         "before": [slot.to_dict() for slot in before],
         "snapshots": [],
@@ -1005,10 +1145,38 @@ def _cmd_apply(args: argparse.Namespace) -> int:
     return 0
 
 
+def _cmd_restore_report10(args: argparse.Namespace) -> int:
+    if not args.commit:
+        print("restore-report10 requires --commit", file=sys.stderr)
+        return 2
+    if not args.baseline_report10_hex:
+        raise RuntimeError("restore-report10 requires --baseline-report10-hex")
+    report = _probe_baseline(args)
+    target = validate_report10_target(args.device)
+    audit = {
+        "schema": "c658-report10-restore/v1", "started_at": _utc_now(),
+        **_audit_identity(args.device, "restore-report10", {},
+                          "wired" if target.product_id == 0xC658 else "receiver",
+                          f"{target.product_id:04x}"),
+        "report10_hex": report.hex(" "), "ioctl_result": None,
+        "physical_operation_confirmed": False, "failure": None, "success": False,
+    }
+    try:
+        with HidrawDevice(args.device) as device:
+            audit["ioctl_result"] = device.set_feature(report)
+        audit["success"] = True
+    except Exception as exc:
+        audit["failure"] = str(exc)
+    audit["finished_at"] = _utc_now()
+    _write_audit(args.audit, audit)
+    print("Report 0x10 submitted; physically verify restored controls")
+    return 0 if audit["success"] else 1
+
+
 def _prompt_activity(non_interactive: bool, phase: str) -> None:
     if non_interactive:
         return
-    input(f"[{phase}] Move the mouse to keep it awake, then press Enter to send Report 0x10: ")
+    print(f"[{phase}] Move the mouse to keep it awake; sending Report 0x10 now")
 
 
 def _event_paths(args: argparse.Namespace) -> list[Path]:
@@ -1023,22 +1191,35 @@ def _event_paths(args: argparse.Namespace) -> list[Path]:
 def _observe_phase(
     *,
     device: HidrawDevice,
-    config: Report10Config,
+    config: Report10Config | bytes,
     phase: str,
-    expected_code: int,
+    expected_code: int | None,
     event_paths: Sequence[Path],
     timeout: float,
     non_interactive: bool,
+    raw_paths: Sequence[str] = (),
 ) -> dict[str, object]:
     _prompt_activity(non_interactive, phase)
-    ioctl_result = device.apply_report10(config)
-    expected_name = KEY_NAMES.get(expected_code, f"KEY_{expected_code}")
-    print(f"[{phase}] sent; press the selected physical button (expecting {expected_name})")
+    report = config if isinstance(config, bytes) else config.to_wire_report()
+    ioctl_result = device.set_feature(report)
+    expected_name = KEY_NAMES.get(expected_code, f"KEY_{expected_code}") if expected_code is not None else "UNKNOWN"
+    print(f"[{phase}] sent; press/release the selected physical button")
+    if expected_code is None:
+        with MultiInputCapture(list(raw_paths), [str(p) for p in event_paths]) as capture:
+            observed = capture.capture(timeout)
+        return {
+            "phase": phase, "time": _utc_now(), "report_hex": report.hex(" "),
+            "ioctl_result": ioctl_result, "expected_linux_code": None,
+            "hardware_effect": "UNKNOWN", "raw_reports": list(observed.raw_reports),
+            "key_events": list(observed.key_events), "confirmed": False,
+            "capture_complete": True,
+            "phase_result": "INCONCLUSIVE",
+        }
     observation = wait_for_key_press(event_paths, expected_code, timeout)
     return {
         "phase": phase,
         "time": _utc_now(),
-        "report_hex": config.to_wire_report().hex(" "),
+        "report_hex": report.hex(" "),
         "ioctl_result": ioctl_result,
         "expected_linux_code": expected_code,
         "expected_linux_name": expected_name,
@@ -1048,7 +1229,30 @@ def _observe_phase(
 
 
 def _write_audit(path: str | None, document: dict[str, object]) -> None:
-    payload = json.dumps(document, indent=2, ensure_ascii=False) + "\n"
+    serial_tokens: dict[str, str] = {}
+
+    def redact(value):
+        if isinstance(value, list):
+            return [redact(item) for item in value]
+        if not isinstance(value, dict):
+            return value
+        result = {key: redact(item) for key, item in value.items()}
+        serial = value.get("serial_raw_hex")
+        if isinstance(serial, str) and serial.strip(" 0"):
+            token = serial_tokens.setdefault(serial, f"<ANONYMIZED:DEVICE_{len(serial_tokens) + 1}>")
+            result["serial_raw_hex"] = token
+            raw = value.get("raw_hex")
+            if isinstance(raw, str):
+                result["raw_hex"] = " ".join(raw.split()[:2]) + " " + token
+        if "required_expect_raw" in result and isinstance(result["required_expect_raw"], str):
+            raw = result["required_expect_raw"].split()
+            if len(raw) == 8:
+                serial = " ".join(raw[2:])
+                token = serial_tokens.setdefault(serial, f"<ANONYMIZED:DEVICE_{len(serial_tokens) + 1}>")
+                result["required_expect_raw"] = " ".join(raw[:2]) + " " + token
+        return result
+
+    payload = json.dumps(redact(document), indent=2, ensure_ascii=False) + "\n"
     if path:
         Path(path).write_text(payload, encoding="utf-8")
         print(f"audit: {path}")
@@ -1061,7 +1265,7 @@ def _cmd_probe_direct(args: argparse.Namespace) -> int:
         print("probe-direct requires --commit because it performs controlled writes", file=sys.stderr)
         return 2
     print(f"[setup] validating Report 0x10 target {args.device} ...", flush=True)
-    validate_report10_target(args.device)
+    target = validate_report10_target(args.device)
     print("[setup] target validation passed", flush=True)
     print("[setup] resolving Linux input event node ...", flush=True)
     event_paths = _event_paths(args)
@@ -1070,22 +1274,34 @@ def _cmd_probe_direct(args: argparse.Namespace) -> int:
         flush=True,
     )
     slot_index = args.slot - 1
-    baseline = Report10Config.latest_software_baseline()
-    test_buttons = list(baseline.buttons)
-    test_buttons[slot_index] = ButtonMapping.direct(args.action)
-    test_config = replace(baseline, buttons=tuple(test_buttons))
-    baseline_action = BASELINE_SLOT_ACTIONS[slot_index]
-    baseline_code = EXPECTED_LINUX_CODES[baseline_action]
-    test_code = args.expect_code if args.expect_code is not None else EXPECTED_LINUX_CODES[args.action]
+    baseline = _probe_baseline(args)
+    test_config = _mapped_report(baseline, args.slot, ButtonMapping.direct(args.action))
+    baseline_code = _baseline_expected_code(baseline, args.slot)
+    if args.action == DirectAction.UNKNOWN_DIRECT_CODE_6 and args.expect_code is not None:
+        raise RuntimeError("code 6 has no expected Linux event; omit --expect-code")
+    test_code = args.expect_code if args.expect_code is not None else EXPECTED_LINUX_CODES.get(args.action)
+    if test_code is None and not args.input_hidraw:
+        raise RuntimeError("unknown code 6 requires --input-hidraw for raw HID capture")
 
     audit: dict[str, object] = {
         "schema": "c658-report10-probe/v1",
         "started_at": _utc_now(),
+        **_audit_identity(args.device, "probe-direct", {"slot": args.slot,
+            "action": args.action.name, "timeout": args.timeout},
+            "wired" if target.product_id == 0xC658 else "receiver",
+            f"{target.product_id:04x}"),
         "device": args.device,
+        "transport": "wired" if target.product_id == 0xC658 else "receiver",
+        "vid": f"{target.vendor_id:04x}", "pid": f"{target.product_id:04x}",
+        "baseline_report10_hex": baseline.hex(" "),
+        "baseline_source": "provided-host-snapshot" if args.baseline_report10_hex else "explicit-test-fixture",
         "event_paths": [str(path) for path in event_paths],
+        "input_hidraw": list(args.input_hidraw),
         "keep_open_hidraw": list(args.keep_open),
         "slot": args.slot,
         "test_action": args.action.name,
+        "physical_button": PHYSICAL_BUTTON_NAMES[slot_index],
+        "hardware_effect": "UNKNOWN" if test_code is None else "subject to physical confirmation",
         "code6_name_is_unknown": args.action == DirectAction.UNKNOWN_DIRECT_CODE_6,
         "phases": [],
         "success": False,
@@ -1120,11 +1336,12 @@ def _cmd_probe_direct(args: argparse.Namespace) -> int:
     audit["finished_at"] = _utc_now()
     audit["failure"] = failure
     audit["success"] = failure is None and len(phases) == 3 and all(
-        bool(phase.get("confirmed")) for phase in phases
-    )
+        bool(phase.get("confirmed")) for phase in (phases[0], phases[2])
+    ) and bool(phases[1].get("capture_complete") if test_code is None else phases[1].get("confirmed"))
     _write_audit(args.audit, audit)
     if audit["success"]:
-        print("PASS: Report 0x10 application and baseline restoration were physically confirmed")
+        print("CAPTURE COMPLETE: baseline restored; code 6 hardware effect remains UNKNOWN"
+              if test_code is None else "PASS: Report 0x10 application and baseline restoration were physically confirmed")
         return 0
     print(f"FAIL: {failure}", file=sys.stderr)
     return 1
@@ -1135,10 +1352,10 @@ def _run_direct_probe_phases(
     args: argparse.Namespace,
     device: HidrawDevice,
     event_paths: Sequence[Path],
-    baseline: Report10Config,
-    test_config: Report10Config,
+    baseline: bytes,
+    test_config: bytes,
     baseline_code: int,
-    test_code: int,
+    test_code: int | None,
     phases: list[dict[str, object]],
 ) -> str | None:
     failure: str | None = None
@@ -1164,9 +1381,10 @@ def _run_direct_probe_phases(
             event_paths=event_paths,
             timeout=args.timeout,
             non_interactive=args.non_interactive,
+            raw_paths=args.input_hidraw,
         )
         phases.append(test)
-        if not test["confirmed"]:
+        if test_code is not None and not test["confirmed"]:
             raise RuntimeError("test mapping input was not confirmed")
     except KeyboardInterrupt:
         failure = "interrupted by user"
@@ -1266,12 +1484,12 @@ def build_parser() -> argparse.ArgumentParser:
                         help="raw input candidate; repeat for simultaneous capture")
     matrix.add_argument("--event", action="append", required=True,
                         help="evdev input node; repeat when needed")
-    matrix.add_argument("--stages", type=_parse_stages, default=(1, 2, 3, 4),
-                        help="comma-separated stages (default: 1,2,3,4)")
+    matrix.add_argument("--stages", type=_parse_stages, default=(3, 4),
+                        help="comma-separated stages (default: 3,4; full matrix)")
     matrix.add_argument("--slot", type=int, choices=range(1, 8), default=7,
                         help="selected slot for stages 1..3")
-    matrix.add_argument("--presses", type=int, choices=range(1, 101), default=10)
-    matrix.add_argument("--phase-seconds", type=float, default=12.0)
+    matrix.add_argument("--presses", type=int, choices=range(10, 101), default=10)
+    matrix.add_argument("--phase-seconds", type=float, default=30.0)
     matrix.add_argument(
         "--motion-timeout", type=float, default=30.0,
         help="maximum wait for post-write Report 0x1b mouse movement",
@@ -1280,6 +1498,9 @@ def build_parser() -> argparse.ArgumentParser:
         "--settle-seconds", type=float, default=2.0,
         help="wait after each write before accepting button input (default: 2.0)",
     )
+    matrix.add_argument("--baseline-report10-hex", help="owner-saved complete 32-byte snapshot")
+    matrix.add_argument("--accept-test-fixture", action="store_true",
+                        help="explicitly overwrite settings with historical test fixture")
     matrix.add_argument("--audit", required=True)
     matrix.add_argument("--non-interactive", action="store_true")
     matrix.add_argument("--commit", action="store_true")
@@ -1295,12 +1516,21 @@ def build_parser() -> argparse.ArgumentParser:
     _add_config_arguments(apply)
     apply.set_defaults(func=_cmd_apply)
 
+    restore = subparsers.add_parser("restore-report10", help="resend an owner-saved full snapshot")
+    restore.add_argument("--device", required=True)
+    restore.add_argument("--baseline-report10-hex", required=True)
+    restore.add_argument("--audit", required=True)
+    restore.add_argument("--commit", action="store_true")
+    restore.set_defaults(func=_cmd_restore_report10)
+
     probe = subparsers.add_parser(
         "probe-direct",
         help="baseline/test/restore with Linux input-event confirmation",
     )
     probe.add_argument("--device", required=True)
     probe.add_argument("--event", action="append", help="explicit /dev/input/eventN; repeatable")
+    probe.add_argument("--input-hidraw", action="append", default=[],
+                       help="raw HID input node; required for unknown code 6")
     probe.add_argument(
         "--keep-open",
         action="append",
@@ -1321,6 +1551,9 @@ def build_parser() -> argparse.ArgumentParser:
         help="override expected Linux input code (decimal or 0xNN)",
     )
     probe.add_argument("--timeout", type=float, default=15.0)
+    probe.add_argument("--baseline-report10-hex", help="owner-saved complete 32-byte snapshot")
+    probe.add_argument("--accept-test-fixture", action="store_true",
+                       help="explicitly overwrite settings with historical test fixture")
     probe.add_argument("--audit", help="write JSON audit log to this path")
     probe.add_argument("--non-interactive", action="store_true")
     probe.add_argument("--commit", action="store_true", help="required safety acknowledgement")
@@ -1328,14 +1561,14 @@ def build_parser() -> argparse.ArgumentParser:
 
     probe03 = subparsers.add_parser(
         "probe-report03",
-        help="apply host-routed mapping, verify 0x03 press/release, restore baseline",
+        help="exploratory single-cycle observation; full validation uses matrix probe",
     )
     probe03.add_argument("--device", required=True, help="Report 0x10 target")
     probe03.add_argument("--input-hidraw", required=True, help="raw C658 input node")
     probe03.add_argument("--event", required=True, help="evdev node used to verify restoration")
     probe03.add_argument("--slot", type=int, choices=range(1, 8), default=7)
     probe03.add_argument("--host-index", type=int, choices=range(1, 8), default=1,
-                         help="Report 0x03 bitmap index; hardware-confirmed indices start at 1")
+                         help="Report 0x03 candidate bitmap index 1..7 (hardware validation pending)")
     probe03.add_argument("--timeout", type=float, default=30.0)
     probe03.add_argument("--audit")
     probe03.add_argument("--non-interactive", action="store_true")

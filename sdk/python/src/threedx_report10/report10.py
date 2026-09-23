@@ -176,7 +176,7 @@ class Report10Config:
 
     @classmethod
     def latest_software_baseline(cls) -> "Report10Config":
-        """Return the documented restoration baseline, not a factory default."""
+        """Historical test fixture; overwrites user settings and is not factory default."""
 
         direct = ButtonMapping.direct
         return cls.create(
@@ -279,4 +279,3 @@ def inspect_wire_report(report: bytes | bytearray | memoryview) -> InspectedRepo
         reserved_bytes_are_zero=all(blob[index] == 0 for index in reserved),
         fixed_field_is_valid=blob[26] == FIXED_WHEEL_RELATED_VALUE,
     )
-

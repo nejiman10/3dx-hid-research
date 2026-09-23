@@ -220,7 +220,7 @@ def discover_report03_inputs(pattern: str = "/dev/hidraw*") -> list[HidrawInfo]:
 def discover_receiver_c658_handles(pattern: str = "/dev/hidraw*") -> list[HidrawInfo]:
     """Probe C652 candidates using the Linux-observed GET 0x08 byte1 == 0x59.
 
-    This rule is hardware-confirmed on the tested receiver but was not found as
+    This rule was observed on the tested receiver but lacks a bundled raw audit; it was not found as
     a reachable normal-path GET 0x08 call in the independently analysed DLL.
     """
 

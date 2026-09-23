@@ -1,12 +1,19 @@
 import argparse
 import errno
+import json
+import tempfile
 import unittest
+from pathlib import Path
 from unittest.mock import patch
 
 from threedx_report10 import DirectAction, Report10Config
 from threedx_report10.cli import (
+    EXPECTED_LINUX_CODES,
     _cmd_pair,
     _cmd_unpair,
+    _matrix_phases,
+    _probe_baseline,
+    _write_audit,
     _config_from_args,
     _parse_buttons,
     _parse_direct_action,
@@ -18,6 +25,43 @@ from threedx_report10.receiver import ReceiverSlot
 
 
 class CliTests(unittest.TestCase):
+    def test_audit_redacts_receiver_serial_consistently(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "audit.json"
+            serial = " ".join(f"{value:02x}" for value in range(1, 7))
+            slot = "43 59 " + serial
+            _write_audit(str(path), {"before": [{"serial_raw_hex": serial,
+                "raw_hex": slot}], "required_expect_raw": slot})
+            text = path.read_text()
+            self.assertNotIn(serial, text)
+            document = json.loads(text)
+            self.assertEqual(document["before"][0]["serial_raw_hex"],
+                             document["required_expect_raw"].split(" ", 2)[2])
+
+    def test_full_matrix_covers_every_button_and_host_index(self):
+        phases = _matrix_phases((3, 4), 7)
+        trials = [p for p in phases if p["stage"] == 4 and "-host-index-" in p["name"]]
+        self.assertEqual({(p["slot"], p["mapping"].wire_value) for p in trials},
+                         {(slot, 0x28 + index) for slot in range(1, 8)
+                          for index in range(1, 8)})
+        self.assertTrue(any(p.get("negative_control") for p in phases))
+
+    def test_hardware_probe_requires_explicit_baseline_choice(self):
+        args = build_parser().parse_args(["probe-report03-matrix", "--device", "/dev/hidraw1",
+            "--input-hidraw", "/dev/hidraw2", "--event", "/dev/input/event1", "--audit", "a.json"])
+        with self.assertRaises(RuntimeError):
+            _probe_baseline(args)
+        args.accept_test_fixture = True
+        self.assertEqual(len(_probe_baseline(args)), 32)
+
+    def test_restore_accepts_only_complete_saved_report(self):
+        args = build_parser().parse_args(["restore-report10", "--device", "/dev/hidraw1",
+            "--baseline-report10-hex", "10 00", "--audit", "restore.json"])
+        with self.assertRaises(RuntimeError):
+            _probe_baseline(args)
+        args.baseline_report10_hex = Report10Config.latest_software_baseline().to_wire_report().hex(" ")
+        self.assertEqual(len(_probe_baseline(args)), 32)
+
     def test_default_build_is_software_baseline(self):
         args = build_parser().parse_args(["build"])
         self.assertEqual(
@@ -39,6 +83,7 @@ class CliTests(unittest.TestCase):
         self.assertEqual(args.action, DirectAction.UNKNOWN_DIRECT_CODE_6)
         self.assertEqual(args.slot, 7)
         self.assertEqual(args.keep_open, [])
+        self.assertNotIn(DirectAction.UNKNOWN_DIRECT_CODE_6, EXPECTED_LINUX_CODES)
 
     def test_probe_accepts_repeatable_keep_open(self):
         args = build_parser().parse_args(

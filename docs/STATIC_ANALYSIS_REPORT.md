@@ -1,5 +1,7 @@
 # 3DxWinCore64.msi 独立静的解析報告
 
+Historical source artifact (non-normative). Current claim status and corrections are in [SPEC.md](../SPEC.md). Hardware conclusions here are not current validation results.
+
 解析日: 2026-09-22 UTC  
 対象: 3DxWare 10.9.14 core MSI、CadMouse Compact Wireless (USB PID `C658`) および Universal Receiver (USB PID `C652`)  
 範囲: USB/HID通常設定、button設定、Receiver管理通信  
@@ -298,4 +300,3 @@ axt @ 0x1400348b0
 - `report10_fields.csv`: 31 payload offsetsを全行列挙。
 - `evidence_ledger.md`: claimごとのbinary/offset/xref/代替解釈。
 - `investigation_classification.md`: 指定された6分類。
-
