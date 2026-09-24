@@ -29,16 +29,25 @@ def validate_matrix(document: dict) -> list[str]:
         errors.append("invalid transport")
     phases = document.get("phases", [])
     profile = document.get("profile")
+    success = document.get("success") is True
     if profile in ("smoke", "core", "exhaustive"):
         planned = _matrix_phases(profile)
-        if [item.get("name") for item in phases] != [item["name"] for item in planned]:
+        expected_names = [item["name"] for item in planned]
+        recorded_names = [item.get("name") for item in phases]
+        if recorded_names != expected_names[:len(phases)]:
             errors.append("required phase sequence missing or changed")
-        if document.get("planned_phase_names") != [item["name"] for item in planned]:
+        if success and recorded_names != expected_names:
+            errors.append("successful audit has missing phases")
+        if document.get("planned_phase_names") != expected_names:
             errors.append("planned phase names contradict profile")
+        if document.get("required_phase_count") != len(planned):
+            errors.append("required phase count contradicts profile")
     else:
         errors.append("missing or invalid matrix profile")
-    if len(phases) != document.get("required_phase_count") or not phases:
-        errors.append("required phases missing")
+    if not phases:
+        errors.append("no phase records")
+    if not success and not document.get("failure"):
+        errors.append("unsuccessful audit lacks failure reason")
     requested = document.get("requested_presses_per_phase", 0)
     for index, phase in enumerate(phases):
         name = phase.get("name", "unnamed")
@@ -50,11 +59,11 @@ def validate_matrix(document: dict) -> list[str]:
         for field in ("phase_result", "observed_expected_presses", "observed_expected_releases", "unexpected_input"):
             if phase.get(field) != calculated[field]:
                 errors.append(f"{name}: {field} contradicts raw capture")
-        if phase.get("required", True) and phase.get("phase_result") != "PASS":
+        if success and phase.get("required", True) and phase.get("phase_result") != "PASS":
             errors.append(f"{name}: required phase did not PASS")
-        if not phase.get("transfer_wait_completed"):
+        if phase.get("phase_result") == "PASS" and not phase.get("transfer_wait_completed"):
             errors.append(f"{name}: transfer wait failed")
-        if phase.get("unexpected_input"):
+        if phase.get("phase_result") == "PASS" and phase.get("unexpected_input"):
             errors.append(f"{name}: unexpected bitmap/input")
         if phase.get("negative_control"):
             adjacent_pass = bool(index > 0 and index + 1 < len(phases)
@@ -62,17 +71,19 @@ def validate_matrix(document: dict) -> list[str]:
                 and phases[index + 1].get("phase_result") == "PASS"
                 and phases[index - 1].get("mapping_wire_value") == "0x29"
                 and phases[index + 1].get("mapping_wire_value") == "0x29")
-            if phase.get("positive_controls_passed") != adjacent_pass:
+            if phase.get("phase_result") == "PASS" and phase.get("positive_controls_passed") != adjacent_pass:
                 errors.append(f"{name}: positive-control flag contradicts adjacent phases")
-            if not phase.get("positive_controls_passed") or not phase.get("activity_confirmed") or not phase.get("observation_window_complete"):
+            if (phase.get("phase_result") == "PASS" and
+                    (not phase.get("positive_controls_passed") or not phase.get("activity_confirmed")
+                     or not phase.get("observation_window_complete"))):
                 errors.append(f"{name}: negative control incomplete")
-        elif phase.get("required", True):
+        elif phase.get("phase_result") == "PASS" and phase.get("required", True):
             if not phase.get("expected_input_complete"):
                 errors.append(f"{name}: expected_input_complete false")
             if (phase.get("observed_expected_presses", 0) < requested
                     or phase.get("observed_expected_releases", 0) < requested):
                 errors.append(f"{name}: specified press/release count unmet")
-    if not all(document.get(k) for k in (
+    if success and not all(document.get(k) for k in (
         "baseline_restored", "baseline_transfer_wait_completed", "baseline_operation_confirmed"
     )):
         errors.append("baseline restoration or operation failed")

@@ -62,4 +62,4 @@ sudo python3 /tmp/c658-report10ctl.pyz restore-report10 \
 
 `10 ...` は保存した32-byte値で置き換える。このコマンドは送信を監査するが、復元した物理入力は人が確認する。保存値がない場合はfactory defaultを推測せず、試験を停止して元の設定を手動で再構成する。`apply --commit` の既定値は試験fixtureなので、復元値として無条件には使用しない。
 
-監査JSONにはtool git commit、時刻、transport、VID/PID、選択node、descriptor hash、subcommand/options、送信Report `10`、物理ボタン、期待値、必要回数、transfer待ち、raw HID、evdev、実測回数、unexpected input、phase result、復元結果、失敗理由を残す。公開前に個体ID、ユーザー名、ホームディレクトリを削除し、`python3 tools/validate_public.py /tmp/report03-wired.json` で検査する。
+監査JSONにはtool git commit、時刻、transport、VID/PID、選択node、descriptor hash、subcommand/options、送信Report `10`、物理ボタン、期待値、必要回数、transfer待ち、raw HID、evdev、実測回数、unexpected input、phase result、復元結果、失敗理由を残す。公開前に個体ID、ユーザー名、ホームディレクトリを削除し、`python3 tools/validate_public.py /tmp/report03-wired.json` で検査する。この検証は失敗監査の内部整合性も受け入れるため、試験の成否はJSONの `success` とphase結果を別途確認する。
