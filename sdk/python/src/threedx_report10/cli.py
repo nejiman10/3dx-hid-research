@@ -6,9 +6,11 @@ import argparse
 import errno
 import hashlib
 import json
+import math
 import os
 import selectors
 import sys
+import tempfile
 import time
 import subprocess
 from dataclasses import asdict, replace
@@ -38,7 +40,6 @@ from .linux_hidraw import (
 from .hold_open import run_wired_hold_open
 from .matrix_probe import (
     MultiInputCapture,
-    count_expected_press_transitions,
     evaluate_phase,
     matrix_success,
     summarize_capture,
@@ -409,16 +410,6 @@ def _cmd_probe_input_raw(args: argparse.Namespace) -> int:
     return 0 if audit["success"] else 1
 
 
-def _parse_stages(value: str) -> tuple[int, ...]:
-    try:
-        stages = tuple(dict.fromkeys(int(item.strip()) for item in value.split(",")))
-    except ValueError as exc:
-        raise argparse.ArgumentTypeError("stages must be comma-separated numbers 1..4") from exc
-    if not stages or any(stage not in (1, 2, 3, 4) for stage in stages):
-        raise argparse.ArgumentTypeError("stages must contain only 1,2,3,4")
-    return stages
-
-
 def _probe_baseline(args: argparse.Namespace) -> bytes:
     supplied = getattr(args, "baseline_report10_hex", None)
     if supplied:
@@ -432,6 +423,16 @@ def _probe_baseline(args: argparse.Namespace) -> bytes:
     if getattr(args, "accept_test_fixture", False):
         return Report10Config.latest_software_baseline().to_wire_report()
     raise RuntimeError("supply --baseline-report10-hex or explicitly accept --accept-test-fixture")
+
+
+def _parse_matrix_presses(value: str) -> int:
+    try:
+        presses = int(value)
+    except ValueError as exc:
+        raise argparse.ArgumentTypeError("presses must be an integer 10..100") from exc
+    if not 10 <= presses <= 100:
+        raise argparse.ArgumentTypeError("presses must be in range 10..100")
+    return presses
 
 
 def _mapped_report(baseline: bytes, slot: int, mapping: ButtonMapping) -> bytes:
@@ -448,48 +449,102 @@ def _baseline_expected_code(baseline: bytes, slot: int) -> int:
         raise RuntimeError("selected baseline physical button needs a known direct mapping for restore check") from exc
 
 
-def _matrix_phases(stages: tuple[int, ...], selected_slot: int) -> list[dict[str, object]]:
+def _matrix_phases(profile: str) -> list[dict[str, object]]:
+    """Factorized mandatory trials; exhaustive adds the remaining Cartesian pairs."""
+    if profile not in ("smoke", "core", "exhaustive"):
+        raise ValueError("profile must be smoke, core or exhaustive")
     phases: list[dict[str, object]] = []
-    if 1 in stages:
-        phases.extend([
-            {"stage": 1, "name": "direct-right-control", "slot": selected_slot,
-             "mapping": ButtonMapping.direct(DirectAction.HID_MOUSE_RIGHT)},
-            {"stage": 1, "name": "host-index-0", "slot": selected_slot,
-             "mapping": ButtonMapping.host_routed(0), "negative_control": True},
-            {"stage": 1, "name": "host-index-1", "slot": selected_slot,
-             "mapping": ButtonMapping.host_routed(1)},
-            {"stage": 1, "name": "unknown-direct-code-6", "slot": selected_slot,
-             "mapping": ButtonMapping.direct(DirectAction.UNKNOWN_DIRECT_CODE_6)},
-        ])
-    if 2 in stages:
-        phases.extend([
-            {"stage": 2, "name": "wired-or-selected-direct-right-control", "slot": selected_slot,
-             "mapping": ButtonMapping.direct(DirectAction.HID_MOUSE_RIGHT)},
-            {"stage": 2, "name": "wired-or-selected-host-index-1-repeat", "slot": selected_slot,
-             "mapping": ButtonMapping.host_routed(1)},
-        ])
-    if 3 in stages:
-        for index in range(0, 8):
-            if index == 0:
-                phases.append({"stage": 3, "name": "before-host-index-0-control", "slot": selected_slot,
-                               "mapping": ButtonMapping.host_routed(1)})
-            phases.append({"stage": 3, "name": f"host-index-{index}", "slot": selected_slot,
-                           "mapping": ButtonMapping.host_routed(index), "negative_control": index == 0})
-            if index == 0:
-                phases.append({"stage": 3, "name": "after-host-index-0-control", "slot": selected_slot,
-                               "mapping": ButtonMapping.host_routed(1)})
-    if 4 in stages:
-        for slot in range(1, 8):
-            button = PHYSICAL_BUTTON_NAMES[slot - 1]
-            for index in range(1, 8):
-                for label, mapping in (
-                    ("before-control", ButtonMapping.direct(DirectAction.HID_MOUSE_RIGHT)),
-                    ("host", ButtonMapping.host_routed(index)),
-                    ("after-control", ButtonMapping.direct(DirectAction.HID_MOUSE_RIGHT)),
-                ):
-                    phases.append({"stage": 4, "name": f"{button}-{label}-index-{index}",
-                                   "slot": slot, "mapping": mapping})
+
+    def add(name: str, slot: int, index: int, group: str) -> None:
+        phases.append({"name": name, "slot": slot, "mapping": ButtonMapping.host_routed(index),
+                       "negative_control": index in (0, 215), "group": group})
+
+    add("radial-host-index-1-before-index-0", 7, 1, "controls")
+    add("radial-host-index-0", 7, 0, "controls")
+    add("radial-host-index-1-between-negatives", 7, 1, "controls")
+    add("radial-host-index-215", 7, 215, "controls")
+    add("radial-host-index-1-after-index-215", 7, 1, "controls")
+    if profile in ("core", "exhaustive"):
+        for index in range(2, 8):
+            add(f"radial-host-index-{index}", 7, index, "radial-indices")
+        for slot in range(1, 7):
+            add(f"{PHYSICAL_BUTTON_NAMES[slot - 1]}-host-index-1", slot, 1, "physical-buttons")
+    if profile == "exhaustive":
+        for slot in range(1, 7):
+            for index in range(2, 8):
+                add(f"{PHYSICAL_BUTTON_NAMES[slot - 1]}-host-index-{index}",
+                    slot, index, "exhaustive-only")
     return phases
+
+
+def _baseline_check_button(baseline: bytes) -> tuple[int, int]:
+    for slot in range(1, 8):
+        try:
+            return slot, _baseline_expected_code(baseline, slot)
+        except RuntimeError:
+            continue
+    raise RuntimeError("baseline needs one known direct physical button for restoration check")
+
+
+MATRIX_CONTEXT_KEYS = (
+    "profile", "transport", "vid", "pid", "device", "input_hidraw", "event",
+    "hid_descriptor_sha256", "tool_git_commit", "requested_presses_per_phase",
+    "capture_seconds_per_phase", "settle_seconds_after_write",
+    "post_write_motion_timeout", "baseline_report10_hex", "required_phase_count",
+    "planned_phase_names", "baseline_expected_evdev_code", "baseline_check_physical_button",
+)
+
+
+def _resume_matrix_audit(existing: dict[str, object], expected: dict[str, object],
+                         planned: list[dict[str, object]]) -> int:
+    if existing.get("schema") != "c658-report03-matrix/v3":
+        raise RuntimeError("resume requires a v3 matrix audit")
+    for key in MATRIX_CONTEXT_KEYS:
+        if existing.get(key) != expected.get(key):
+            raise RuntimeError(f"resume context differs: {key}")
+    if existing.get("success"):
+        raise RuntimeError("audit already completed successfully")
+    records = existing.get("phases")
+    if not isinstance(records, list) or len(records) > len(planned):
+        raise RuntimeError("resume audit has an invalid phase list")
+    for index, record in enumerate(records):
+        if not isinstance(record, dict) or record.get("name") != planned[index]["name"]:
+            raise RuntimeError("resume audit phase plan differs")
+    keep = 0
+    for index, record in enumerate(records):
+        if record.get("phase_result") != "PASS" or evaluate_phase(record)["phase_result"] != "PASS":
+            break
+        if record.get("negative_control") and not (
+            index > 0 and index + 1 < len(records)
+            and records[index - 1].get("phase_result") == "PASS"
+            and records[index + 1].get("phase_result") == "PASS"
+            and records[index - 1].get("mapping_wire_value") == "0x29"
+            and records[index + 1].get("mapping_wire_value") == "0x29"
+        ):
+            break
+        keep += 1
+    previous = existing.setdefault("previous_attempts", [])
+    if not isinstance(previous, list):
+        raise RuntimeError("resume audit has an invalid attempt history")
+    previous.append({"at": _utc_now(), "failure": existing.get("failure"),
+                     "discarded_phases": records[keep:],
+                     "baseline_restored": existing.get("baseline_restored"),
+                     "baseline_operation_confirmed": existing.get("baseline_operation_confirmed")})
+    existing["phases"] = records[:keep]
+    existing["resume_count"] = int(existing.get("resume_count", 0)) + 1
+    existing["active_phase"] = None
+    existing["finished_at"] = None
+    existing["failure"] = None
+    existing["success"] = False
+    existing["baseline_restored"] = False
+    existing["baseline_transfer_wait_completed"] = False
+    existing["baseline_operation_confirmed"] = False
+    return keep
+
+
+def _matrix_time_ceiling(remaining: list[dict[str, object]], args: argparse.Namespace) -> int:
+    return math.ceil((len(remaining) * (args.motion_timeout + args.settle_seconds + args.phase_seconds)
+                      + args.motion_timeout + args.phase_seconds) / 60)
 
 
 def _expected_report03_mask(mapping: ButtonMapping) -> int | None:
@@ -507,6 +562,8 @@ def _capture_until_expected(
     requested_presses: int,
     timeout_seconds: float,
     expected_evdev_code: int | None = None,
+    *,
+    early_exit: bool = False,
 ) -> tuple[list[dict[str, object]], list[dict[str, object]], int, bool]:
     raw: list[dict[str, object]] = []
     keys: list[dict[str, object]] = []
@@ -518,29 +575,49 @@ def _capture_until_expected(
         result = capture.capture(min(0.25, deadline - time.monotonic()))
         raw.extend(result.raw_reports)
         keys.extend(result.key_events)
-        if has_expected_input:
-            observed = count_expected_press_transitions(raw, report03_mask, None)
-            releases = sum(
-                bytes.fromhex(str(item["raw_hex"]))[0] == 0x03
-                and bytes.fromhex(str(item["raw_hex"]))[1] == 0
-                for item in raw if len(bytes.fromhex(str(item["raw_hex"]))) >= 2
-            ) if report03_mask is not None else 0
-            if expected_evdev_code is not None:
-                observed = sum(e["code"] == expected_evdev_code and e["value"] == 1 for e in keys)
-                releases = sum(e["code"] == expected_evdev_code and e["value"] == 0 for e in keys)
-    return raw, keys, observed, bool(
-        has_expected_input and observed >= requested_presses and releases >= requested_presses
-    )
+        if has_expected_input and early_exit:
+            sample = {"raw_reports": raw, "key_events": keys,
+                      "expected_report03_mask": (
+                          None if report03_mask is None else f"0x{report03_mask:02x}"),
+                      "expected_evdev_code": expected_evdev_code,
+                      "required_presses": requested_presses,
+                      "transfer_wait_completed": True, "expected_input_complete": True}
+            result_grade = evaluate_phase(sample)
+            observed = int(result_grade["observed_expected_presses"])
+            if result_grade["phase_result"] == "FAIL":
+                return raw, keys, observed, False
+            if result_grade["phase_result"] == "PASS":
+                grace = min(0.25, max(0.0, deadline - time.monotonic()))
+                if grace > 0:
+                    tail = capture.capture(grace)
+                    raw.extend(tail.raw_reports)
+                    keys.extend(tail.key_events)
+                final_grade = evaluate_phase({**sample, "raw_reports": raw, "key_events": keys})
+                return raw, keys, int(final_grade["observed_expected_presses"]), (
+                    final_grade["observed_expected_presses"] >= requested_presses
+                    and final_grade["observed_expected_releases"] >= requested_presses)
+    if has_expected_input:
+        final_grade = evaluate_phase({"raw_reports": raw, "key_events": keys,
+            "expected_report03_mask": None if report03_mask is None else f"0x{report03_mask:02x}",
+            "expected_evdev_code": expected_evdev_code, "required_presses": requested_presses,
+            "transfer_wait_completed": True, "expected_input_complete": True})
+        observed = int(final_grade["observed_expected_presses"])
+        return raw, keys, observed, (
+            final_grade["observed_expected_presses"] >= requested_presses
+            and final_grade["observed_expected_releases"] >= requested_presses)
+    return raw, keys, 0, True
 
 
 def _cmd_probe_report03_matrix(args: argparse.Namespace) -> int:
     if not args.commit:
         print("probe-report03-matrix requires --commit because it writes Report 0x10", file=sys.stderr)
         return 2
+    if args.phase_seconds <= 0 or args.motion_timeout <= 0 or args.settle_seconds < 0:
+        raise RuntimeError("phase and motion timeouts must be positive; settle time cannot be negative")
     target = validate_report10_target(args.device)
-    phases = _matrix_phases(args.stages, args.slot)
+    phases = _matrix_phases(args.profile)
     baseline = _probe_baseline(args)
-    baseline_code = _baseline_expected_code(baseline, args.slot)
+    baseline_slot, baseline_code = _baseline_check_button(baseline)
     try:
         revision = subprocess.check_output(["git", "rev-parse", "HEAD"], stderr=subprocess.DEVNULL, text=True).strip()
     except (OSError, subprocess.CalledProcessError):
@@ -553,7 +630,7 @@ def _cmd_probe_report03_matrix(args: argparse.Namespace) -> int:
         finally:
             os.close(fd)
     audit: dict[str, object] = {
-        "schema": "c658-report03-matrix/v2",
+        "schema": "c658-report03-matrix/v3",
         "tool_git_commit": revision,
         "started_at": _utc_now(),
         "transport": "wired" if target.product_id == 0xC658 else "receiver",
@@ -564,11 +641,12 @@ def _cmd_probe_report03_matrix(args: argparse.Namespace) -> int:
         "device": args.device,
         "input_hidraw": list(dict.fromkeys(args.input_hidraw)),
         "event": list(dict.fromkeys(args.event)),
-        "stages": list(args.stages),
-        "selected_slot": args.slot,
+        "profile": args.profile,
         "requested_presses_per_phase": args.presses,
         "required_phase_count": len(phases),
+        "planned_phase_names": [item["name"] for item in phases],
         "capture_seconds_per_phase": args.phase_seconds,
+        "capture_policy_for_new_phases": "early-exit" if args.early_exit else "full-window",
         "settle_seconds_after_write": args.settle_seconds,
         "post_write_motion_timeout": args.motion_timeout,
         "evidence_note": "Report 0x17 byte2 remains UNKNOWN_CHARGING_STATE_CANDIDATE",
@@ -576,23 +654,55 @@ def _cmd_probe_report03_matrix(args: argparse.Namespace) -> int:
         "baseline_restored": False,
         "baseline_report10_hex": baseline.hex(" "),
         "baseline_expected_evdev_code": baseline_code,
+        "baseline_check_physical_button": PHYSICAL_BUTTON_NAMES[baseline_slot - 1],
         "baseline_source": "provided-host-snapshot" if args.baseline_report10_hex else "explicit-test-fixture",
         "baseline_transfer_wait_completed": False,
         "baseline_operation_confirmed": False,
         "failure": None,
+        "success": False,
+        "active_phase": None,
+        "resume_count": 0,
+        "previous_attempts": [],
     }
+    audit_path = Path(args.audit)
+    if args.resume:
+        if not audit_path.is_file():
+            raise RuntimeError("--resume requires an existing audit JSON")
+        existing = json.loads(audit_path.read_text(encoding="utf-8"))
+        if not isinstance(existing, dict):
+            raise RuntimeError("resume audit must be a JSON object")
+        start_index = _resume_matrix_audit(existing, audit, phases)
+        audit = existing
+        audit["capture_policy_for_new_phases"] = (
+            "early-exit" if args.early_exit else "full-window")
+    else:
+        if audit_path.exists():
+            raise RuntimeError("audit already exists; use --resume or choose a new path")
+        start_index = 0
+    remaining = phases[start_index:]
+    positive = sum(not item["negative_control"] for item in remaining)
+    negative = len(remaining) - positive
+    print(f"[plan] {args.profile}: {len(remaining)} remaining phases "
+          f"({positive} positive, {negative} negative); at least "
+          f"{(positive + 1) * args.presses} press/release cycles including restoration; "
+          f"configured upper bound about {_matrix_time_ceiling(remaining, args)} minutes. "
+          + ("Positive phases may end early when complete or unexpected input is captured."
+             if args.early_exit else "Every phase uses its full capture window."))
+    _write_audit(args.audit, audit, quiet=True)
     try:
         with MultiInputCapture(args.input_hidraw, args.event) as capture, HidrawDevice(args.device) as device:
             try:
-                for number, specification in enumerate(phases, 1):
+                for number, specification in enumerate(phases[start_index:], start_index + 1):
                     slot = int(specification["slot"])
                     button_name = PHYSICAL_BUTTON_NAMES[slot - 1]
                     mapping = specification["mapping"]
                     config = _mapped_report(baseline, slot, mapping)
                     negative = bool(specification.get("negative_control"))
+                    audit["active_phase"] = specification["name"]
+                    _write_audit(args.audit, audit, quiet=True)
                     print(
-                        f"[matrix {number}/{len(phases)} stage {specification['stage']}] "
-                        f"applying {specification['name']} for {button_name} button"
+                        f"[matrix {number}/{len(phases)} {specification['group']}] "
+                        f"applying {specification['name']} for {button_name}"
                     )
                     device.set_feature(config)
                     capture.drain()
@@ -617,17 +727,19 @@ def _cmd_probe_report03_matrix(args: argparse.Namespace) -> int:
                     print(f"[capture] NOW press/release {button_name} at least {args.presses} times "
                           f"within {args.phase_seconds:g} seconds")
                     started = _utc_now()
+                    capture_start = time.monotonic()
                     evdev_code = BTN_RIGHT if mapping.wire_value == 0x0B else None
                     raw, keys, observed_presses, expected_complete = _capture_until_expected(
-                        capture, mapping, args.presses, args.phase_seconds, evdev_code
+                        capture, mapping, args.presses, args.phase_seconds, evdev_code,
+                        early_exit=args.early_exit,
                     )
                     phase_record = {
                         "sequence": number,
-                        "stage": specification["stage"],
+                        "group": specification["group"],
                         "name": specification["name"],
                         "slot": slot,
                         "physical_button": button_name,
-                        "required": mapping.wire_value != 0x0F,
+                        "required": True,
                         "negative_control": negative,
                         "required_presses": args.presses,
                         "expected_evdev_code": evdev_code,
@@ -638,6 +750,9 @@ def _cmd_probe_report03_matrix(args: argparse.Namespace) -> int:
                         "mapping_wire_value": f"0x{mapping.wire_value:02x}",
                         "report10_hex": config.hex(" "),
                         "capture_started_at": started,
+                        "capture_finished_at": _utc_now(),
+                        "capture_duration_seconds": round(time.monotonic() - capture_start, 3),
+                        "capture_policy": "early-exit" if args.early_exit else "full-window",
                         "transfer_wait_completed": transfer_ok,
                         "activity_confirmed": transfer_ok,
                         "transfer_wait_raw_reports": list(motion_result.raw_reports),
@@ -652,22 +767,28 @@ def _cmd_probe_report03_matrix(args: argparse.Namespace) -> int:
                         "key_events": keys,
                         "observed_expected_presses": observed_presses,
                         "expected_input_complete": expected_complete,
-                        "observation_window_complete": negative,
+                        "observation_window_complete": not args.early_exit or negative,
                         "capture_interrupted": False,
                         "summary": summarize_capture(raw, _expected_report03_mask(mapping)),
                     }
                     phase_record.update(evaluate_phase(phase_record))
                     audit["phases"].append(phase_record)
-                for index, phase in enumerate(audit["phases"]):
-                    if phase["negative_control"]:
-                        before = audit["phases"][index - 1] if index else None
-                        after = audit["phases"][index + 1] if index + 1 < len(audit["phases"]) else None
-                        phase["positive_controls_passed"] = bool(
-                            before and after and
-                            evaluate_phase(before)["phase_result"] == "PASS" and
-                            evaluate_phase(after)["phase_result"] == "PASS"
-                        )
-                    phase.update(evaluate_phase(phase))
+                    audit["active_phase"] = None
+                    if len(audit["phases"]) >= 3:
+                        prior = audit["phases"][-2]
+                        if prior["negative_control"]:
+                            prior["positive_controls_passed"] = bool(
+                                audit["phases"][-3]["phase_result"] == "PASS"
+                                and phase_record["phase_result"] == "PASS")
+                            prior.update(evaluate_phase(prior))
+                    _write_audit(args.audit, audit, quiet=True)
+                    if phase_record["phase_result"] != "PASS" and not negative:
+                        raise RuntimeError(f"phase {specification['name']} was {phase_record['phase_result']}")
+                    if len(audit["phases"]) >= 2:
+                        prior = audit["phases"][-2]
+                        if prior["negative_control"] and prior.get("positive_controls_passed") is not None:
+                            if prior["phase_result"] != "PASS":
+                                raise RuntimeError(f"negative control {prior['name']} was {prior['phase_result']}")
             finally:
                 device.set_feature(baseline)
                 audit["baseline_restored"] = True
@@ -680,13 +801,15 @@ def _cmd_probe_report03_matrix(args: argparse.Namespace) -> int:
                 audit["baseline_transfer_wait_completed"] = True
                 audit["baseline_transfer_wait_raw_reports"] = list(restore_motion.raw_reports)
                 audit["baseline_transfer_wait_key_events"] = list(restore_motion.key_events)
-                print(f"[restore-check] press/release {PHYSICAL_BUTTON_NAMES[args.slot - 1]} "
+                print(f"[restore-check] press/release {PHYSICAL_BUTTON_NAMES[baseline_slot - 1]} "
                       f"{args.presses} times within {args.phase_seconds:g} seconds")
-                restore_result = capture.capture(args.phase_seconds)
-                audit["baseline_check_raw_reports"] = list(restore_result.raw_reports)
-                audit["baseline_check_key_events"] = list(restore_result.key_events)
+                restore_mapping = ButtonMapping.direct(DirectAction(baseline[19 + baseline_slot - 1] - 0x09))
+                restore_raw, restore_keys, _, _ = _capture_until_expected(
+                    capture, restore_mapping, args.presses, args.phase_seconds, baseline_code)
+                audit["baseline_check_raw_reports"] = restore_raw
+                audit["baseline_check_key_events"] = restore_keys
                 restore_counts: dict[str, list[int]] = {}
-                for event in restore_result.key_events:
+                for event in restore_keys:
                     if event["code"] != baseline_code:
                         continue
                     pair = restore_counts.setdefault(str(event["path"]), [0, 0])
@@ -699,23 +822,34 @@ def _cmd_probe_report03_matrix(args: argparse.Namespace) -> int:
                     any(pair[0] >= args.presses and pair[1] >= args.presses
                         for pair in restore_counts.values())
                 )
+                _write_audit(args.audit, audit, quiet=True)
     except KeyboardInterrupt:
         audit["failure"] = "interrupted by user"
     except Exception as exc:
         audit["failure"] = str(exc)
-    if len(audit["phases"]) < len(phases):
+    if audit.get("active_phase") and len(audit["phases"]) < len(phases):
         pending = phases[len(audit["phases"])]
+        pending_mapping = pending["mapping"]
         audit["phases"].append({
             "sequence": len(audit["phases"]) + 1,
-            "stage": pending["stage"], "name": pending["name"],
+            "group": pending["group"], "name": pending["name"],
+            "slot": pending["slot"],
             "physical_button": PHYSICAL_BUTTON_NAMES[int(pending["slot"]) - 1],
             "required": True, "phase_result": "INCONCLUSIVE",
+            "negative_control": pending["negative_control"],
+            "required_presses": args.presses,
+            "expected_report03_mask": (
+                None if _expected_report03_mask(pending_mapping) is None
+                else f"0x{_expected_report03_mask(pending_mapping):02x}"),
+            "mapping_wire_value": f"0x{pending_mapping.wire_value:02x}",
+            "report10_hex": _mapped_report(baseline, int(pending["slot"]), pending_mapping).hex(" "),
             "reasons": [str(audit["failure"] or "capture interrupted")],
             "capture_interrupted": True, "transfer_wait_completed": False,
             "expected_input_complete": False, "raw_reports": [], "key_events": [],
             "observed_expected_presses": 0, "observed_expected_releases": 0,
             "unexpected_input": [],
         })
+    audit["active_phase"] = None
     audit["finished_at"] = _utc_now()
     summaries = [phase["summary"] for phase in audit["phases"] if "summary" in phase]
     audit["report03_seen_anywhere"] = any(item["report03_seen"] for item in summaries)
@@ -1228,7 +1362,7 @@ def _observe_phase(
     }
 
 
-def _write_audit(path: str | None, document: dict[str, object]) -> None:
+def _write_audit(path: str | None, document: dict[str, object], *, quiet: bool = False) -> None:
     serial_tokens: dict[str, str] = {}
 
     def redact(value):
@@ -1254,8 +1388,26 @@ def _write_audit(path: str | None, document: dict[str, object]) -> None:
 
     payload = json.dumps(redact(document), indent=2, ensure_ascii=False) + "\n"
     if path:
-        Path(path).write_text(payload, encoding="utf-8")
-        print(f"audit: {path}")
+        target = Path(path)
+        temporary = None
+        try:
+            with tempfile.NamedTemporaryFile("w", encoding="utf-8", dir=target.parent,
+                                             prefix=f".{target.name}.", delete=False) as stream:
+                temporary = Path(stream.name)
+                stream.write(payload)
+                stream.flush()
+                os.fsync(stream.fileno())
+            os.replace(temporary, target)
+            directory_fd = os.open(target.parent, os.O_RDONLY | os.O_DIRECTORY)
+            try:
+                os.fsync(directory_fd)
+            finally:
+                os.close(directory_fd)
+        finally:
+            if temporary is not None and temporary.exists():
+                temporary.unlink()
+        if not quiet:
+            print(f"audit: {path}")
     else:
         print(payload, end="")
 
@@ -1477,19 +1629,20 @@ def build_parser() -> argparse.ArgumentParser:
 
     matrix = subparsers.add_parser(
         "probe-report03-matrix",
-        help="controlled direct/host-index/all-slot Report 0x03 investigation",
+        help="controlled Report 0x03 profiles with checkpoint and resume",
     )
     matrix.add_argument("--device", required=True, help="Report 0x10 target")
     matrix.add_argument("--input-hidraw", action="append", required=True,
                         help="raw input candidate; repeat for simultaneous capture")
     matrix.add_argument("--event", action="append", required=True,
                         help="evdev input node; repeat when needed")
-    matrix.add_argument("--stages", type=_parse_stages, default=(3, 4),
-                        help="comma-separated stages (default: 3,4; full matrix)")
-    matrix.add_argument("--slot", type=int, choices=range(1, 8), default=7,
-                        help="selected slot for stages 1..3")
-    matrix.add_argument("--presses", type=int, choices=range(10, 101), default=10)
+    matrix.add_argument("--profile", choices=("smoke", "core", "exhaustive"),
+                        default="core", help="test scope; core is the release prerequisite")
+    matrix.add_argument("--presses", type=_parse_matrix_presses, default=10,
+                        help="required press/release cycles for each positive phase (10..100)")
     matrix.add_argument("--phase-seconds", type=float, default=30.0)
+    matrix.add_argument("--early-exit", action="store_true",
+                        help="opt in to shorter positive phases; full-window capture is the default")
     matrix.add_argument(
         "--motion-timeout", type=float, default=30.0,
         help="maximum wait for post-write Report 0x1b mouse movement",
@@ -1502,6 +1655,8 @@ def build_parser() -> argparse.ArgumentParser:
     matrix.add_argument("--accept-test-fixture", action="store_true",
                         help="explicitly overwrite settings with historical test fixture")
     matrix.add_argument("--audit", required=True)
+    matrix.add_argument("--resume", action="store_true",
+                        help="continue a matching incomplete audit from its first non-PASS phase")
     matrix.add_argument("--non-interactive", action="store_true")
     matrix.add_argument("--commit", action="store_true")
     matrix.set_defaults(func=_cmd_probe_report03_matrix)

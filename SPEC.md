@@ -1,6 +1,6 @@
 # C658 / C652 調査仕様
 
-唯一の人間向け仕様正本。`CONFIRMED` は静的解析で到達経路・値を確認、または制御した反復実験で確認。`OBSERVED` は条件付き観測、`HYPOTHESIS` は説明仮説、`UNKNOWN` は根拠不足。今回raw監査JSONは同梱されていないため、過去の実機観測は再現可能な確認済み証拠ではない。[静的解析原報告](docs/STATIC_ANALYSIS_REPORT.md)はsource artifactで、仕様正本ではない。
+唯一の人間向け仕様正本。`CONFIRMED` は静的解析で到達経路・値を確認、または制御した反復実験で確認。`OBSERVED` は条件付き観測、`HYPOTHESIS` は説明仮説、`UNKNOWN` は根拠不足。実機監査のraw JSONは現在の公開対象に同梱されていないため、以下の実機観測を公開再現証拠と同一視しない。[静的解析原報告](docs/STATIC_ANALYSIS_REPORT.md)はsource artifactで、仕様正本ではない。
 
 ## Report 0x10
 
@@ -21,8 +21,9 @@
 ## Input Report 0x03
 
 - [CONFIRMED] 静的descriptorはmask `0001 0002 0004 0008 0010 0020 0040` を定義し、parserはReport ID `03` のpayloadをlittle endian bitmapとしてtransitionを処理する。(source: docs/STATIC_ANALYSIS_REPORT.md)
-- [HYPOTHESIS] host index 1..7が順に `03 01`、`03 02`、`03 04`、`03 08`、`03 10`、`03 20`、`03 40` を生じ、releaseが `03 00` となる。未完了の実機matrix試験で検証する。
-- [OBSERVED] 過去の記録には一部indexの対応が現れたが、有線left phase欠落、10回未達、Receiverの別bitmap混入と旧mapping残留がある。index 3..6は実機未検証。matrix完了を宣言しない。
+- [OBSERVED] 試験した有線経路とReceiver経路では、radialにhost index 1..7を順に設定でき、対応するpress bitmap `03 01`、`03 02`、`03 04`、`03 08`、`03 10`、`03 20`、`03 40` とrelease `03 00` を各条件10回以上観測した。factorized coreの全17 phaseは両経路でPASSした。これは試験した個体・経路・条件での結果であり、全firmwareや全物理ボタン×全indexの保証ではない。
+- [OBSERVED] Receiverの別のradial/index 7書き込み試行後、収集区間に `03 20` が1回観測され、期待する `03 40` はその区間に現れなかった。その後の試行ではindex 7で `03 40` が反復して得られた。`03 20` の観測自体は残すが、index 7の固定出力として扱わない。
+- [UNKNOWN] 上記index 7試行時の `03 20` の原因。転送遅延、以前のindex 6 mappingの残留、その他の一過性要因を区別できていない。
 - [HYPOTHESIS] Receiverは書き込み後のactivity opportunityまで新mappingを反映しない場合がある。motion-bearing Report `1b` は機会の指標であり、適用完了の証明ではない。
 
 ## Report 0x17
@@ -46,7 +47,8 @@
 
 ## 未完了の検証
 
-- wiredとReceiverの双方でphysical left/right/middle/wheel/back/forward/radial × host index 1..7、前後positive control、negative controlを各10 press/release以上で再試験する。
+- wiredとReceiver双方のfactorized core（radial × host index 1..7、host index 1 × 全物理ボタン、index 0/215の前後positive control付きnegative control）はローカル監査で完了した。公開前に匿名化済み監査を検証・添付する。全組合せのexhaustive profileは任意の追加試験とする。
+- Receiverのindex 6→7切り替え時に観測された `03 20` の原因は未検証。異なる直前mappingからindex 7へ切り替え、収集窓全体の時系列で再評価する。
 - code 6書き込み後のraw HIDとevdevを採り、旧mapping残留を排除して効果を特定する。
 - Report `0x17`を異なるbattery levelで観測し、byte 1の変化を検査する。
 - pairing/unpairing成功時の自己完結監査JSONを取得する。

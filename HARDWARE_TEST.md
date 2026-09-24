@@ -8,19 +8,21 @@ Linux、Python 3.10以上、対象C658/C652、操作できる物理マウスを�
 
 ## Report 0x03 matrix
 
-有線とReceiverで個別に実行する。下記のtargetとinput nodeはscan結果から選ぶ。各phaseで表示された物理ボタンを10回以上press/releaseする。操作完了にEnterは使わない。書き込み後はマウスを動かし、motion-bearing Report `1b` の検出を待つ。全試験はhost index 1..7 × physical left/right/middle/wheel/forward/back/radial、前後のdirect positive control、host index 0 negative controlを含む。
+有線とReceiverで個別に実行する。下記のtargetとinput nodeはscan結果から選ぶ。必須の `core` は17 phase/transport。radialでhost index 1..7、host index 1で全物理ボタン、index 0/215のnegative controlを前後positive controlで挟む。重複するradial/index 1を再利用する。`smoke` は最初の5 phaseだけ、`exhaustive` は全49組合せを含む53 phaseで、明示的に指定した場合だけ実行する。
+
+各phaseで表示された物理ボタンを10回以上press/releaseする。操作完了にEnterは使わない。書き込み後はマウスを動かし、motion-bearing Report `1b` の検出を待つ。開始前に残りphase数、必要操作数、設定された最長所要時間を表示する。既定ではpositive・negativeとも`--phase-seconds`の全時間を記録し、最初に別bitmapが出ても収集を続ける。復元後の動作確認も全時間記録する。時間短縮が必要な場合だけ`--early-exit`を明示する（positive phaseは必要回数達成または想定外入力で早期終了し、転送遅延の切り分けには使用しない）。
 
 ```bash
 sudo python3 /tmp/c658-report10ctl.pyz probe-report03-matrix \
   --device /dev/hidrawTARGET --input-hidraw /dev/hidrawINPUT \
-  --event /dev/input/eventN --stages 3,4 --presses 10 \
+  --event /dev/input/eventN --profile core --presses 10 \
   --phase-seconds 30 --motion-timeout 30 --baseline-report10-hex '10 ...' \
   --audit /tmp/report03-wired.json --commit
 ```
 
-Receiver経路では `--device`、`--input-hidraw`、`--event` をReceiver側で選び、監査名を `/tmp/report03-receiver.json` とする。入力が足りない場合は `--phase-seconds` を増やす。`--slot` はstage 3で使う対象物理ボタンを指定する内部optionで、既定はradial。表示と記録は物理ボタン名を使う。
+Receiver経路では `--device`、`--input-hidraw`、`--event` をReceiver側で選び、監査名を `/tmp/report03-receiver.json` とする。監査JSONはphase前後に永続保存される。中断後は同じdevice・入力node・baseline・時間設定で`--resume`を追加する。条件が一致しない場合は再開しない。未PASS phaseから再実行し、旧試行は `previous_attempts` に残す。以前の早期終了auditも、同じ時間設定なら全時間収集で再開できる。入力が足りない場合は新しい監査ファイルを指定して `--phase-seconds` を増やす。表示と記録は物理ボタン名を使う。
 
-positive phaseのPASSはtransfer待ち、指定回数のpressとrelease、unexpected Report `03` bitmapなし、旧mapping由来入力なし、capture完了をすべて要する。negative PASSはactivity、前後positive PASS、規定時間中の対象Report `03`なしを要する。異なるbitmapはFAIL、timeoutやtransfer未確認はINCONCLUSIVE。overall successには必須phaseすべてPASS、baseline送信、transfer待ち、復元後の10回の物理入力確認が必要。
+positive phaseのPASSはtransfer待ち、指定回数のpressとrelease、unexpected Report `03` bitmapなし、旧mapping由来入力なし、capture完了をすべて要する。negative PASSはactivity、前後positive PASS、規定時間中の対象Report `03`なしを要する。異なるbitmapは全時間記録後もFAILのままだが、raw frameの時系列から初期の旧bitmapと後半の期待bitmapを区別できる。timeoutやtransfer未確認はINCONCLUSIVE。overall successには必須phaseすべてPASS、baseline送信、transfer待ち、復元後の10回の物理入力確認が必要。
 
 ## Direct code 6
 

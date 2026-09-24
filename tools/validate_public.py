@@ -28,14 +28,19 @@ def validate_matrix(document: dict) -> list[str]:
     if document.get("transport") not in (None, "wired", "receiver"):
         errors.append("invalid transport")
     phases = document.get("phases", [])
-    if "stages" in document and "selected_slot" in document:
-        planned = _matrix_phases(tuple(document["stages"]), document["selected_slot"])
+    profile = document.get("profile")
+    if profile in ("smoke", "core", "exhaustive"):
+        planned = _matrix_phases(profile)
         if [item.get("name") for item in phases] != [item["name"] for item in planned]:
             errors.append("required phase sequence missing or changed")
+        if document.get("planned_phase_names") != [item["name"] for item in planned]:
+            errors.append("planned phase names contradict profile")
+    else:
+        errors.append("missing or invalid matrix profile")
     if len(phases) != document.get("required_phase_count") or not phases:
         errors.append("required phases missing")
     requested = document.get("requested_presses_per_phase", 0)
-    for phase in phases:
+    for index, phase in enumerate(phases):
         name = phase.get("name", "unnamed")
         for field in ("physical_button", "report10_hex", "required_presses",
                       "raw_reports", "key_events", "phase_result"):
@@ -52,6 +57,13 @@ def validate_matrix(document: dict) -> list[str]:
         if phase.get("unexpected_input"):
             errors.append(f"{name}: unexpected bitmap/input")
         if phase.get("negative_control"):
+            adjacent_pass = bool(index > 0 and index + 1 < len(phases)
+                and phases[index - 1].get("phase_result") == "PASS"
+                and phases[index + 1].get("phase_result") == "PASS"
+                and phases[index - 1].get("mapping_wire_value") == "0x29"
+                and phases[index + 1].get("mapping_wire_value") == "0x29")
+            if phase.get("positive_controls_passed") != adjacent_pass:
+                errors.append(f"{name}: positive-control flag contradicts adjacent phases")
             if not phase.get("positive_controls_passed") or not phase.get("activity_confirmed") or not phase.get("observation_window_complete"):
                 errors.append(f"{name}: negative control incomplete")
         elif phase.get("required", True):
@@ -98,7 +110,9 @@ def validate_repository(root: Path = ROOT) -> list[str]:
     errors = []
     for path in root.rglob("*"):
         relative = path.relative_to(root)
-        if ".git" in relative.parts or relative.parts[0] == "release" or not path.is_file():
+        if (".git" in relative.parts or relative.parts[0] == "release"
+                or relative.parts[:2] == ("evidence", "source-private-not-in-repository")
+                or not path.is_file()):
             continue
         if path.suffix.lower() in VENDOR_BINARIES:
             errors.append(f"vendor binary present: {relative}")
@@ -117,7 +131,7 @@ def validate_repository(root: Path = ROOT) -> list[str]:
         except json.JSONDecodeError as exc:
             errors.append(f"invalid JSON {relative}: {exc}")
             continue
-        if document.get("schema") == "c658-report03-matrix/v2":
+        if document.get("schema") == "c658-report03-matrix/v3":
             errors.extend(f"{relative}: {item}" for item in validate_matrix(document))
         for ref in document.get("evidence_files", []):
             candidate = (root / ref).resolve()
@@ -140,7 +154,7 @@ def validate_audit(path: Path) -> list[str]:
         return [f"{path}: unreadable JSON: {exc}"]
     if PRIVATE.search(content):
         errors.append(f"{path}: private path or ID present")
-    if document.get("schema") == "c658-report03-matrix/v2":
+    if document.get("schema") == "c658-report03-matrix/v3":
         errors.extend(f"{path}: {item}" for item in validate_matrix(document))
     if document.get("schema", "").startswith("c652-experimental-"):
         for field in ("tool_git_commit", "transport", "vid", "pid", "hidraw",

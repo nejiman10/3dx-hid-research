@@ -6,11 +6,23 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(ROOT / "tools"))
-from validate_public import validate_audit, validate_claims, validate_matrix
+from validate_public import validate_audit, validate_claims, validate_matrix, validate_repository
 from threedx_report10.matrix_probe import evaluate_phase
 
 
 class ValidatorTests(unittest.TestCase):
+    def test_private_source_audits_are_not_public_repository_inputs(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / "SPEC.md").write_text("- [UNKNOWN] undecided.\n")
+            private = root / "evidence/source-private-not-in-repository"
+            private.mkdir(parents=True)
+            audit = private / "incomplete.json"
+            audit.write_text(json.dumps({"schema": "c658-report03-matrix/v3",
+                                         "success": False, "phases": []}))
+            self.assertEqual(validate_repository(root), [])
+            self.assertTrue(validate_audit(audit))
+
     def test_rejects_missing_referenced_evidence(self):
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / "audit.json"
@@ -23,7 +35,7 @@ class ValidatorTests(unittest.TestCase):
         self.assertFalse(validate_claims("- [UNKNOWN] undecided.", ROOT))
 
     def test_rejects_missing_phase_and_false_success(self):
-        audit = dict(schema="c658-report03-matrix/v2", phases=[],
+        audit = dict(schema="c658-report03-matrix/v3", profile="core", phases=[],
                      required_phase_count=1, requested_presses_per_phase=10,
                      baseline_restored=False, success=True)
         errors = validate_matrix(audit)
@@ -46,6 +58,19 @@ class ValidatorTests(unittest.TestCase):
         errors = validate_matrix(audit)
         self.assertTrue(any("contradicts raw capture" in item for item in errors))
         self.assertTrue(any("count unmet" in item for item in errors))
+
+    def test_negative_needs_actual_adjacent_positive_passes(self):
+        negative = dict(name="radial-host-index-0", negative_control=True,
+                        positive_controls_passed=True, activity_confirmed=True,
+                        observation_window_complete=True, transfer_wait_completed=True,
+                        raw_reports=[], key_events=[], required_presses=10,
+                        phase_result="PASS", unexpected_input=[])
+        negative.update(evaluate_phase(negative))
+        audit = dict(phases=[{"name": "before", "phase_result": "FAIL"}, negative,
+                             {"name": "after", "phase_result": "PASS"}],
+                     required_phase_count=3, requested_presses_per_phase=10)
+        self.assertTrue(any("positive-control flag contradicts" in error
+                            for error in validate_matrix(audit)))
 
 
 if __name__ == "__main__":
