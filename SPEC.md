@@ -44,12 +44,3 @@
 
 - [OBSERVED] `latest_software_baseline_hex` と呼ばれた31-byte値は過去の試験用完全snapshotであり、factory defaultではない。ユーザー設定を上書きし得る。SDKの `latest_software_baseline()` は復元fixtureで、通常アプリの既定値として使わない。
 - [UNKNOWN] 未添付の過去raw JSONの実行条件。存在しないファイルを確認済み根拠にしない。
-
-## 未完了の検証
-
-- wiredとReceiver双方のfactorized core（radial × host index 1..7、host index 1 × 全物理ボタン、index 0/215の前後positive control付きnegative control）はローカル監査で完了した。公開前に匿名化済み監査を検証・添付する。全組合せのexhaustive profileは任意の追加試験とする。
-- Receiverのindex 6→7切り替え時に観測された `03 20` の原因は未検証。異なる直前mappingからindex 7へ切り替え、収集窓全体の時系列で再評価する。
-- code 6書き込み後のraw HIDとevdevを採り、旧mapping残留を排除して効果を特定する。
-- Report `0x17`を異なるbattery levelで観測し、byte 1の変化を検査する。
-- pairing/unpairing成功時の自己完結監査JSONを取得する。
-- Report `0x10` readbackの経路別失敗を再記録し、hold-open flagの必要条件を分離して試す。
