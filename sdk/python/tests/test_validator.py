@@ -100,6 +100,22 @@ class ValidatorTests(unittest.TestCase):
         self.assertTrue(any("positive-control flag contradicts" in error
                             for error in validate_matrix(audit)))
 
+    def test_transition_requires_ordered_timing_and_matching_early_summary(self):
+        phase = {"name": "radial-host-index-7-repeat-1", "mapping_wire_value": "0x2f",
+                 "capture_interrupted": False,
+                 "set_feature_started_monotonic": 4.0,
+                 "set_feature_finished_monotonic": 3.0,
+                 "before_requested_motion_started_monotonic": 5.0,
+                 "before_requested_motion_finished_monotonic": 6.0,
+                 "motion_requested_monotonic": 7.0,
+                 "post_motion_input_requested_monotonic": 8.0,
+                 "before_requested_motion_raw_reports": [{"report_id": "0x03", "raw_hex": "03 20"}],
+                 "before_requested_motion_key_events": [],
+                 "before_requested_motion_summary": {"report03_bitmaps": []}}
+        errors = validate_matrix({"profile": "transition", "phases": [phase]})
+        self.assertTrue(any("early summary contradicts" in error for error in errors))
+        self.assertTrue(any("timestamps are missing or out of order" in error for error in errors))
+
 
 if __name__ == "__main__":
     unittest.main()

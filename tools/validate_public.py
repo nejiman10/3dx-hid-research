@@ -11,7 +11,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "sdk/python/src"))
-from threedx_report10.matrix_probe import evaluate_phase, matrix_success
+from threedx_report10.matrix_probe import evaluate_phase, matrix_success, summarize_capture
 from threedx_report10.cli import _matrix_phases
 PRIVATE = re.compile("/" + "home/|/" + "Users/|/" + "workspace/|(?:08|4[3-7]) 59(?: [0-9a-fA-F]{2}){6}")
 VENDOR_BINARIES = {".msi", ".dll", ".exe", ".sys", ".cab"}
@@ -30,7 +30,7 @@ def validate_matrix(document: dict) -> list[str]:
     phases = document.get("phases", [])
     profile = document.get("profile")
     success = document.get("success") is True
-    if profile in ("handle", "smoke", "core", "exhaustive"):
+    if profile in ("handle", "transition", "smoke", "core", "exhaustive"):
         planned = _matrix_phases(profile)
         expected_names = [item["name"] for item in planned]
         recorded_names = [item.get("name") for item in phases]
@@ -46,6 +46,29 @@ def validate_matrix(document: dict) -> list[str]:
         errors.append("missing or invalid matrix profile")
     if not phases:
         errors.append("no phase records")
+    if profile == "transition":
+        for phase in phases:
+            if phase.get("mapping_wire_value") != "0x2f" or phase.get("capture_interrupted"):
+                continue
+            for field in ("set_feature_started_monotonic", "set_feature_finished_monotonic",
+                          "before_requested_motion_started_monotonic",
+                          "before_requested_motion_finished_monotonic",
+                          "before_requested_motion_raw_reports",
+                          "before_requested_motion_key_events", "motion_requested_monotonic",
+                          "post_motion_input_requested_monotonic"):
+                if field not in phase:
+                    errors.append(f"{phase.get('name')}: missing transition timing/capture {field}")
+            raw = phase.get("before_requested_motion_raw_reports")
+            if isinstance(raw, list):
+                if phase.get("before_requested_motion_summary") != summarize_capture(raw, 0x40):
+                    errors.append(f"{phase.get('name')}: early summary contradicts raw capture")
+            stamps = [phase.get(key) for key in (
+                "set_feature_started_monotonic", "set_feature_finished_monotonic",
+                "before_requested_motion_started_monotonic",
+                "before_requested_motion_finished_monotonic", "motion_requested_monotonic",
+                "post_motion_input_requested_monotonic")]
+            if not all(isinstance(value, (int, float)) for value in stamps) or stamps != sorted(stamps):
+                errors.append(f"{phase.get('name')}: transition timestamps are missing or out of order")
     if not success and not document.get("failure"):
         errors.append("unsuccessful audit lacks failure reason")
     requested = document.get("requested_presses_per_phase", 0)

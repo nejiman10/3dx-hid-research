@@ -13,6 +13,7 @@ from threedx_report10.cli import (
     _cmd_pair,
     _cmd_unpair,
     _matrix_phases,
+    _cmd_probe_report03_matrix,
     _probe_baseline,
     _resume_matrix_audit,
     _capture_until_expected,
@@ -128,11 +129,14 @@ class CliTests(unittest.TestCase):
 
     def test_profiles_keep_factorized_core_and_explicit_exhaustive(self):
         handle = _matrix_phases("handle")
+        transition = _matrix_phases("transition")
         smoke = _matrix_phases("smoke")
         core = _matrix_phases("core")
         exhaustive = _matrix_phases("exhaustive")
         self.assertEqual((len(smoke), len(core), len(exhaustive)), (5, 17, 53))
         self.assertEqual([(p["slot"], p["mapping"].wire_value) for p in handle], [(7, 0x29)])
+        self.assertEqual([(p["slot"], p["mapping"].wire_value) for p in transition],
+                         [(7, 0x2e), (7, 0x2f)] * 2)
         self.assertEqual([p["name"] for p in core[:5]], [p["name"] for p in smoke])
         trials = [p for p in exhaustive if not p["negative_control"]]
         self.assertEqual({(p["slot"], p["mapping"].wire_value) for p in trials},
@@ -211,6 +215,93 @@ class CliTests(unittest.TestCase):
             args.baseline_report10_hex = baseline.hex(" ")
             with self.assertRaises(RuntimeError):
                 _probe_baseline(args)
+
+    def test_transition_keeps_both_repeats_and_restores_after_old_bitmap(self):
+        with tempfile.TemporaryDirectory() as directory:
+            node = Path(directory) / "hidraw-test"
+            node.write_bytes(b"")
+            baseline_file = Path(directory) / "baseline.hex"
+            baseline_file.write_text(Report10Config.latest_software_baseline().to_wire_report().hex(" "))
+            audit_file = Path(directory) / "transition.json"
+            args = build_parser().parse_args([
+                "probe-report03-matrix", "--device", str(node),
+                "--input-hidraw", str(node), "--event", str(node),
+                "--profile", "transition", "--baseline-report10-file", str(baseline_file),
+                "--audit", str(audit_file), "--phase-seconds", "1",
+                "--motion-timeout", "1", "--settle-seconds", "0",
+                "--pre-motion-seconds", "8", "--commit",
+            ])
+
+            class FakeDevice:
+                sent = []
+
+                def __init__(self, _path):
+                    pass
+
+                def __enter__(self):
+                    return self
+
+                def __exit__(self, *_args):
+                    pass
+
+                def set_feature(self, report):
+                    self.sent.append(report)
+                    return 32
+
+            class FakeCapture:
+                def __init__(self, *_args):
+                    pass
+
+                def __enter__(self):
+                    return self
+
+                def __exit__(self, *_args):
+                    pass
+
+                def drain(self):
+                    pass
+
+                def capture(self, seconds):
+                    raw = tuple({"time": 1.0, "path": str(node), "report_id": "0x03",
+                                 "raw_hex": value} for value in ("03 20", "03 00") * 2)
+                    return CaptureResult(raw if seconds == 8 else (), ())
+
+                def wait_for_mouse_motion(self, _seconds):
+                    return CaptureResult(({"time": 2.0, "path": str(node),
+                                           "report_id": "0x1b", "raw_hex": "1b 00 01 00 00 00"},), ())
+
+            calls = [0]
+
+            def fake_inputs(_capture, mapping, presses, _seconds, *_args, **_kwargs):
+                if mapping.wire_value < 0x28:
+                    return [], [{"path": str(node), "code": 274, "value": value}
+                                for _ in range(presses) for value in (1, 0)], presses, True
+                calls[0] += 1
+                mask = 1 << (mapping.wire_value - 0x29)
+                raw = [{"path": str(node), "report_id": "0x03", "raw_hex": value}
+                       for _ in range(presses)
+                       for value in (f"03 {mask:02x}", "03 00")]
+                if calls[0] == 2:
+                    raw[:0] = [{"path": str(node), "report_id": "0x03", "raw_hex": "03 20"},
+                               {"path": str(node), "report_id": "0x03", "raw_hex": "03 00"}]
+                return raw, [], presses, True
+
+            with (patch("threedx_report10.cli.validate_report10_target",
+                        return_value=SimpleNamespace(product_id=0xC652, vendor_id=0x256F)),
+                  patch("threedx_report10.cli._read_descriptor", return_value=b"descriptor"),
+                  patch("threedx_report10.cli.HidrawDevice", FakeDevice),
+                  patch("threedx_report10.cli.MultiInputCapture", FakeCapture),
+                  patch("threedx_report10.cli._capture_until_expected", side_effect=fake_inputs)):
+                self.assertEqual(_cmd_probe_report03_matrix(args), 1)
+            audit = json.loads(audit_file.read_text())
+            self.assertEqual(len(audit["phases"]), 4)
+            self.assertEqual([p["phase_result"] for p in audit["phases"]],
+                             ["PASS", "FAIL", "PASS", "PASS"])
+            self.assertEqual(audit["phases"][1]["before_requested_motion_summary"]["report03_bitmaps"],
+                             ["0x00", "0x20"])
+            self.assertEqual(len(FakeDevice.sent), 5)
+            self.assertEqual(FakeDevice.sent[-1], bytes.fromhex(baseline_file.read_text()))
+            self.assertTrue(audit["baseline_operation_confirmed"])
 
     def test_restore_accepts_only_complete_saved_report(self):
         args = build_parser().parse_args(["restore-report10", "--device", "/dev/hidraw1",

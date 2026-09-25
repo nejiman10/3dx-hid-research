@@ -469,8 +469,8 @@ def _baseline_expected_code(baseline: bytes, slot: int) -> int:
 
 def _matrix_phases(profile: str) -> list[dict[str, object]]:
     """Factorized mandatory trials; exhaustive adds the remaining Cartesian pairs."""
-    if profile not in ("handle", "smoke", "core", "exhaustive"):
-        raise ValueError("profile must be handle, smoke, core or exhaustive")
+    if profile not in ("handle", "transition", "smoke", "core", "exhaustive"):
+        raise ValueError("profile must be handle, transition, smoke, core or exhaustive")
     phases: list[dict[str, object]] = []
 
     def add(name: str, slot: int, index: int, group: str) -> None:
@@ -479,6 +479,12 @@ def _matrix_phases(profile: str) -> list[dict[str, object]]:
 
     if profile == "handle":
         add("handle-radial-host-index-1", 7, 1, "handle")
+        return phases
+
+    if profile == "transition":
+        for repeat in (1, 2):
+            add(f"radial-host-index-6-repeat-{repeat}", 7, 6, "transition")
+            add(f"radial-host-index-7-repeat-{repeat}", 7, 7, "transition")
         return phases
 
     add("radial-host-index-1-before-index-0", 7, 1, "controls")
@@ -512,7 +518,7 @@ MATRIX_CONTEXT_KEYS = (
     "profile", "transport", "vid", "pid", "device", "input_hidraw", "event",
     "hid_descriptor_sha256", "tool_git_commit", "requested_presses_per_phase",
     "capture_seconds_per_phase", "settle_seconds_after_write",
-    "post_write_motion_timeout", "baseline_report10_hex", "required_phase_count",
+    "post_write_motion_timeout", "pre_motion_seconds", "baseline_report10_hex", "required_phase_count",
     "planned_phase_names", "baseline_expected_evdev_code", "baseline_check_physical_button",
 )
 
@@ -566,7 +572,10 @@ def _resume_matrix_audit(existing: dict[str, object], expected: dict[str, object
 
 def _matrix_time_ceiling(remaining: list[dict[str, object]], args: argparse.Namespace) -> int:
     return math.ceil((len(remaining) * (args.motion_timeout + args.settle_seconds + args.phase_seconds)
-                      + args.motion_timeout + args.phase_seconds) / 60)
+                      + args.motion_timeout + args.phase_seconds
+                      + sum(getattr(args, "pre_motion_seconds", 0) for item in remaining
+                            if getattr(args, "profile", None) == "transition"
+                            and item["mapping"].wire_value == 0x2f)) / 60)
 
 
 def _expected_report03_mask(mapping: ButtonMapping) -> int | None:
@@ -634,15 +643,20 @@ def _cmd_probe_report03_matrix(args: argparse.Namespace) -> int:
     if not args.commit:
         print("probe-report03-matrix requires --commit because it writes Report 0x10", file=sys.stderr)
         return 2
-    if args.phase_seconds <= 0 or args.motion_timeout <= 0 or args.settle_seconds < 0:
+    if (args.phase_seconds <= 0 or args.motion_timeout <= 0 or args.settle_seconds < 0
+            or args.pre_motion_seconds <= 0):
         raise RuntimeError("phase and motion timeouts must be positive; settle time cannot be negative")
     target = validate_report10_target(args.device)
     phases = _matrix_phases(args.profile)
-    if args.profile == "handle" and args.accept_test_fixture:
-        raise RuntimeError("handle profile requires a user-supplied baseline Report 0x10")
+    if args.profile in ("handle", "transition") and args.accept_test_fixture:
+        raise RuntimeError("this profile requires a user-supplied baseline Report 0x10")
+    if args.profile == "transition" and target.product_id != 0xC652:
+        raise RuntimeError("transition profile requires a Receiver target")
+    if args.profile == "transition" and (args.early_exit or args.resume):
+        raise RuntimeError("transition profile requires full-window capture and a new audit")
     baseline = _probe_baseline(args)
-    if args.profile == "handle":
-        if baseline[25] == ButtonMapping.host_routed(1).wire_value:
+    if args.profile in ("handle", "transition"):
+        if args.profile == "handle" and baseline[25] == ButtonMapping.host_routed(1).wire_value:
             raise RuntimeError("handle profile would not change the selected button mapping")
         baseline_slot = 7
         baseline_code = _baseline_expected_code(baseline, baseline_slot)
@@ -679,6 +693,7 @@ def _cmd_probe_report03_matrix(args: argparse.Namespace) -> int:
         "capture_policy_for_new_phases": "early-exit" if args.early_exit else "full-window",
         "settle_seconds_after_write": args.settle_seconds,
         "post_write_motion_timeout": args.motion_timeout,
+        "pre_motion_seconds": args.pre_motion_seconds if args.profile == "transition" else None,
         "evidence_note": "Report 0x17 byte2 remains UNKNOWN_CHARGING_STATE_CANDIDATE",
         "phases": [],
         "baseline_restored": False,
@@ -694,6 +709,7 @@ def _cmd_probe_report03_matrix(args: argparse.Namespace) -> int:
         "failure": None,
         "success": False,
         "active_phase": None,
+        "active_phase_observation": None,
         "resume_count": 0,
         "previous_attempts": [],
     }
@@ -717,7 +733,9 @@ def _cmd_probe_report03_matrix(args: argparse.Namespace) -> int:
     negative = len(remaining) - positive
     print(f"[plan] {args.profile}: {len(remaining)} remaining phases "
           f"({positive} positive, {negative} negative); at least "
-          f"{(positive + 1) * args.presses} press/release cycles including restoration; "
+          f"{(positive + 1) * args.presses} press/release cycles including restoration"
+          + (" plus 2 immediate cycles for each index 7 phase;"
+             if args.profile == "transition" else ";") + " "
           f"configured upper bound about {_matrix_time_ceiling(remaining, args)} minutes. "
           + ("Positive phases may end early when complete or unexpected input is captured."
              if args.early_exit else "Every phase uses its full capture window."))
@@ -735,15 +753,47 @@ def _cmd_probe_report03_matrix(args: argparse.Namespace) -> int:
                     _write_audit(args.audit, audit, quiet=True)
                     print(
                         f"[matrix {number}/{len(phases)} {specification['group']}] "
-                        f"applying {specification['name']} for {button_name}"
+                        f"applying {specification['name']} for {button_name}", flush=True
                     )
-                    send_started_at = _utc_now()
-                    ioctl_result = device.set_feature(config)
-                    send_finished_at = _utc_now()
                     capture.drain()
+                    send_started_at = _utc_now()
+                    send_started_monotonic = time.monotonic()
+                    ioctl_result = device.set_feature(config)
+                    send_finished_monotonic = time.monotonic()
+                    send_finished_at = _utc_now()
+                    early_result = None
+                    early_started_at = None
+                    early_started_monotonic = None
+                    early_finished_at = None
+                    early_finished_monotonic = None
+                    if args.profile == "transition" and mapping.wire_value == 0x2f:
+                        print(
+                            f"[before requested motion] keep the mouse still; immediately press/release "
+                            f"{button_name} twice within {args.pre_motion_seconds:g} seconds",
+                            flush=True,
+                        )
+                        early_started_at = _utc_now()
+                        early_started_monotonic = time.monotonic()
+                        early_result = capture.capture(args.pre_motion_seconds)
+                        early_finished_monotonic = time.monotonic()
+                        early_finished_at = _utc_now()
+                    else:
+                        capture.drain()
+                    if early_result is not None:
+                        audit["active_phase_observation"] = {
+                            "before_requested_motion_started_at": early_started_at,
+                            "before_requested_motion_started_monotonic": early_started_monotonic,
+                            "before_requested_motion_finished_at": early_finished_at,
+                            "before_requested_motion_finished_monotonic": early_finished_monotonic,
+                            "before_requested_motion_raw_reports": list(early_result.raw_reports),
+                            "before_requested_motion_key_events": list(early_result.key_events),
+                        }
+                        _write_audit(args.audit, audit, quiet=True)
+                    motion_requested_at = _utc_now()
+                    motion_requested_monotonic = time.monotonic()
                     print(
                         "[transfer-wait] move the mouse now without pressing any button; "
-                        "completion is automatic"
+                        "completion is automatic", flush=True
                     )
                     try:
                         motion_result = capture.wait_for_mouse_motion(args.motion_timeout)
@@ -759,6 +809,8 @@ def _cmd_probe_report03_matrix(args: argparse.Namespace) -> int:
                         )
                         settle_result = capture.capture(args.settle_seconds)
                         capture.drain()
+                    input_requested_at = _utc_now()
+                    input_requested_monotonic = time.monotonic()
                     print(f"[capture] NOW press/release {button_name} at least {args.presses} times "
                           f"within {args.phase_seconds:g} seconds")
                     started = _utc_now()
@@ -786,7 +838,27 @@ def _cmd_probe_report03_matrix(args: argparse.Namespace) -> int:
                         "report10_hex": config.hex(" "),
                         "set_feature_started_at": send_started_at,
                         "set_feature_finished_at": send_finished_at,
+                        "set_feature_started_monotonic": send_started_monotonic,
+                        "set_feature_finished_monotonic": send_finished_monotonic,
                         "ioctl_result": ioctl_result,
+                        "motion_requested_at": motion_requested_at,
+                        "motion_requested_monotonic": motion_requested_monotonic,
+                        "post_motion_input_requested_at": input_requested_at,
+                        "post_motion_input_requested_monotonic": input_requested_monotonic,
+                        "before_requested_motion_started_at": early_started_at,
+                        "before_requested_motion_started_monotonic": early_started_monotonic,
+                        "before_requested_motion_finished_at": early_finished_at,
+                        "before_requested_motion_finished_monotonic": early_finished_monotonic,
+                        "before_requested_motion_raw_reports": (
+                            [] if early_result is None else list(early_result.raw_reports)
+                        ),
+                        "before_requested_motion_key_events": (
+                            [] if early_result is None else list(early_result.key_events)
+                        ),
+                        "before_requested_motion_summary": (
+                            None if early_result is None else summarize_capture(
+                                list(early_result.raw_reports), _expected_report03_mask(mapping))
+                        ),
                         "capture_started_at": started,
                         "capture_finished_at": _utc_now(),
                         "capture_duration_seconds": round(time.monotonic() - capture_start, 3),
@@ -812,6 +884,7 @@ def _cmd_probe_report03_matrix(args: argparse.Namespace) -> int:
                     phase_record.update(evaluate_phase(phase_record))
                     audit["phases"].append(phase_record)
                     audit["active_phase"] = None
+                    audit["active_phase_observation"] = None
                     if len(audit["phases"]) >= 3:
                         prior = audit["phases"][-2]
                         if prior["negative_control"]:
@@ -820,13 +893,18 @@ def _cmd_probe_report03_matrix(args: argparse.Namespace) -> int:
                                 and phase_record["phase_result"] == "PASS")
                             prior.update(evaluate_phase(prior))
                     _write_audit(args.audit, audit, quiet=True)
-                    if phase_record["phase_result"] != "PASS" and not negative:
+                    if (phase_record["phase_result"] != "PASS" and not negative
+                            and args.profile != "transition"):
                         raise RuntimeError(f"phase {specification['name']} was {phase_record['phase_result']}")
                     if len(audit["phases"]) >= 2:
                         prior = audit["phases"][-2]
                         if prior["negative_control"] and prior.get("positive_controls_passed") is not None:
                             if prior["phase_result"] != "PASS":
                                 raise RuntimeError(f"negative control {prior['name']} was {prior['phase_result']}")
+                if args.profile == "transition" and any(
+                    item["phase_result"] != "PASS" for item in audit["phases"]
+                ):
+                    audit["failure"] = "one or more transition phases did not PASS"
             finally:
                 audit["baseline_restore_set_feature_started_at"] = _utc_now()
                 _write_audit(args.audit, audit, quiet=True)
@@ -1684,11 +1762,13 @@ def build_parser() -> argparse.ArgumentParser:
                         help="raw input candidate; repeat for simultaneous capture")
     matrix.add_argument("--event", action="append", required=True,
                         help="evdev input node; repeat when needed")
-    matrix.add_argument("--profile", choices=("handle", "smoke", "core", "exhaustive"),
+    matrix.add_argument("--profile", choices=("handle", "transition", "smoke", "core", "exhaustive"),
                         default="core", help="test scope; core is the release prerequisite")
     matrix.add_argument("--presses", type=_parse_matrix_presses, default=10,
                         help="required press/release cycles for each positive phase (10..100)")
     matrix.add_argument("--phase-seconds", type=float, default=30.0)
+    matrix.add_argument("--pre-motion-seconds", type=float, default=8.0,
+                        help="transition profile: capture index 7 immediately before requested movement")
     matrix.add_argument("--early-exit", action="store_true",
                         help="opt in to shorter positive phases; full-window capture is the default")
     matrix.add_argument(

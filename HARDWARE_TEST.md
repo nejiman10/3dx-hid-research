@@ -2,7 +2,7 @@
 
 ## 前提
 
-Linux、Python 3.10以上、対象C658/C652、操作できる物理マウスを用意する。試験はユーザー設定を上書きする。現在設定のreadbackは期待せず、所有者が保存した完全Report `0x10` snapshotを先に別途保管する。SDK同梱の `latest_software_baseline()` は静的解析をもとに構築した実験用初期値であり、保存済み設定やfactory defaultではない。継続前に上書きと復元値を確認する。probeには保存値を `--baseline-report10-hex '10 ...'` で渡す。保存値がない場合だけ `--accept-test-fixture` を明示する。
+Linux、Python 3.10以上、対象C658/C652、操作できる物理マウスを用意する。試験はユーザー設定を上書きする。現在設定のreadbackは期待せず、所有者が指定した完全32-byte復元値を先に別途保管する。実機から得たsnapshotか、所有者が意図して指定した値かを区別して記録する。SDK同梱の `latest_software_baseline()` は静的解析をもとに構築した実験用初期値であり、保存済み設定やfactory defaultではない。継続前に上書きと復元値を確認する。probeには指定値を `--baseline-report10-hex '10 ...'` または非公開ファイルの `--baseline-report10-file` で渡す。保存値がない場合だけ `--accept-test-fixture` を明示する。
 
 `python3 tools/build_zipapp.py --source sdk/python/src --output /tmp/c658-report10ctl.pyz` でtoolを作る。`sudo python3 /tmp/c658-report10ctl.pyz scan --json` でReport `0x10` target、Report `0x03` input hidraw、input eventを特定する。`/dev/hidrawN` は実行ごとに読み替える。
 
@@ -25,6 +25,8 @@ Receiver経路では `--device`、`--input-hidraw`、`--event` をReceiver側で
 positive phaseのPASSはtransfer待ち、指定回数のpressとrelease、unexpected Report `03` bitmapなし、旧mapping由来入力なし、capture完了をすべて要する。negative PASSはactivity、前後positive PASS、規定時間中の対象Report `03`なしを要する。異なるbitmapは全時間記録後もFAILのままだが、raw frameの時系列から初期の旧bitmapと後半の期待bitmapを区別できる。timeoutやtransfer未確認はINCONCLUSIVE。overall successには必須phaseすべてPASS、baseline送信、transfer待ち、復元後の10回の物理入力確認が必要。
 
 Report `0x10` 対象handleだけを限定確認する場合は `--profile handle` を使う。所有者が復元先として指定した完全32-byte値を非公開のhexテキストファイルに保存し、`--baseline-report10-file` に渡す。このprofileはradialボタン（slot 7）だけをhost index 1へ変更する1 phaseで、復元時は同じボタンの元のdirect動作を確認する。事前に元mappingが既知のdirect動作で、変更後のwire値と異なることを検査する。送信・復元のioctl時刻と戻り値、転送機会、raw HID・evdev入力を監査する。設定書き込みと復元の実施指示を得てから `--commit` を使う。入力nodeと保存値は現時点で確認し、監査をGit除外の `evidence/source-private-not-in-repository/` 以下に保存する。
+
+Receiverのindex 6→7切り替えを調べる場合は `--profile transition` を使う。radialボタンだけをindex 6、7、6、7と変更する2反復・4 phaseで、各phaseは移動による転送機会の後に10回押下・解放する。各index 7送信直後は意図的にマウスを動かさず、既定8秒間に同ボタンを2回押下・解放する。この区間のraw HID・evdev、送信・操作指示のUTC時刻とmonotonic時刻、次の移動と入力を同一監査に残す。ボタン操作自体も転送機会になり得るため、移動前区間を「転送前」と解釈しない。入力評価がFAILでも4 phaseを記録してから指定値を再送し、復元後の物理入力を確認する。全時間収集を必須とし、`--resume`と`--early-exit`は使えない。既定時間の上限目安は約6分、必要操作は復元分を含めて少なくとも54回。新しい監査ファイルをGit除外の `evidence/source-private-not-in-repository/` に指定する。実施前にReceiver接続、現時点のnode、所有者が指定する復元先を確認し、設定書き込みと復元の実施指示を得る。
 
 ## Direct code 6
 
