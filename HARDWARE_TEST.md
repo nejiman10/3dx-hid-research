@@ -24,6 +24,8 @@ Receiver経路では `--device`、`--input-hidraw`、`--event` をReceiver側で
 
 positive phaseのPASSはtransfer待ち、指定回数のpressとrelease、unexpected Report `03` bitmapなし、旧mapping由来入力なし、capture完了をすべて要する。negative PASSはactivity、前後positive PASS、規定時間中の対象Report `03`なしを要する。異なるbitmapは全時間記録後もFAILのままだが、raw frameの時系列から初期の旧bitmapと後半の期待bitmapを区別できる。timeoutやtransfer未確認はINCONCLUSIVE。overall successには必須phaseすべてPASS、baseline送信、transfer待ち、復元後の10回の物理入力確認が必要。
 
+Report `0x10` 対象handleだけを限定確認する場合は `--profile handle` を使う。所有者が復元先として指定した完全32-byte値を非公開のhexテキストファイルに保存し、`--baseline-report10-file` に渡す。このprofileはradialボタン（slot 7）だけをhost index 1へ変更する1 phaseで、復元時は同じボタンの元のdirect動作を確認する。事前に元mappingが既知のdirect動作で、変更後のwire値と異なることを検査する。送信・復元のioctl時刻と戻り値、転送機会、raw HID・evdev入力を監査する。設定書き込みと復元の実施指示を得てから `--commit` を使う。入力nodeと保存値は現時点で確認し、監査をGit除外の `evidence/source-private-not-in-repository/` 以下に保存する。
+
 ## Direct code 6
 
 raw HIDとevdevの両方を指定する。対象の物理ボタンを操作する。特定のLinux eventは期待しない。監査の `hardware_effect` はUNKNOWNのまま残す。

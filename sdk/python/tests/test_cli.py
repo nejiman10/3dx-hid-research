@@ -127,10 +127,12 @@ class CliTests(unittest.TestCase):
                              document["required_expect_raw"].split(" ", 2)[2])
 
     def test_profiles_keep_factorized_core_and_explicit_exhaustive(self):
+        handle = _matrix_phases("handle")
         smoke = _matrix_phases("smoke")
         core = _matrix_phases("core")
         exhaustive = _matrix_phases("exhaustive")
         self.assertEqual((len(smoke), len(core), len(exhaustive)), (5, 17, 53))
+        self.assertEqual([(p["slot"], p["mapping"].wire_value) for p in handle], [(7, 0x29)])
         self.assertEqual([p["name"] for p in core[:5]], [p["name"] for p in smoke])
         trials = [p for p in exhaustive if not p["negative_control"]]
         self.assertEqual({(p["slot"], p["mapping"].wire_value) for p in trials},
@@ -192,6 +194,23 @@ class CliTests(unittest.TestCase):
         args.accept_test_fixture = True
         self.assertEqual(len(_probe_baseline(args)), 32)
         self.assertEqual(args.profile, "core")
+
+    def test_handle_profile_reads_private_baseline_file(self):
+        with tempfile.TemporaryDirectory() as directory:
+            baseline_file = Path(directory) / "baseline.hex"
+            baseline = Report10Config.latest_software_baseline().to_wire_report()
+            baseline_file.write_text(baseline.hex(" "))
+            args = build_parser().parse_args([
+                "probe-report03-matrix", "--device", "/dev/hidraw1",
+                "--input-hidraw", "/dev/hidraw2", "--event", "/dev/input/event1",
+                "--audit", "a.json", "--profile", "handle",
+                "--baseline-report10-file", str(baseline_file),
+            ])
+            self.assertEqual(_probe_baseline(args), baseline)
+            self.assertEqual(args.profile, "handle")
+            args.baseline_report10_hex = baseline.hex(" ")
+            with self.assertRaises(RuntimeError):
+                _probe_baseline(args)
 
     def test_restore_accepts_only_complete_saved_report(self):
         args = build_parser().parse_args(["restore-report10", "--device", "/dev/hidraw1",

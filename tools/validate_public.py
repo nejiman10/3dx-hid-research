@@ -30,7 +30,7 @@ def validate_matrix(document: dict) -> list[str]:
     phases = document.get("phases", [])
     profile = document.get("profile")
     success = document.get("success") is True
-    if profile in ("smoke", "core", "exhaustive"):
+    if profile in ("handle", "smoke", "core", "exhaustive"):
         planned = _matrix_phases(profile)
         expected_names = [item["name"] for item in planned]
         recorded_names = [item.get("name") for item in phases]

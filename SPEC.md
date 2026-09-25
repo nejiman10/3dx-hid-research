@@ -6,6 +6,8 @@
 
 - [CONFIRMED] generatorは31-byte blobをゼロ初期化し、offset 1（DPI）、2（lift threshold）、3..6（wheel）、18..24（7 button）、26（固定 `1e`）、30（polling divider）を設定する。(source: docs/STATIC_ANALYSIS_REPORT.md)
 - [OBSERVED] 試験したLinux HID descriptorはReport `0x10` を32-byte wire bufferとして宣言した。Linux実装はID `10` と31-byte blobから完全snapshotを作る。実機への最終適用の一般性は未検証。
+- [OBSERVED] 既存の有線C658とReceiver経由C652のReport `0x03`成功監査では、Report `0x10`送信先のdescriptor hashが後日のC658 MI_01、C652 MI_02にそれぞれ一致した。各17 phaseで実験用fixtureと同じbaselineのボタンmappingを1 byteだけ変えたReportを送信し、hostの送信呼び出し完了、転送機会、期待する物理入力を別々に記録した。最後にbaselineを再送して指定ボタンの入力を確認したが、所有者の元設定への復元は確認していない。ioctlの数値戻り値と送信時刻も監査にない。このLinux結果からWindows brokerの送信先は決められない。(evidence: [対象handle再評価](evidence/report10-handle-review-2026-09/README.md))
+- [OBSERVED] 所有者が復元先に指定した32-byte値を使ったReceiver C652 MI_02の限定試験では、radialボタンmappingの1 byteだけを変更したReport `0x10`の送信と復元が、いずれもhost APIで32 byteを返した。変更後にmotion-bearing Report `0x1b`と、物理操作に対応するraw Report `0x03`の押下・解放10組を記録した。復元後も転送機会と元のevdev入力10組を確認した。これらは試験したLinux handle・接続・設定値での効果と操作上の復元を支持するが、全設定byteのreadbackや永続性、純正Windows brokerの送信先選択は検証していない。(evidence: [対象handle監査](evidence/report10-handle-review-2026-09/README.md))
 - [CONFIRMED] direct buttonは `0x09 + action code`、host routedは `0x28 + action index` に変換する。(source: docs/STATIC_ANALYSIS_REPORT.md)
 - [OBSERVED] 試験した有線C658とReceiver経由C658 handleの双方で、有効な現在設定readbackは得られなかった。失敗方法は試行ごとの観測であり、protocol定数ではない。全firmwareで不可能とは断定しない。
 - [OBSERVED] 試験したReceiverでは32-byte Report `0x10`候補handleの `GET 08` が `08 59 ...` を返した。今回もC652 MI_02で8-byte応答のbyte 1が`59`だった。単一占有slotとReceiver入力は観測したが、GET `0x08`の値から個体を直接同定したわけではない。このLinux選択法をvendor DLLの静的経路と同一視しない。(evidence: [読み取り監査](evidence/read-paths-2026-09/README.md))

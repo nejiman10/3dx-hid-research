@@ -422,6 +422,14 @@ def _cmd_probe_input_raw(args: argparse.Namespace) -> int:
 
 def _probe_baseline(args: argparse.Namespace) -> bytes:
     supplied = getattr(args, "baseline_report10_hex", None)
+    supplied_file = getattr(args, "baseline_report10_file", None)
+    if supplied and supplied_file:
+        raise RuntimeError("supply only one baseline Report 0x10 source")
+    if supplied_file:
+        try:
+            supplied = Path(supplied_file).read_text(encoding="ascii")
+        except (OSError, UnicodeError) as exc:
+            raise RuntimeError("unable to read baseline Report 0x10 file") from exc
     if supplied:
         try:
             report = bytes.fromhex(supplied)
@@ -461,13 +469,17 @@ def _baseline_expected_code(baseline: bytes, slot: int) -> int:
 
 def _matrix_phases(profile: str) -> list[dict[str, object]]:
     """Factorized mandatory trials; exhaustive adds the remaining Cartesian pairs."""
-    if profile not in ("smoke", "core", "exhaustive"):
-        raise ValueError("profile must be smoke, core or exhaustive")
+    if profile not in ("handle", "smoke", "core", "exhaustive"):
+        raise ValueError("profile must be handle, smoke, core or exhaustive")
     phases: list[dict[str, object]] = []
 
     def add(name: str, slot: int, index: int, group: str) -> None:
         phases.append({"name": name, "slot": slot, "mapping": ButtonMapping.host_routed(index),
                        "negative_control": index in (0, 215), "group": group})
+
+    if profile == "handle":
+        add("handle-radial-host-index-1", 7, 1, "handle")
+        return phases
 
     add("radial-host-index-1-before-index-0", 7, 1, "controls")
     add("radial-host-index-0", 7, 0, "controls")
@@ -626,8 +638,16 @@ def _cmd_probe_report03_matrix(args: argparse.Namespace) -> int:
         raise RuntimeError("phase and motion timeouts must be positive; settle time cannot be negative")
     target = validate_report10_target(args.device)
     phases = _matrix_phases(args.profile)
+    if args.profile == "handle" and args.accept_test_fixture:
+        raise RuntimeError("handle profile requires a user-supplied baseline Report 0x10")
     baseline = _probe_baseline(args)
-    baseline_slot, baseline_code = _baseline_check_button(baseline)
+    if args.profile == "handle":
+        if baseline[25] == ButtonMapping.host_routed(1).wire_value:
+            raise RuntimeError("handle profile would not change the selected button mapping")
+        baseline_slot = 7
+        baseline_code = _baseline_expected_code(baseline, baseline_slot)
+    else:
+        baseline_slot, baseline_code = _baseline_check_button(baseline)
     try:
         revision = subprocess.check_output(["git", "rev-parse", "HEAD"], stderr=subprocess.DEVNULL, text=True).strip()
     except (OSError, subprocess.CalledProcessError):
@@ -665,7 +685,10 @@ def _cmd_probe_report03_matrix(args: argparse.Namespace) -> int:
         "baseline_report10_hex": baseline.hex(" "),
         "baseline_expected_evdev_code": baseline_code,
         "baseline_check_physical_button": PHYSICAL_BUTTON_NAMES[baseline_slot - 1],
-        "baseline_source": "provided-host-snapshot" if args.baseline_report10_hex else "explicit-test-fixture",
+        "baseline_source": (
+            "provided-report10-file" if args.baseline_report10_file else
+            "provided-report10-hex" if args.baseline_report10_hex else "explicit-test-fixture"
+        ),
         "baseline_transfer_wait_completed": False,
         "baseline_operation_confirmed": False,
         "failure": None,
@@ -714,7 +737,9 @@ def _cmd_probe_report03_matrix(args: argparse.Namespace) -> int:
                         f"[matrix {number}/{len(phases)} {specification['group']}] "
                         f"applying {specification['name']} for {button_name}"
                     )
-                    device.set_feature(config)
+                    send_started_at = _utc_now()
+                    ioctl_result = device.set_feature(config)
+                    send_finished_at = _utc_now()
                     capture.drain()
                     print(
                         "[transfer-wait] move the mouse now without pressing any button; "
@@ -759,6 +784,9 @@ def _cmd_probe_report03_matrix(args: argparse.Namespace) -> int:
                         ),
                         "mapping_wire_value": f"0x{mapping.wire_value:02x}",
                         "report10_hex": config.hex(" "),
+                        "set_feature_started_at": send_started_at,
+                        "set_feature_finished_at": send_finished_at,
+                        "ioctl_result": ioctl_result,
                         "capture_started_at": started,
                         "capture_finished_at": _utc_now(),
                         "capture_duration_seconds": round(time.monotonic() - capture_start, 3),
@@ -800,7 +828,10 @@ def _cmd_probe_report03_matrix(args: argparse.Namespace) -> int:
                             if prior["phase_result"] != "PASS":
                                 raise RuntimeError(f"negative control {prior['name']} was {prior['phase_result']}")
             finally:
-                device.set_feature(baseline)
+                audit["baseline_restore_set_feature_started_at"] = _utc_now()
+                _write_audit(args.audit, audit, quiet=True)
+                audit["baseline_restore_ioctl_result"] = device.set_feature(baseline)
+                audit["baseline_restore_set_feature_finished_at"] = _utc_now()
                 audit["baseline_restored"] = True
                 capture.drain()
                 print(
@@ -1653,7 +1684,7 @@ def build_parser() -> argparse.ArgumentParser:
                         help="raw input candidate; repeat for simultaneous capture")
     matrix.add_argument("--event", action="append", required=True,
                         help="evdev input node; repeat when needed")
-    matrix.add_argument("--profile", choices=("smoke", "core", "exhaustive"),
+    matrix.add_argument("--profile", choices=("handle", "smoke", "core", "exhaustive"),
                         default="core", help="test scope; core is the release prerequisite")
     matrix.add_argument("--presses", type=_parse_matrix_presses, default=10,
                         help="required press/release cycles for each positive phase (10..100)")
@@ -1668,7 +1699,8 @@ def build_parser() -> argparse.ArgumentParser:
         "--settle-seconds", type=float, default=2.0,
         help="wait after each write before accepting button input (default: 2.0)",
     )
-    matrix.add_argument("--baseline-report10-hex", help="owner-saved complete 32-byte snapshot")
+    matrix.add_argument("--baseline-report10-hex", help="owner-provided complete 32-byte restoration target")
+    matrix.add_argument("--baseline-report10-file", help="private text file with complete 32-byte restoration target")
     matrix.add_argument("--accept-test-fixture", action="store_true",
                         help="explicitly overwrite settings with historical test fixture")
     matrix.add_argument("--audit", required=True)
