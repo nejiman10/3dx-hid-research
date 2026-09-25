@@ -6,12 +6,46 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(ROOT / "tools"))
-from validate_public import validate_audit, validate_claims, validate_matrix, validate_repository
+from validate_public import (validate_audit, validate_claims, validate_direct6,
+                             validate_matrix, validate_receiver_cycle, validate_receiver_input,
+                             validate_repository)
 from threedx_report10.matrix_probe import evaluate_phase
 from threedx_report10.cli import _matrix_phases
 
 
 class ValidatorTests(unittest.TestCase):
+    def test_receiver_cycle_rejects_slot_mismatch(self):
+        path = ROOT / "evidence/receiver-repair-2026-09/c652-slot2-to-slot3-cycle.json"
+        audit = json.loads(path.read_text())
+        self.assertEqual(validate_receiver_cycle(audit), [])
+        audit["records"]["unpair"]["slot"] = 1
+        self.assertTrue(any("unpair target" in error
+                            for error in validate_receiver_cycle(audit)))
+
+    def test_receiver_input_validator_rejects_forged_success(self):
+        audit = {"tool_git_commit": "abc", "started_at": "t1", "finished_at": "t2",
+                 "input_hidraw": "/dev/hidraw11", "event_paths": ["/dev/input/event11"],
+                 "hid_descriptor_sha256": "abc", "raw_reports": [], "key_events": [],
+                 "required_presses": 10, "raw_left_press_transitions": 0,
+                 "evdev_left_press_release_by_path": {}, "success": True}
+        self.assertTrue(any("success contradicts capture" in error
+                            for error in validate_receiver_input(audit)))
+
+    def test_receiver_input_validator_accepts_open_failure_without_capture(self):
+        audit = {"tool_git_commit": "abc", "started_at": "t1", "finished_at": "t2",
+                 "input_hidraw": "/dev/hidraw11", "event_paths": ["/dev/input/event12"],
+                 "hid_descriptor_sha256": "abc", "raw_reports": [], "key_events": [],
+                 "required_presses": 10, "failure": "event node missing", "success": False}
+        self.assertEqual(validate_receiver_input(audit), [])
+
+    def test_direct6_audit_rejects_false_control_count(self):
+        path = ROOT / "evidence/direct6-controlled-2026-09/c652-mi02-direct6-1.json"
+        audit = json.loads(path.read_text())
+        self.assertEqual(validate_direct6(audit), [])
+        audit["phases"][0]["known_presses"] += 1
+        self.assertTrue(any("control counts contradict evdev" in error
+                            for error in validate_direct6(audit)))
+
     def test_private_source_audits_are_not_public_repository_inputs(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)

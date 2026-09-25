@@ -115,6 +115,17 @@ class HidrawDevice:
         fcntl.ioctl(self.fd, HIDIOCGFEATURE(length), buffer, True)
         return bytes(buffer)
 
+    def get_feature_with_result(self, report_id: int, length: int) -> tuple[bytes, int]:
+        """Return the bytes reported by HIDIOCGFEATURE and its ioctl result."""
+        if not 1 <= length <= HID_MAX_DESCRIPTOR_SIZE:
+            raise ValueError("invalid feature-report length")
+        buffer = bytearray(length)
+        buffer[0] = report_id
+        result = int(fcntl.ioctl(self.fd, HIDIOCGFEATURE(length), buffer, True))
+        if not 0 <= result <= length:
+            raise RuntimeError(f"unexpected GET_FEATURE result: {result}")
+        return bytes(buffer[:result]), result
+
     def set_feature(self, report: bytes | bytearray | memoryview) -> int:
         buffer = bytearray(report)
         if not buffer:

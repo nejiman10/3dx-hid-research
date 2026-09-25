@@ -2,9 +2,46 @@
 
 ## 前提
 
-Linux、Python 3.10以上、対象C658/C652、操作できる物理マウスを用意する。試験はユーザー設定を上書きする。現在設定のreadbackは期待せず、所有者が指定した完全32-byte復元値を先に別途保管する。実機から得たsnapshotか、所有者が意図して指定した値かを区別して記録する。SDK同梱の `latest_software_baseline()` は静的解析をもとに構築した実験用初期値であり、保存済み設定やfactory defaultではない。継続前に上書きと復元値を確認する。probeには指定値を `--baseline-report10-hex '10 ...'` または非公開ファイルの `--baseline-report10-file` で渡す。保存値がない場合だけ `--accept-test-fixture` を明示する。
+Linux、Python 3.10以上、対象C658/C652、操作できる物理マウスを用意する。設定書き込みを伴う試験はユーザー設定を上書きする。現在設定のreadbackは期待せず、所有者が指定した完全32-byte復元値を先に別途保管する。実機から得たsnapshotか、所有者が意図して指定した値かを区別して記録する。SDK同梱の `latest_software_baseline()` は静的解析をもとに構築した実験用初期値であり、保存済み設定やfactory defaultではない。継続前に上書きと復元値を確認する。probeには指定値を `--baseline-report10-hex '10 ...'` または非公開ファイルの `--baseline-report10-file` で渡す。保存値がない場合だけ `--accept-test-fixture` を明示する。
 
-`python3 tools/build_zipapp.py --source sdk/python/src --output /tmp/c658-report10ctl.pyz` でtoolを作る。`sudo python3 /tmp/c658-report10ctl.pyz scan --json` でReport `0x10` target、Report `0x03` input hidraw、input eventを特定する。`/dev/hidrawN` は実行ごとに読み替える。
+`python3 tools/build_zipapp.py --source sdk/python/src --output /tmp/c658-report10ctl.pyz` でtoolを作る。`python3 /tmp/c658-report10ctl.pyz scan --json` でReport `0x10` target、Report `0x03` input hidraw、input eventを特定する。`/dev/hidrawN` は実行ごとに読み替える。
+
+## Report `0x10` の読み戻し監査
+
+読み取り専用の `audit-read-paths --report10-readback` を使う。実行時のscan結果、USB interface、descriptor、標準ユーザーのACLを確認し、接続状態を記録する。Receiverのinterface番号は再ペアリング等で変わり得るため、以前のMI番号を固定しない。C652ではGET `0x08`の候補応答を確認してからGET `0x10`へ進む。有線C658ではGET `0x10`だけを送る。GETの結果はioctl戻り値またはerrno、応答長、Report ID一致を記録する。32-byte応答があっても現在設定としての意味は別途検証する。sudoが必要な場合は試験を停止する。
+
+```bash
+python3 /tmp/c658-report10ctl.pyz scan --json
+timeout --signal=TERM --kill-after=2s 30s python3 /tmp/c658-report10ctl.pyz \
+  audit-read-paths --device /dev/hidrawTARGET \
+  --audit evidence/source-private-not-in-repository/readback/attempt-1.json \
+  --report10-readback
+```
+
+監査先directoryを先に作成する。失敗時の再試行は同じ接続・descriptorで1回までとし、新しい監査ファイル名を使う。非公開原本にはraw応答やローカルpathが残るため、公開資料には匿名化した結果だけを移す。
+
+## 有線C658の継続利用確認手順
+
+この手順による確認結果は[hold-open証拠](evidence/hold-open-2026-09/README.md)に記録した。このLinux環境での実用上の動作を確認する。停止までの秒数や、接続直後の数秒間に人が入力できたかは測定しない。既存の `c658-hidraw-hold-open.service` を稼働させたまま確認し、interface別の保持比較は行わない。sudoは使わない。
+
+有線接続した状態で標準ユーザーのターミナルから次を実行する。`root_user` が `true`、対象interfaceが見つからない、権限が不足する、またはserviceが`active`でなければ試験を始めずに記録する。serviceやudev ruleの新規導入・有効化は行わない。
+
+```bash
+TEST_START=$(date --iso-8601=seconds)
+printf '%s\n' "$TEST_START"
+python3 tools/audit_hold_open.py preflight
+systemctl --user is-active c658-hidraw-hold-open.service
+```
+
+開始時刻を控え、通常どおりカーソル移動、クリック、スクロールができることを確認する。USBケーブルを1回外して再接続し、その後10分以上、普段の使い方でマウスを使用する。急いで入力する必要はない。途中の入力停止、意図しない切断、使いにくさがあれば時刻と症状を記録して終了する。終了時刻と、通常動作を確認できたかを記録する。
+
+終了後に次を実行し、serviceが`active`で、再接続後に対象interfaceの`held`記録があるか確認する。journalに再取得が見えない場合は、通常動作だけで再取得を確認済みにしない。結果はローカルpathなどを除いて[証拠](evidence/hold-open-2026-09/README.md)へ記録する。
+
+```bash
+date --iso-8601=seconds
+systemctl --user is-active c658-hidraw-hold-open.service
+journalctl --user -u c658-hidraw-hold-open.service --since "$TEST_START" --no-pager
+```
 
 ## Report 0x03 matrix
 
@@ -30,29 +67,47 @@ Receiverのindex 6→7切り替えを調べる場合は `--profile transition` �
 
 ## Direct code 6
 
-raw HIDとevdevの両方を指定する。対象の物理ボタンを操作する。特定のLinux eventは期待しない。監査の `hardware_effect` はUNKNOWNのまま残す。
+raw HIDとevdevの両方を指定する。所有者指定の完全32-byte復元値が選択ボタンの既知direct mappingを含むことを確認する。probeは既知mapping、code 6、既知mappingの3区間をこの順で送信し、各区間でmotion-bearing Report `0x1b`を待ってから指定ボタンを10回以上押下・解放する。各区間のraw HID、evdev、送信時刻とioctl戻り値を一体で監査し、最後の既知mapping区間を復元確認とする。code 6の特定Linux eventは事前に期待値として指定しない。監査の `hardware_effect` は解釈前の `UNKNOWN` のまま保存する。下記の設定上限は約3分、操作は少なくとも30回。入力nodeと復元値を現時点で再確認し、設定書き込みと復元の実施指示を得てから実行する。
 
 ```bash
-sudo python3 /tmp/c658-report10ctl.pyz probe-direct \
+python3 /tmp/c658-report10ctl.pyz probe-direct \
   --device /dev/hidrawTARGET --input-hidraw /dev/hidrawINPUT \
   --event /dev/input/eventN --slot 7 --action unknown6 \
-  --baseline-report10-hex '10 ...' --audit /tmp/direct-code6.json --commit
+  --baseline-report10-file /path/to/private/baseline.hex \
+  --presses 10 --timeout 30 --motion-timeout 30 \
+  --audit /path/to/private/direct-code6.json --commit
 ```
 
 ## Receiver pairing / unpairing
 
-`receiver-slots` で事前snapshotを取り、管理handleを選ぶ。pair/unpairは結合状態を変える。成功時監査は開始・停止packet、before/afterのslot、対象handle、時刻、成功理由を一体のJSONに保存する。失敗したEPIPEだけで成功扱いしない。
+`scan` と `receiver-slots` で現時点の管理handleと全slot snapshotを取り、対象マウスをReceiverモードにしてから `audit-receiver-input` で解除前の左ボタン入力をraw HIDとevdevの両方に記録する。入力が確認できなければ解除しない。pair/unpairは結合状態を変える。操作後は新しいnodeを再走査し、同じ入力監査を取る。個々のCLI監査は別ファイルなので、試験後に時刻・slot・物理入力を照合して一体の成功監査にまとめる。pair CLIの `success` は新しいslotの占有と停止packetを示し、物理入力の成功判定は別途必要。失敗したEPIPEだけでunpair成功扱いしない。
 
 ```bash
-sudo python3 /tmp/c658-report10ctl.pyz pair \
-  --device /dev/hidrawMANAGEMENT --audit /tmp/pair.json \
+python3 /tmp/c658-report10ctl.pyz scan --json
+python3 /tmp/c658-report10ctl.pyz receiver-slots \
+  --device /dev/hidrawMANAGEMENT --audit /path/to/private/before-slots.json
+python3 /tmp/c658-report10ctl.pyz audit-receiver-input \
+  --input-hidraw /dev/hidrawINPUT --event /dev/input/eventN \
+  --presses 10 --seconds 30 --audit /path/to/private/input-before.json
+
+python3 /tmp/c658-report10ctl.pyz unpair \
+  --device /dev/hidrawMANAGEMENT --slot SLOT --audit /path/to/private/unpair.json
+python3 /tmp/c658-report10ctl.pyz unpair \
+  --device /dev/hidrawMANAGEMENT --slot SLOT --expect-raw 'RAW_FROM_FRESH_DRY_RUN' \
+  --audit /path/to/private/unpair.json --commit-experimental-unpair
+
+python3 /tmp/c658-report10ctl.pyz scan --json
+python3 /tmp/c658-report10ctl.pyz pair \
+  --device /dev/hidrawMANAGEMENT --audit /path/to/private/pair.json \
   --commit-experimental-pairing
 
-sudo python3 /tmp/c658-report10ctl.pyz unpair \
-  --device /dev/hidrawMANAGEMENT --slot 0 --audit /tmp/unpair.json
+python3 /tmp/c658-report10ctl.pyz scan --json
+python3 /tmp/c658-report10ctl.pyz audit-receiver-input \
+  --input-hidraw /dev/hidrawNEW_INPUT --event /dev/input/eventNEW \
+  --presses 10 --seconds 30 --audit /path/to/private/input-after.json
 ```
 
-unpairはdry-runに出た対象slotの8-byte raw値を照合し、同じcommandに `--expect-raw '43 ...' --commit-experimental-unpair` を追加する。対象slotが一致しなければ実行しない。
+unpairはdry-runに出た対象slotの8-byte raw値を人が照合し、直後のcommit commandへ入力する。slotまたはraw値が変わっていたら実行しない。pairingモードはpair CLIが終了処理で停止packetを試みる。pair後の物理入力が確認できない場合は、監査を成功として公開せず、slot snapshotと有線またはBluetoothの復旧経路を確認する。node番号は再列挙で変わり得るため各段階で読み替える。通常ユーザーに対象nodeのACLがある環境ではsudoを使わない。
 
 ## 復元と緊急時
 

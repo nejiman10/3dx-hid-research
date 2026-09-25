@@ -40,6 +40,7 @@ from .linux_hidraw import (
 from .hold_open import run_wired_hold_open
 from .matrix_probe import (
     MultiInputCapture,
+    count_expected_press_transitions,
     evaluate_phase,
     matrix_success,
     summarize_capture,
@@ -285,7 +286,7 @@ def _cmd_receiver_slots(args: argparse.Namespace) -> int:
 def _cmd_audit_read_paths(args: argparse.Namespace) -> int:
     if Path(args.audit).exists():
         raise RuntimeError(f"audit already exists: {args.audit}")
-    document = audit_read_paths(args.device)
+    document = audit_read_paths(args.device, report10_readback=args.report10_readback)
     _write_audit(args.audit, document, quiet=True)
     print(f"private audit: {args.audit}")
     return 1 if document.get("failure") else 0
@@ -341,6 +342,72 @@ def _cmd_monitor_report03(args: argparse.Namespace) -> int:
     }
     _write_audit(args.audit, document)
     return 0 if confirmed else 1
+
+
+def _cmd_audit_receiver_input(args: argparse.Namespace) -> int:
+    """Read-only physical input check before unpair and after pairing."""
+    if args.seconds <= 0:
+        raise RuntimeError("capture time must be positive")
+    candidates = discover_receiver_c658_handles(args.input_hidraw)
+    if len(candidates) != 1 or str(candidates[0].path) != args.input_hidraw:
+        raise RuntimeError("input path is not a validated C652 paired-device handle")
+    if Path(args.audit).exists():
+        raise RuntimeError("choose a new audit path")
+    fd = os.open(args.input_hidraw, os.O_RDONLY | os.O_CLOEXEC)
+    try:
+        descriptor_hash = hashlib.sha256(_read_descriptor(fd)).hexdigest()
+    finally:
+        os.close(fd)
+    event_nodes = ([Path(value) for value in args.event] if args.event else
+                   input_event_nodes_for_hidraw(args.input_hidraw))
+    if not event_nodes:
+        raise RuntimeError("no event nodes found for paired-device handle")
+    events = [str(path) for path in event_nodes]
+    audit: dict[str, object] = {
+        "schema": "c652-physical-input/v1", "started_at": _utc_now(),
+        **_audit_identity(args.input_hidraw, "audit-receiver-input",
+                          {"seconds": args.seconds, "presses": args.presses}),
+        "input_hidraw": args.input_hidraw, "event_paths": events,
+        "hid_descriptor_sha256": descriptor_hash,
+        "physical_button": "left", "expected_evdev_code": BTN_LEFT,
+        "required_presses": args.presses, "capture_seconds": args.seconds,
+        "raw_reports": [], "key_events": [], "failure": None, "success": False,
+    }
+    print(f"[input-check] press/release the mouse's left button at least {args.presses}"
+          f" times during {args.seconds:g} seconds", flush=True)
+    try:
+        with MultiInputCapture([args.input_hidraw], events) as capture:
+            observed = capture.capture(args.seconds)
+        audit["raw_reports"] = list(observed.raw_reports)
+        audit["key_events"] = list(observed.key_events)
+        raw_press, by_path, confirmed = _grade_receiver_input(
+            list(observed.raw_reports), list(observed.key_events), args.presses)
+        audit["raw_left_press_transitions"] = raw_press
+        audit["evdev_left_press_release_by_path"] = by_path
+        audit["success"] = confirmed
+        if not audit["success"]:
+            audit["failure"] = "required raw and evdev left-button cycles not observed"
+    except (Exception, KeyboardInterrupt) as exc:
+        audit["failure"] = "interrupted by user" if isinstance(exc, KeyboardInterrupt) else str(exc)
+    audit["finished_at"] = _utc_now()
+    _write_audit(args.audit, audit)
+    return 0 if audit["success"] else 1
+
+
+def _grade_receiver_input(raw: list[dict[str, object]], keys: list[dict[str, object]],
+                          required: int) -> tuple[int, dict[str, list[int]], bool]:
+    raw_press = count_expected_press_transitions(raw, None, 0x01)
+    by_path: dict[str, list[int]] = {}
+    for event in keys:
+        if event.get("code") != BTN_LEFT:
+            continue
+        pair = by_path.setdefault(str(event.get("path", "unknown")), [0, 0])
+        if event.get("value") == 1:
+            pair[0] += 1
+        elif event.get("value") == 0:
+            pair[1] += 1
+    return raw_press, by_path, bool(raw_press >= required and
+                                    any(min(pair) >= required for pair in by_path.values()))
 
 
 def _cmd_probe_input_raw(args: argparse.Namespace) -> int:
@@ -1532,6 +1599,8 @@ def _write_audit(path: str | None, document: dict[str, object], *, quiet: bool =
 
 
 def _cmd_probe_direct(args: argparse.Namespace) -> int:
+    if args.action == DirectAction.UNKNOWN_DIRECT_CODE_6:
+        return _cmd_probe_direct6_controlled(args)
     if not args.commit:
         print("probe-direct requires --commit because it performs controlled writes", file=sys.stderr)
         return 2
@@ -1616,6 +1685,146 @@ def _cmd_probe_direct(args: argparse.Namespace) -> int:
         return 0
     print(f"FAIL: {failure}", file=sys.stderr)
     return 1
+
+
+def _direct6_phase(args, capture: MultiInputCapture, device: HidrawDevice,
+                   audit: dict[str, object], name: str, report: bytes,
+                   known_code: int | None) -> dict[str, object]:
+    """Record one complete physical-input window after a timed Report 0x10 send."""
+    record: dict[str, object] = {"phase": name, "report10_hex": report.hex(" "),
+                                 "required_presses": args.presses, "known_evdev_code": known_code}
+    capture.drain()
+    record["set_feature_started_at"] = _utc_now()
+    record["set_feature_started_monotonic"] = time.monotonic()
+    try:
+        record["ioctl_result"] = device.set_feature(report)
+        record["set_feature_finished_monotonic"] = time.monotonic()
+        record["set_feature_finished_at"] = _utc_now()
+        print(f"[{name}] move the mouse without pressing buttons", flush=True)
+        try:
+            motion = capture.wait_for_mouse_motion(args.motion_timeout)
+            record["transfer_wait_completed"] = True
+        except TimeoutError:
+            motion = capture.capture(0.01)
+            record["transfer_wait_completed"] = False
+        record["transfer_wait_raw_reports"] = list(motion.raw_reports)
+        record["transfer_wait_key_events"] = list(motion.key_events)
+        print(f"[{name}] NOW press/release {PHYSICAL_BUTTON_NAMES[args.slot - 1]}"
+              f" at least {args.presses} times within {args.timeout:g} seconds", flush=True)
+        record["capture_started_at"] = _utc_now()
+        record["capture_started_monotonic"] = time.monotonic()
+        observed = capture.capture(args.timeout)
+        record["capture_finished_monotonic"] = time.monotonic()
+        record["capture_finished_at"] = _utc_now()
+        record["raw_reports"] = list(observed.raw_reports)
+        record["key_events"] = list(observed.key_events)
+        record["capture_complete"] = True
+        if known_code is not None:
+            presses = sum(e["code"] == known_code and e["value"] == 1
+                          for e in observed.key_events)
+            releases = sum(e["code"] == known_code and e["value"] == 0
+                           for e in observed.key_events)
+            record["known_presses"] = presses
+            record["known_releases"] = releases
+            record["known_input_confirmed"] = bool(
+                record["ioctl_result"] == 32 and record["transfer_wait_completed"]
+                and presses >= args.presses
+                and releases >= args.presses)
+        else:
+            record["hardware_effect"] = "UNKNOWN"
+    except BaseException as exc:
+        record["error"] = "interrupted by user" if isinstance(exc, KeyboardInterrupt) else str(exc)
+        raise
+    finally:
+        audit["phases"].append(record)
+        _write_audit(args.audit, audit, quiet=True)
+    return record
+
+
+def _cmd_probe_direct6_controlled(args: argparse.Namespace) -> int:
+    if not args.commit:
+        print("probe-direct requires --commit because it writes Report 0x10", file=sys.stderr)
+        return 2
+    if args.expect_code is not None or not args.input_hidraw or not args.audit:
+        raise RuntimeError("code 6 requires --input-hidraw and --audit, without --expect-code")
+    if args.timeout <= 0 or args.motion_timeout <= 0:
+        raise RuntimeError("capture and motion timeouts must be positive")
+    target = validate_report10_target(args.device)
+    if not all(discover_report03_inputs(path) for path in args.input_hidraw):
+        raise RuntimeError("raw input must declare Report 0x03")
+    event_paths = _event_paths(args)
+    baseline = _probe_baseline(args)
+    baseline_code = _baseline_expected_code(baseline, args.slot)
+    code6_report = _mapped_report(baseline, args.slot, ButtonMapping.direct(args.action))
+    if baseline == code6_report:
+        raise RuntimeError("known control and code 6 must have different mappings")
+    if Path(args.audit).exists():
+        raise RuntimeError("choose a new audit path")
+    descriptor_hashes = {}
+    for path in dict.fromkeys([args.device, *args.input_hidraw]):
+        fd = os.open(path, os.O_RDONLY | os.O_CLOEXEC)
+        try:
+            descriptor_hashes[Path(path).name] = hashlib.sha256(_read_descriptor(fd)).hexdigest()
+        finally:
+            os.close(fd)
+    audit: dict[str, object] = {
+        "schema": "c658-direct6-controlled/v1", "started_at": _utc_now(),
+        **_audit_identity(args.device, "probe-direct", {"slot": args.slot,
+            "action": args.action.name, "timeout": args.timeout},
+            "wired" if target.product_id == 0xC658 else "receiver",
+            f"{target.product_id:04x}"),
+        "device": args.device,
+        "transport": "wired" if target.product_id == 0xC658 else "receiver",
+        "hid_descriptor_sha256": descriptor_hashes,
+        "input_hidraw": list(args.input_hidraw),
+        "event_paths": [str(p) for p in event_paths],
+        "baseline_report10_hex": baseline.hex(" "),
+        "baseline_source": (
+            "provided-report10-file" if args.baseline_report10_file else
+            "provided-report10-hex" if args.baseline_report10_hex else "explicit-test-fixture"),
+        "test_report10_hex": code6_report.hex(" "),
+        "slot": args.slot, "physical_button": PHYSICAL_BUTTON_NAMES[args.slot - 1],
+        "known_evdev_code": baseline_code,
+        "requested_presses_per_phase": args.presses,
+        "capture_seconds_per_phase": args.timeout,
+        "motion_timeout_seconds": args.motion_timeout,
+        "phases": [], "restore_attempted": False, "baseline_restored": False,
+        "baseline_operation_confirmed": False,
+        "hardware_effect": "UNKNOWN", "failure": None, "success": False,
+    }
+    print(f"[plan] target {args.device}, slot {args.slot}: known direct"
+          f" 0x{baseline[18 + args.slot]:02x} -> code 6 0x0f -> known direct;"
+          f" 3 transfer checks and at least {3 * args.presses} press/release cycles;"
+          f" configured limit about {math.ceil(3 * (args.motion_timeout + args.timeout) / 60)} minutes",
+          flush=True)
+    _write_audit(args.audit, audit, quiet=True)
+    failure = None
+    try:
+        with MultiInputCapture(args.input_hidraw, [str(p) for p in event_paths]) as capture, HidrawDevice(args.device) as device:
+            try:
+                before = _direct6_phase(args, capture, device, audit, "known-before", baseline, baseline_code)
+                if not before.get("known_input_confirmed"):
+                    raise RuntimeError("known mapping before code 6 was not confirmed")
+                _direct6_phase(args, capture, device, audit, "code6", code6_report, None)
+            finally:
+                audit["restore_attempted"] = True
+                _write_audit(args.audit, audit, quiet=True)
+                after = _direct6_phase(args, capture, device, audit, "known-after", baseline, baseline_code)
+                audit["baseline_restored"] = after.get("ioctl_result") == 32
+                audit["baseline_operation_confirmed"] = after.get("known_input_confirmed", False)
+    except (Exception, KeyboardInterrupt) as exc:
+        failure = "interrupted by user" if isinstance(exc, KeyboardInterrupt) else str(exc)
+    audit["finished_at"] = _utc_now()
+    audit["failure"] = failure
+    audit["success"] = bool(
+        failure is None and len(audit["phases"]) == 3
+        and all(p.get("transfer_wait_completed") and p.get("capture_complete")
+                for p in audit["phases"])
+        and all(p.get("ioctl_result") == 32 for p in audit["phases"])
+        and audit["phases"][0].get("known_input_confirmed")
+        and audit["baseline_restored"] and audit["baseline_operation_confirmed"])
+    _write_audit(args.audit, audit)
+    return 0 if audit["success"] else 1
 
 
 def _run_direct_probe_phases(
@@ -1707,6 +1916,10 @@ def build_parser() -> argparse.ArgumentParser:
     )
     read_paths.add_argument("--device", required=True, help="one verified C658/C652 hidraw node")
     read_paths.add_argument("--audit", required=True, help="private JSON audit path")
+    read_paths.add_argument(
+        "--report10-readback", action="store_true",
+        help="bounded GET 0x10 audit on C658 MI_01 or C652 MI_02",
+    )
     read_paths.set_defaults(func=_cmd_audit_read_paths)
 
     slots = subparsers.add_parser(
@@ -1736,6 +1949,18 @@ def build_parser() -> argparse.ArgumentParser:
     monitor03.add_argument("--timeout", type=float, default=30.0)
     monitor03.add_argument("--audit")
     monitor03.set_defaults(func=_cmd_monitor_report03)
+
+    receiver_input = subparsers.add_parser(
+        "audit-receiver-input", help="read-only raw HID and evdev left-button audit"
+    )
+    receiver_input.add_argument("--input-hidraw", required=True,
+                                help="validated C652 paired-device hidraw node")
+    receiver_input.add_argument("--event", action="append",
+                                help="matching evdev node; omit to discover from hidraw sysfs")
+    receiver_input.add_argument("--seconds", type=float, default=30.0)
+    receiver_input.add_argument("--presses", type=_parse_matrix_presses, default=10)
+    receiver_input.add_argument("--audit", required=True)
+    receiver_input.set_defaults(func=_cmd_audit_receiver_input)
 
     raw_input = subparsers.add_parser(
         "probe-input-raw",
@@ -1835,7 +2060,10 @@ def build_parser() -> argparse.ArgumentParser:
         help="override expected Linux input code (decimal or 0xNN)",
     )
     probe.add_argument("--timeout", type=float, default=15.0)
+    probe.add_argument("--motion-timeout", type=float, default=30.0)
+    probe.add_argument("--presses", type=_parse_matrix_presses, default=10)
     probe.add_argument("--baseline-report10-hex", help="owner-saved complete 32-byte snapshot")
+    probe.add_argument("--baseline-report10-file", help="private text file with complete restoration target")
     probe.add_argument("--accept-test-fixture", action="store_true",
                        help="explicitly overwrite settings with historical test fixture")
     probe.add_argument("--audit", help="write JSON audit log to this path")

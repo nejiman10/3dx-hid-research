@@ -12,7 +12,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "sdk/python/src"))
 from threedx_report10.matrix_probe import evaluate_phase, matrix_success, summarize_capture
-from threedx_report10.cli import _matrix_phases
+from threedx_report10.cli import _grade_receiver_input, _matrix_phases
 PRIVATE = re.compile("/" + "home/|/" + "Users/|/" + "workspace/|(?:08|4[3-7]) 59(?: [0-9a-fA-F]{2}){6}")
 VENDOR_BINARIES = {".msi", ".dll", ".exe", ".sys", ".cab"}
 SOURCE = re.compile(r"^- \[CONFIRMED\].*\(source: ([^)]+)\)$")
@@ -129,6 +129,140 @@ def validate_matrix(document: dict) -> list[str]:
     return errors
 
 
+def validate_direct6(document: dict) -> list[str]:
+    errors = []
+    for field in ("tool_git_commit", "started_at", "finished_at", "transport",
+                  "vid", "pid", "hid_descriptor_sha256", "device", "input_hidraw",
+                  "event_paths", "baseline_report10_hex", "test_report10_hex",
+                  "requested_presses_per_phase"):
+        if not document.get(field):
+            errors.append(f"missing direct6 context: {field}")
+    try:
+        baseline = bytes.fromhex(document["baseline_report10_hex"])
+        test = bytes.fromhex(document["test_report10_hex"])
+        slot = int(document["slot"])
+        if (len(baseline) != 32 or len(test) != 32 or baseline[0] != 0x10
+                or test[0] != 0x10 or not 1 <= slot <= 7
+                or test[18 + slot] != 0x0f
+                or any(a != b for i, (a, b) in enumerate(zip(baseline, test))
+                       if i != 18 + slot)):
+            errors.append("direct6 report differs outside the selected mapping byte")
+    except (KeyError, ValueError, TypeError, IndexError):
+        errors.append("invalid direct6 reports or slot")
+        baseline = test = b""
+    phases = document.get("phases", [])
+    if [p.get("phase") for p in phases] != ["known-before", "code6", "known-after"]:
+        errors.append("direct6 phase sequence incomplete")
+    requested = document.get("requested_presses_per_phase")
+    code = document.get("known_evdev_code")
+    if not isinstance(requested, int) or requested < 10 or not isinstance(code, int):
+        errors.append("invalid direct6 control count or event code")
+    for phase in phases:
+        name = phase.get("phase", "unnamed")
+        expected = test if name == "code6" else baseline
+        if expected and phase.get("report10_hex") != expected.hex(" "):
+            errors.append(f"{name}: sent report contradicts plan")
+        for field in ("set_feature_started_at", "set_feature_finished_at", "ioctl_result",
+                      "transfer_wait_raw_reports", "transfer_wait_key_events",
+                      "raw_reports", "key_events", "capture_started_at", "capture_finished_at"):
+            if field not in phase:
+                errors.append(f"{name}: missing {field}")
+        stamps = [phase.get(field) for field in (
+            "set_feature_started_monotonic", "set_feature_finished_monotonic",
+            "capture_started_monotonic", "capture_finished_monotonic")]
+        if not all(isinstance(v, (int, float)) for v in stamps) or stamps != sorted(stamps):
+            errors.append(f"{name}: timestamps missing or out of order")
+        if name.startswith("known-") and isinstance(code, int) and isinstance(requested, int):
+            events = phase.get("key_events", [])
+            presses = sum(e.get("code") == code and e.get("value") == 1 for e in events)
+            releases = sum(e.get("code") == code and e.get("value") == 0 for e in events)
+            if phase.get("known_presses") != presses or phase.get("known_releases") != releases:
+                errors.append(f"{name}: control counts contradict evdev")
+            confirmed = (phase.get("ioctl_result") == 32
+                         and phase.get("transfer_wait_completed") is True
+                         and presses >= requested and releases >= requested)
+            if phase.get("known_input_confirmed") is not confirmed:
+                errors.append(f"{name}: control confirmation contradicts capture")
+    if document.get("success"):
+        if (len(phases) != 3 or document.get("failure") is not None
+                or not document.get("restore_attempted") or not document.get("baseline_restored")
+                or not document.get("baseline_operation_confirmed")
+                or not all(p.get("ioctl_result") == 32 and p.get("transfer_wait_completed")
+                           and p.get("capture_complete") for p in phases)
+                or not phases[0].get("known_input_confirmed")
+                or not phases[2].get("known_input_confirmed")):
+            errors.append("direct6 success contradicts capture or restoration")
+    elif not document.get("failure"):
+        errors.append("unsuccessful direct6 audit lacks failure reason")
+    return errors
+
+
+def validate_receiver_input(document: dict) -> list[str]:
+    errors = []
+    for field in ("tool_git_commit", "started_at", "finished_at", "input_hidraw",
+                  "event_paths", "hid_descriptor_sha256", "raw_reports", "key_events",
+                  "required_presses"):
+        if field not in document or document[field] is None:
+            errors.append(f"missing receiver input field: {field}")
+    if errors:
+        return errors
+    if (not document.get("success") and document.get("failure")
+            and "raw_left_press_transitions" not in document
+            and "evdev_left_press_release_by_path" not in document
+            and not document["raw_reports"] and not document["key_events"]):
+        return errors
+    count, paths, confirmed = _grade_receiver_input(
+        document["raw_reports"], document["key_events"], document["required_presses"])
+    if document.get("raw_left_press_transitions") != count:
+        errors.append("raw transition count contradicts capture")
+    if document.get("evdev_left_press_release_by_path") != paths:
+        errors.append("evdev counts contradict capture")
+    if document.get("success") is not confirmed:
+        errors.append("receiver input success contradicts capture")
+    return errors
+
+
+def validate_receiver_cycle(document: dict) -> list[str]:
+    errors = []
+    records = document.get("records", {})
+    required = ("before_slots", "before_input", "unpair", "pair",
+                "failed_after_input", "after_slots", "after_input")
+    if not isinstance(records, dict) or any(key not in records for key in required):
+        return ["receiver cycle lacks one or more source audits"]
+    for name in ("before_input", "failed_after_input", "after_input"):
+        errors.extend(f"{name}: {item}" for item in validate_receiver_input(records[name]))
+    before = records["before_slots"]["slots"]
+    after = records["after_slots"]["slots"]
+    unpair = records["unpair"]
+    pair = records["pair"]
+    occupied_before = [item["slot"] for item in before if item["occupied"]]
+    occupied_after = [item["slot"] for item in after if item["occupied"]]
+    if len(occupied_before) != 1 or len(occupied_after) != 1:
+        errors.append("cycle requires one occupied slot before and after")
+    if occupied_before and (unpair.get("slot") != occupied_before[0]
+                            or not unpair.get("target_empty_confirmed")):
+        errors.append("unpair target or empty-slot result contradicts before snapshot")
+    new_slots = [item.get("slot") for item in pair.get("new_slots", [])]
+    if occupied_after and new_slots != occupied_after:
+        errors.append("pair new slot contradicts after snapshot")
+    if not all(records[name].get("success") for name in
+               ("before_input", "unpair", "pair", "after_input")):
+        errors.append("cycle success lacks input or management success")
+    if records["failed_after_input"].get("success"):
+        errors.append("failed first post-pair capture was rewritten as success")
+    if not pair.get("stop_sent") or not unpair.get("unpair_request_attempted"):
+        errors.append("management packet sequence incomplete")
+    moments = [records["before_input"].get("started_at"),
+               unpair.get("started_at"), pair.get("started_at"),
+               records["failed_after_input"].get("started_at"),
+               records["after_input"].get("started_at")]
+    if not all(isinstance(value, str) for value in moments) or moments != sorted(moments):
+        errors.append("cycle timestamps missing or out of order")
+    if document.get("success") is not (not errors):
+        errors.append("cycle success contradicts component audits")
+    return errors
+
+
 def validate_claims(spec: str, root: Path = ROOT) -> list[str]:
     errors = []
     for line in spec.splitlines():
@@ -167,6 +301,12 @@ def validate_repository(root: Path = ROOT) -> list[str]:
             continue
         if document.get("schema") == "c658-report03-matrix/v3":
             errors.extend(f"{relative}: {item}" for item in validate_matrix(document))
+        if document.get("schema") == "c658-direct6-controlled/v1":
+            errors.extend(f"{relative}: {item}" for item in validate_direct6(document))
+        if document.get("schema") == "c652-physical-input/v1":
+            errors.extend(f"{relative}: {item}" for item in validate_receiver_input(document))
+        if document.get("schema") == "c652-receiver-repair-cycle/v1":
+            errors.extend(f"{relative}: {item}" for item in validate_receiver_cycle(document))
         for ref in document.get("evidence_files", []):
             candidate = (root / ref).resolve()
             if root.resolve() not in candidate.parents or not candidate.is_file():
@@ -190,6 +330,12 @@ def validate_audit(path: Path) -> list[str]:
         errors.append(f"{path}: private path or ID present")
     if document.get("schema") == "c658-report03-matrix/v3":
         errors.extend(f"{path}: {item}" for item in validate_matrix(document))
+    if document.get("schema") == "c658-direct6-controlled/v1":
+        errors.extend(f"{path}: {item}" for item in validate_direct6(document))
+    if document.get("schema") == "c652-physical-input/v1":
+        errors.extend(f"{path}: {item}" for item in validate_receiver_input(document))
+    if document.get("schema") == "c652-receiver-repair-cycle/v1":
+        errors.extend(f"{path}: {item}" for item in validate_receiver_cycle(document))
     if document.get("schema", "").startswith("c652-experimental-"):
         for field in ("tool_git_commit", "transport", "vid", "pid", "hidraw",
                       "hid_descriptor_sha256", "subcommand", "options", "started_at",

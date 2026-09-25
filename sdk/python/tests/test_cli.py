@@ -17,6 +17,8 @@ from threedx_report10.cli import (
     _probe_baseline,
     _resume_matrix_audit,
     _capture_until_expected,
+    _direct6_phase,
+    _grade_receiver_input,
     _matrix_time_ceiling,
     _write_audit,
     _config_from_args,
@@ -32,6 +34,53 @@ from threedx_report10.report10 import ButtonMapping
 
 
 class CliTests(unittest.TestCase):
+    def test_receiver_input_needs_raw_and_evdev_cycles(self):
+        raw = [{"path": "/dev/hidraw11", "raw_hex": value}
+               for value in ("1b 01 00 00 00 00 00 00 00",
+                             "1b 00 00 00 00 00 00 00 00") * 3]
+        keys = [{"path": "/dev/input/event11", "code": 272, "value": value}
+                for _ in range(3) for value in (1, 0)]
+        self.assertEqual(_grade_receiver_input(raw, keys, 3),
+                         (3, {"/dev/input/event11": [3, 3]}, True))
+        self.assertFalse(_grade_receiver_input(raw[:-2], keys, 3)[2])
+        self.assertFalse(_grade_receiver_input(raw, keys[:-2], 3)[2])
+
+    def test_receiver_input_parser_can_resolve_event_nodes(self):
+        args = build_parser().parse_args([
+            "audit-receiver-input", "--input-hidraw", "/dev/hidraw11", "--audit", "a.json"
+        ])
+        self.assertIsNone(args.event)
+
+    def test_direct6_phase_records_full_known_control_and_transfer(self):
+        class FakeCapture:
+            def drain(self):
+                pass
+
+            def wait_for_mouse_motion(self, _seconds):
+                return CaptureResult(({"raw_hex": "1b 00 01 00 00 00 00 00 00"},), ())
+
+            def capture(self, _seconds):
+                events = tuple({"code": 274, "value": value} for _ in range(10) for value in (1, 0))
+                return CaptureResult(({"raw_hex": "1b 04 00 00 00 00 00 00 00"},), events)
+
+        class FakeDevice:
+            def set_feature(self, report):
+                self.report = report
+                return 32
+
+        with tempfile.TemporaryDirectory() as directory:
+            args = SimpleNamespace(audit=str(Path(directory) / "audit.json"), presses=10,
+                                   slot=7, motion_timeout=1, timeout=1)
+            audit = {"phases": []}
+            device = FakeDevice()
+            record = _direct6_phase(args, FakeCapture(), device, audit,
+                                    "known-before", bytes([0x10] * 32), 274)
+            self.assertEqual(device.report, bytes([0x10] * 32))
+            self.assertEqual((record["known_presses"], record["known_releases"]), (10, 10))
+            self.assertTrue(record["known_input_confirmed"])
+            self.assertEqual(json.loads(Path(args.audit).read_text())["phases"][0]["phase"],
+                             "known-before")
+
     def test_positive_capture_ends_after_complete_cycles(self):
         class FakeCapture:
             def __init__(self):

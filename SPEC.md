@@ -9,7 +9,7 @@
 - [OBSERVED] 既存の有線C658とReceiver経由C652のReport `0x03`成功監査では、Report `0x10`送信先のdescriptor hashが後日のC658 MI_01、C652 MI_02にそれぞれ一致した。各17 phaseで実験用fixtureと同じbaselineのボタンmappingを1 byteだけ変えたReportを送信し、hostの送信呼び出し完了、転送機会、期待する物理入力を別々に記録した。最後にbaselineを再送して指定ボタンの入力を確認したが、所有者の元設定への復元は確認していない。ioctlの数値戻り値と送信時刻も監査にない。このLinux結果からWindows brokerの送信先は決められない。(evidence: [対象handle再評価](evidence/report10-handle-review-2026-09/README.md))
 - [OBSERVED] 所有者が復元先に指定した32-byte値を使ったReceiver C652 MI_02の限定試験では、radialボタンmappingの1 byteだけを変更したReport `0x10`の送信と復元が、いずれもhost APIで32 byteを返した。変更後にmotion-bearing Report `0x1b`と、物理操作に対応するraw Report `0x03`の押下・解放10組を記録した。復元後も転送機会と元のevdev入力10組を確認した。これらは試験したLinux handle・接続・設定値での効果と操作上の復元を支持するが、全設定byteのreadbackや永続性、純正Windows brokerの送信先選択は検証していない。(evidence: [対象handle監査](evidence/report10-handle-review-2026-09/README.md))
 - [CONFIRMED] direct buttonは `0x09 + action code`、host routedは `0x28 + action index` に変換する。(source: docs/STATIC_ANALYSIS_REPORT.md)
-- [OBSERVED] 試験した有線C658とReceiver経由C658 handleの双方で、有効な現在設定readbackは得られなかった。失敗方法は試行ごとの観測であり、protocol定数ではない。全firmwareで不可能とは断定しない。
+- [OBSERVED] Linuxの限定GET監査では、Feature `0x10`を32 byteと宣言する有線C658 MI_01へのGET `0x10`（要求32 byte）は2回とも`EPIPE`（errno 32）だった。Receiver C652の当時のMI_03では、対照GET `0x08`が2回とも8 byteで成功し、GET `0x10`は2回ともioctl戻り値2・応答2 byte・Report ID一致だった。両経路とも32-byteの現在設定は得られなかった。これは試験時のLinux経路と条件に限る結果であり、device側の拒否理由や他の読み戻し方法の不存在は示さない。(evidence: [読み戻し限定監査](evidence/report10-readback-2026-09/README.md))
 - [OBSERVED] 試験したReceiverでは32-byte Report `0x10`候補handleの `GET 08` が `08 59 ...` を返した。今回もC652 MI_02で8-byte応答のbyte 1が`59`だった。単一占有slotとReceiver入力は観測したが、GET `0x08`の値から個体を直接同定したわけではない。このLinux選択法をvendor DLLの静的経路と同一視しない。(evidence: [読み取り監査](evidence/read-paths-2026-09/README.md))
 - [UNKNOWN] deviceからの現在設定・factory defaultの復元。Linux実装はhost側に保存した設定を正本とし、Report `0x10`を完全snapshotとして送る。
 
@@ -17,7 +17,8 @@
 
 - [CONFIRMED] action codes 1..5はwire `0a..0e` に対応し、静的名称は順に `HIDMouse_Left`、`HIDMouse_Right`、`HIDMouse_Middle` / `HIDMouse_WheelButton`、`HIDMouse_Backward`、`HIDMouse_Forward`。(source: docs/STATIC_ANALYSIS_REPORT.md)
 - [CONFIRMED] code 6はwire `0f`でC658 default initializerから静的到達可能。正式名称は見つかっていない。(source: docs/STATIC_ANALYSIS_REPORT.md)
-- [UNKNOWN] code 6の正式名称とhardware effect。公開名は `UNKNOWN_DIRECT_CODE_6`、効果は `UNKNOWN`。過去に書き込み試行後の区間で `BTN_FORWARD` が観測されたが、旧mapping混入があり因果関係は未確認。
+- [OBSERVED] Receiver C652 MI_02の限定試験でradialボタンの既知direct mapping `0x0c`、code 6のwire `0x0f`、既知mapping `0x0c`を順に送った。各送信のhost戻り値は32で、各区間にmotion-bearing Report `0x1b`があり、物理操作と対応する前後対照では `BTN_MIDDLE` の押下・解放を12組と10組、code 6区間では `BTN_FORWARD` を11組記録した。code 6区間のraw Report `0x1b`にはbutton byte `0x20`のframeを11件記録し、前後対照のbutton byteは `0x04`だった。指定32-byte値の再送後に元の動作を確認した。試験者も各区間の操作回数と復元後の動作を確認した。今回の `BTN_FORWARD` 観測は、直前の既知mapping `0x0c`の残留だけでは説明できない。過去の別試行と同じ機序かは未確認。(evidence: [direct code 6対照監査](evidence/direct6-controlled-2026-09/README.md))
+- [UNKNOWN] code 6の正式名称、他の個体・接続・firmwareでの効果、設定の永続性。公開名は `UNKNOWN_DIRECT_CODE_6` を維持する。Linuxの `BTN_FORWARD` 観測だけから純正ソフトでの意味を命名しない。
 - [CONFIRMED] 通常のC658 UI/profile経路にcode 7..30の到達producerは見つからなかった。この範囲のfirmware解釈可能性は別問題。(source: docs/STATIC_ANALYSIS_REPORT.md)
 
 ## Input Report 0x03
@@ -46,10 +47,10 @@
 - [HYPOTHESIS] 再確認報告は、通常Universal Receiverのslot `0..4` と `MI_0..MI_4` の対応、およびslot GETの8-byte応答内のdevice typeと6-byte識別子を主張する。実装に同じ解釈があっても、それだけを独立した根拠としない。(source: [再確認報告 §7](docs/STATIC_ANALYSIS_REPORT_2.md))
 - [UNKNOWN] 再確認報告が示すReport `0x60` の5-byte fieldの正式意味と、`0x50` / `0x60` GETの通常UIからの到達性。field名、関数名、未確認の実行時応答だけで意味を確定しない。(source: [再確認報告 §5](docs/STATIC_ANALYSIS_REPORT_2.md))
 - [HYPOTHESIS] 再確認報告は、純正pair UIの成功通知はSET完了とは別の入力・接続eventによる一方、純正unpair経路の成功判定はI/O完了でslot空化を再確認しないとする。これはLinux実装の成功判定とは別の主張であり、純正経路の独立検証と実機の前後観測が未了である。(source: [再確認報告 §8](docs/STATIC_ANALYSIS_REPORT_2.md))
-- [OBSERVED] pairingとunpairingの成功は手動確認済み。ただし成功時のraw監査JSONは同梱されず、公開再現証拠ではない。`EPIPE` の失敗記録だけから成功を証明しない。
-- [HYPOTHESIS] pairing start `41 02 02 00 00`、stop `41 02 00 00 00`、unpair `41 04 <slot> 00 00` が管理packetの候補。成功監査で再検証する。
-- [OBSERVED] systemd user service、有線USBマウス通常動作、USB再接続後の再取得は手動確認済み。raw監査は同梱されていない。
-- [UNKNOWN] hold-open効果に必要なopen flag。現在のLinux実装は `O_RDWR` をaccess mode、`O_CLOEXEC` をFD継承防止、`O_NONBLOCK` をブロック回避に使う。protocol valueではない。
+- [OBSERVED] Linux C652 Receiverの限定試験で、slot 2の占有とReceiver経由の左ボタン入力10組を確認した後、`41 04 02 00 00` のhost送信呼び出し完了とslot 2の空化を記録した。続いて `41 02 02 00 00` の開始と `41 02 00 00 00` の停止呼び出しを行い、slot 3の新規占有とReceiver経由のraw Report `0x1b`・evdev左ボタン入力10組を記録した。最初のpair後入力監査は再列挙で消えたevent nodeを指定したため収集前に失敗し、再試行で成功した。試験者も通常動作を確認した。これは試験した経路での解除・再ペアリング成功を支持するが、host APIの数値戻り値、入力frameからのslot番号や個体IDの直接同定、他環境での一般性は示さない。`EPIPE` の失敗記録だけを成功根拠には使わない。(evidence: [Receiver結合監査](evidence/receiver-repair-2026-09/README.md))
+- [OBSERVED] 現行のhold-open user serviceを使った有線C658は、利用者報告でhidraw用udevルールのみの状態で1日以上、通常のカーソル移動・クリック・スクロールに支障なく動作した。USB再接続後、journalの`held`記録で対象interfaceの再取得も確認した。確認したunitは `c658-report10ctl hold-open --poll-interval 1` を実行し、実装は有線C658の全hidraw interfaceを1秒間隔で再列挙して保持する。今回の確認直前にinput event用udevルールも追加されたが、1日以上の動作条件には含まれず、serviceはhidrawだけを開く。これは当該Linux環境・サービス・確認期間での実用確認であり、他環境での一般性や根本原因を示さない。(evidence: [hold-open限定監査と継続利用確認](evidence/hold-open-2026-09/README.md))
+- [OBSERVED] 有線C658の限定試験でuser serviceを一時停止し、hidraw FDを保持しない条件Aでは後続の操作窓で入力異常を2回観測した。両回とも利用者は左クリックを物理的に3回行ったと報告し、evdev監査の押下・解放は各0件だった。2回目の接続直後の`y`回答は操作前だった可能性があり、直後の正常動作の根拠にはしない。両interfaceを `O_RDONLY | O_CLOEXEC | O_NONBLOCK` で保持した条件Bでは後続の正常入力を2回、`O_RDWR | O_CLOEXEC | O_NONBLOCK` で保持した条件Cでは同じ正常入力を1回観測した。B/Cの各観測で10秒間のevdev押下・解放を各3件記録した。これらは限定条件での観測で、停止までの秒数やFD保持の因果効果は確定しない。(evidence: [hold-open限定監査](evidence/hold-open-2026-09/README.md))
+- [UNKNOWN] hold-open効果に必要なopen flag。Bの2回とCの1回の成功は、この試行条件でread-only保持でも正常入力が可能で、read-write access modeの必要性を示さない。現在のLinux実装は `O_RDWR` をaccess mode、`O_CLOEXEC` をFD継承防止、`O_NONBLOCK` をブロック回避に使う。protocol valueではない。
 
 ## 試験fixtureと証拠境界
 

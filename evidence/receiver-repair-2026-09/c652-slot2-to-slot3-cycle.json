@@ -1,0 +1,2178 @@
+{
+  "schema": "c652-receiver-repair-cycle/v1",
+  "source_sha256": {
+    "before_slots": "25222013dff468d5280ef26a56423faa3211f5b3cdef7858d805390a66cff6e0",
+    "before_input": "454137dad63434de10b00c663cd7dfbe75706832a213cc8b265b75d700cbb777",
+    "unpair": "be91137ad6e009bf66e8a537c975d4ac5145c6cf04c2a84d74659cd71b660401",
+    "pair": "b62efab3eb1000b0dba46903d9768d105d76987a6ff58b043512e0af816fad4d",
+    "failed_after_input": "aae823467611fc20be3e4c2a26f828b6d7d28ce680fdf15403b88c9373fc71d2",
+    "after_slots": "54d7463a6a0158e1babb43c5aa6b0da64930fea53c8dc0b79fb08fa2ba49b612",
+    "after_input": "d2f5a14f0fda663e9be4e92e048746575af714a04a757a4ac93e85301b3d845a"
+  },
+  "assembly_note": "Complete redacted CLI audits nested without reconstructing absent data; the failed first post-pair input capture is retained.",
+  "owner_report": "Owner reported normal mouse operation after re-pairing; this is a separate report from raw/evdev capture.",
+  "tool_provenance": "The CLI tool was uncommitted at execution; tool_git_commit alone does not identify its full source.",
+  "records": {
+    "before_slots": {
+      "schema": "c652-slot-snapshot/v1",
+      "time": "2026-09-25T12:50:21.733540+00:00",
+      "device": "/dev/hidraw9",
+      "operation": "GET_FEATURE 0x43..0x47",
+      "write_performed": false,
+      "slots": [
+        {
+          "slot": 0,
+          "report_id": "0x43",
+          "device_type": "0x00",
+          "occupied": false,
+          "serial_raw_hex": "00 00 00 00 00 00",
+          "raw_hex": "43 00 00 00 00 00 00 00",
+          "layout_evidence": "prior-static for device_type/serial interpretation"
+        },
+        {
+          "slot": 1,
+          "report_id": "0x44",
+          "device_type": "0x00",
+          "occupied": false,
+          "serial_raw_hex": "00 00 00 00 00 00",
+          "raw_hex": "44 00 00 00 00 00 00 00",
+          "layout_evidence": "prior-static for device_type/serial interpretation"
+        },
+        {
+          "slot": 2,
+          "report_id": "0x45",
+          "device_type": "0x59",
+          "occupied": true,
+          "serial_raw_hex": "<ANONYMIZED:DEVICE_1>",
+          "raw_hex": "45 59 <ANONYMIZED:DEVICE_1>",
+          "layout_evidence": "prior-static for device_type/serial interpretation"
+        },
+        {
+          "slot": 3,
+          "report_id": "0x46",
+          "device_type": "0x00",
+          "occupied": false,
+          "serial_raw_hex": "00 00 00 00 00 00",
+          "raw_hex": "46 00 00 00 00 00 00 00",
+          "layout_evidence": "prior-static for device_type/serial interpretation"
+        },
+        {
+          "slot": 4,
+          "report_id": "0x47",
+          "device_type": "0x00",
+          "occupied": false,
+          "serial_raw_hex": "00 00 00 00 00 00",
+          "raw_hex": "47 00 00 00 00 00 00 00",
+          "layout_evidence": "prior-static for device_type/serial interpretation"
+        }
+      ]
+    },
+    "before_input": {
+      "schema": "c652-physical-input/v1",
+      "started_at": "2026-09-25T12:50:21.823208+00:00",
+      "tool_git_commit": "2eb28b1f291031c09185d9d52ce07f5feff5a81d",
+      "transport": "receiver",
+      "vid": "256f",
+      "pid": "c652",
+      "hidraw": "/dev/hidraw11",
+      "hid_descriptor_sha256": "8e31d4b6f8e0c5eb5ff01617d202f8f29421f514fd05a187a2ca3c777aea9efc",
+      "subcommand": "audit-receiver-input",
+      "options": {
+        "seconds": 30.0,
+        "presses": 10
+      },
+      "input_hidraw": "/dev/hidraw11",
+      "event_paths": [
+        "/dev/input/event11",
+        "/dev/input/event12"
+      ],
+      "physical_button": "left",
+      "expected_evdev_code": 272,
+      "required_presses": 10,
+      "capture_seconds": 30.0,
+      "raw_reports": [
+        {
+          "time": 97012.390501649,
+          "path": "/dev/hidraw11",
+          "length": 3,
+          "report_id": "0x17",
+          "raw_hex": "17 64 00"
+        },
+        {
+          "time": 97013.887537575,
+          "path": "/dev/hidraw11",
+          "length": 3,
+          "report_id": "0x17",
+          "raw_hex": "17 64 00"
+        },
+        {
+          "time": 97015.215560863,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 ff ff 00 00 00 00 00"
+        },
+        {
+          "time": 97015.223551156,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 ff ff ff ff 00 00 00"
+        },
+        {
+          "time": 97015.231556507,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 ff ff fe ff 00 00 00"
+        },
+        {
+          "time": 97015.239554704,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 fe ff ff ff 00 00 00"
+        },
+        {
+          "time": 97015.247551669,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 fe ff fe ff 00 00 00"
+        },
+        {
+          "time": 97015.256555625,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 ff ff ff ff 00 00 00"
+        },
+        {
+          "time": 97015.264546879,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 fc ff fd ff 00 00 00"
+        },
+        {
+          "time": 97015.272554754,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 fc ff fc ff 00 00 00"
+        },
+        {
+          "time": 97015.280545527,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 fd ff fe ff 00 00 00"
+        },
+        {
+          "time": 97015.288556699,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 fd ff fe ff 00 00 00"
+        },
+        {
+          "time": 97015.296558162,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 fe ff fe ff 00 00 00"
+        },
+        {
+          "time": 97015.304558974,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 fd ff fe ff 00 00 00"
+        },
+        {
+          "time": 97015.312548325,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 fe ff fe ff 00 00 00"
+        },
+        {
+          "time": 97015.32055608,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 fe ff fd ff 00 00 00"
+        },
+        {
+          "time": 97015.328548907,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 fe ff fe ff 00 00 00"
+        },
+        {
+          "time": 97015.336553757,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 fe ff fe ff 00 00 00"
+        },
+        {
+          "time": 97015.344550602,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 fe ff ff ff 00 00 00"
+        },
+        {
+          "time": 97015.352549461,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 ff ff fe ff 00 00 00"
+        },
+        {
+          "time": 97015.360547858,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 fe ff ff ff 00 00 00"
+        },
+        {
+          "time": 97015.368549362,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 ff ff fe ff 00 00 00"
+        },
+        {
+          "time": 97015.376550535,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 ff ff ff ff 00 00 00"
+        },
+        {
+          "time": 97015.384550275,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 ff ff fe ff 00 00 00"
+        },
+        {
+          "time": 97015.39255286,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 fe ff ff ff 00 00 00"
+        },
+        {
+          "time": 97015.400550767,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 ff ff fe ff 00 00 00"
+        },
+        {
+          "time": 97015.408549615,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 ff ff ff ff 00 00 00"
+        },
+        {
+          "time": 97015.416555557,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 ff ff fe ff 00 00 00"
+        },
+        {
+          "time": 97015.42455151,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 fe ff fe ff 00 00 00"
+        },
+        {
+          "time": 97015.432552363,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 ff ff fe ff 00 00 00"
+        },
+        {
+          "time": 97015.440547664,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 fd ff fd ff 00 00 00"
+        },
+        {
+          "time": 97015.448551743,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 fe ff fe ff 00 00 00"
+        },
+        {
+          "time": 97015.456551082,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 fe ff fe ff 00 00 00"
+        },
+        {
+          "time": 97015.464550512,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 fe ff fe ff 00 00 00"
+        },
+        {
+          "time": 97015.472553017,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 fe ff fe ff 00 00 00"
+        },
+        {
+          "time": 97015.480553198,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 ff ff ff ff 00 00 00"
+        },
+        {
+          "time": 97015.489551293,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 ff ff 00 00 00 00 00"
+        },
+        {
+          "time": 97015.497551514,
+          "path": "/dev/hidraw11",
+          "length": 3,
+          "report_id": "0x17",
+          "raw_hex": "17 64 00"
+        },
+        {
+          "time": 97015.696567704,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 01 00 00 00 00 00 00"
+        },
+        {
+          "time": 97015.712552496,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 01 00 00 00 00 00 00"
+        },
+        {
+          "time": 97015.721547405,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 01 00 00 00 00 00 00"
+        },
+        {
+          "time": 97015.729550111,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 01 00 01 00 00 00 00"
+        },
+        {
+          "time": 97015.737560631,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 02 00 00 00 00 00 00"
+        },
+        {
+          "time": 97015.745561975,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 01 00 00 00 00 00 00"
+        },
+        {
+          "time": 97015.753560202,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 02 00 00 00 00 00 00"
+        },
+        {
+          "time": 97015.761563319,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 04 00 01 00 00 00 00"
+        },
+        {
+          "time": 97015.76955833,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 04 00 01 00 00 00 00"
+        },
+        {
+          "time": 97015.777566015,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 04 00 01 00 00 00 00"
+        },
+        {
+          "time": 97015.785563902,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 03 00 00 00 00 00 00"
+        },
+        {
+          "time": 97015.793560776,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 03 00 01 00 00 00 00"
+        },
+        {
+          "time": 97015.801560637,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 01 00 00 00 00 00 00"
+        },
+        {
+          "time": 97015.809559215,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 02 00 00 00 00 00 00"
+        },
+        {
+          "time": 97015.817556009,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 01 00 00 00 00 00 00"
+        },
+        {
+          "time": 97015.827562918,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 01 00 00 00 00 00 00"
+        },
+        {
+          "time": 97016.306584302,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 01 00 00 00 00 00 00 00"
+        },
+        {
+          "time": 97016.434597107,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 00 00 00 00 00 00 00"
+        },
+        {
+          "time": 97016.618600319,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 01 00 00 00 00 00 00 00"
+        },
+        {
+          "time": 97016.738593547,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 00 00 00 00 00 00 00"
+        },
+        {
+          "time": 97016.89059857,
+          "path": "/dev/hidraw11",
+          "length": 3,
+          "report_id": "0x17",
+          "raw_hex": "17 64 00"
+        },
+        {
+          "time": 97016.898606746,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 01 00 00 00 00 00 00 00"
+        },
+        {
+          "time": 97016.962595741,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 00 00 00 00 00 00 00"
+        },
+        {
+          "time": 97017.228600618,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 01 00 00 00 00 00 00 00"
+        },
+        {
+          "time": 97017.324603052,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 00 00 00 00 00 00 00"
+        },
+        {
+          "time": 97017.540619503,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 01 00 00 00 00 00 00 00"
+        },
+        {
+          "time": 97017.652616387,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 00 00 00 00 00 00 00"
+        },
+        {
+          "time": 97017.908618134,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 01 00 00 00 00 00 00 00"
+        },
+        {
+          "time": 97018.020621901,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 00 00 00 00 00 00 00"
+        },
+        {
+          "time": 97018.268631502,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 01 00 00 00 00 00 00 00"
+        },
+        {
+          "time": 97018.371627957,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 00 00 00 00 00 00 00"
+        },
+        {
+          "time": 97018.6296346,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 01 00 00 00 00 00 00 00"
+        },
+        {
+          "time": 97018.718639876,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 00 00 00 00 00 00 00"
+        },
+        {
+          "time": 97018.997648762,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 01 00 00 00 00 00 00 00"
+        },
+        {
+          "time": 97019.1016476,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 00 00 00 00 00 00 00"
+        },
+        {
+          "time": 97019.495657221,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 01 00 00 00 00 00 00 00"
+        },
+        {
+          "time": 97019.591668372,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 00 00 00 00 00 00 00"
+        },
+        {
+          "time": 97020.183680834,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 ff ff 00 00 00 00 00"
+        },
+        {
+          "time": 97020.191666548,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 00 00 ff ff 00 00 00"
+        },
+        {
+          "time": 97020.199668913,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 ff ff 00 00 00 00 00"
+        },
+        {
+          "time": 97020.215669195,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 00 00 ff ff 00 00 00"
+        },
+        {
+          "time": 97020.271668289,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 ff ff 00 00 00 00 00"
+        },
+        {
+          "time": 97020.27966833,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 00 00 ff ff 00 00 00"
+        },
+        {
+          "time": 97020.287670174,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 ff ff 00 00 00 00 00"
+        },
+        {
+          "time": 97020.295668411,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 00 00 ff ff 00 00 00"
+        },
+        {
+          "time": 97020.40768268,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 ff ff 00 00 00 00 00"
+        },
+        {
+          "time": 97020.41567728,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 00 00 ff ff 00 00 00"
+        },
+        {
+          "time": 97020.431671561,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 ff ff 00 00 00 00 00"
+        },
+        {
+          "time": 97021.311696018,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 01 00 00 00 00 00 00"
+        },
+        {
+          "time": 97021.319684126,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 01 00 ff ff 00 00 00"
+        },
+        {
+          "time": 97021.32768578,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 02 00 ff ff 00 00 00"
+        },
+        {
+          "time": 97021.335684889,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 01 00 ff ff 00 00 00"
+        },
+        {
+          "time": 97021.343683538,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 01 00 ff ff 00 00 00"
+        },
+        {
+          "time": 97021.351685883,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 02 00 ff ff 00 00 00"
+        },
+        {
+          "time": 97021.359681676,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 02 00 ff ff 00 00 00"
+        },
+        {
+          "time": 97021.367685133,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 01 00 00 00 00 00 00"
+        },
+        {
+          "time": 97021.375687408,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 01 00 ff ff 00 00 00"
+        },
+        {
+          "time": 97021.383695675,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 01 00 ff ff 00 00 00"
+        },
+        {
+          "time": 97021.391694113,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 01 00 00 00 00 00 00"
+        },
+        {
+          "time": 97021.447707274,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 00 00 ff ff 00 00 00"
+        },
+        {
+          "time": 97024.391774528,
+          "path": "/dev/hidraw11",
+          "length": 3,
+          "report_id": "0x17",
+          "raw_hex": "17 64 00"
+        },
+        {
+          "time": 97025.894806489,
+          "path": "/dev/hidraw11",
+          "length": 3,
+          "report_id": "0x17",
+          "raw_hex": "17 64 00"
+        }
+      ],
+      "key_events": [
+        {
+          "time": 97016.30658868,
+          "kernel_time": "1790340626.935467",
+          "path": "/dev/input/event11",
+          "type": 1,
+          "code": 272,
+          "value": 1
+        },
+        {
+          "time": 97016.434601165,
+          "kernel_time": "1790340627.063480",
+          "path": "/dev/input/event11",
+          "type": 1,
+          "code": 272,
+          "value": 0
+        },
+        {
+          "time": 97016.618603766,
+          "kernel_time": "1790340627.247485",
+          "path": "/dev/input/event11",
+          "type": 1,
+          "code": 272,
+          "value": 1
+        },
+        {
+          "time": 97016.738597625,
+          "kernel_time": "1790340627.367480",
+          "path": "/dev/input/event11",
+          "type": 1,
+          "code": 272,
+          "value": 0
+        },
+        {
+          "time": 97016.898610643,
+          "kernel_time": "1790340627.527490",
+          "path": "/dev/input/event11",
+          "type": 1,
+          "code": 272,
+          "value": 1
+        },
+        {
+          "time": 97016.962599668,
+          "kernel_time": "1790340627.591479",
+          "path": "/dev/input/event11",
+          "type": 1,
+          "code": 272,
+          "value": 0
+        },
+        {
+          "time": 97017.228612551,
+          "kernel_time": "1790340627.857488",
+          "path": "/dev/input/event11",
+          "type": 1,
+          "code": 272,
+          "value": 1
+        },
+        {
+          "time": 97017.324610456,
+          "kernel_time": "1790340627.953497",
+          "path": "/dev/input/event11",
+          "type": 1,
+          "code": 272,
+          "value": 0
+        },
+        {
+          "time": 97017.540623901,
+          "kernel_time": "1790340628.169504",
+          "path": "/dev/input/event11",
+          "type": 1,
+          "code": 272,
+          "value": 1
+        },
+        {
+          "time": 97017.652619813,
+          "kernel_time": "1790340628.281504",
+          "path": "/dev/input/event11",
+          "type": 1,
+          "code": 272,
+          "value": 0
+        },
+        {
+          "time": 97017.908622021,
+          "kernel_time": "1790340628.537504",
+          "path": "/dev/input/event11",
+          "type": 1,
+          "code": 272,
+          "value": 1
+        },
+        {
+          "time": 97018.020625808,
+          "kernel_time": "1790340628.649506",
+          "path": "/dev/input/event11",
+          "type": 1,
+          "code": 272,
+          "value": 0
+        },
+        {
+          "time": 97018.268635429,
+          "kernel_time": "1790340628.897515",
+          "path": "/dev/input/event11",
+          "type": 1,
+          "code": 272,
+          "value": 1
+        },
+        {
+          "time": 97018.371630923,
+          "kernel_time": "1790340629.000516",
+          "path": "/dev/input/event11",
+          "type": 1,
+          "code": 272,
+          "value": 0
+        },
+        {
+          "time": 97018.629638096,
+          "kernel_time": "1790340629.258519",
+          "path": "/dev/input/event11",
+          "type": 1,
+          "code": 272,
+          "value": 1
+        },
+        {
+          "time": 97018.718643282,
+          "kernel_time": "1790340629.347526",
+          "path": "/dev/input/event11",
+          "type": 1,
+          "code": 272,
+          "value": 0
+        },
+        {
+          "time": 97018.997652909,
+          "kernel_time": "1790340629.626531",
+          "path": "/dev/input/event11",
+          "type": 1,
+          "code": 272,
+          "value": 1
+        },
+        {
+          "time": 97019.101650315,
+          "kernel_time": "1790340629.730533",
+          "path": "/dev/input/event11",
+          "type": 1,
+          "code": 272,
+          "value": 0
+        },
+        {
+          "time": 97019.495660297,
+          "kernel_time": "1790340630.124545",
+          "path": "/dev/input/event11",
+          "type": 1,
+          "code": 272,
+          "value": 1
+        },
+        {
+          "time": 97019.591672059,
+          "kernel_time": "1790340630.220553",
+          "path": "/dev/input/event11",
+          "type": 1,
+          "code": 272,
+          "value": 0
+        }
+      ],
+      "failure": null,
+      "success": true,
+      "raw_left_press_transitions": 10,
+      "evdev_left_press_release_by_path": {
+        "/dev/input/event11": [
+          10,
+          10
+        ]
+      },
+      "finished_at": "2026-09-25T12:50:51.857990+00:00"
+    },
+    "unpair": {
+      "schema": "c652-experimental-unpair/v2",
+      "started_at": "2026-09-25T12:52:34.355338+00:00",
+      "tool_git_commit": "2eb28b1f291031c09185d9d52ce07f5feff5a81d",
+      "transport": "receiver",
+      "vid": "256f",
+      "pid": "c652",
+      "hidraw": "/dev/hidraw9",
+      "hid_descriptor_sha256": "f3c1a890e7ac8c9345048389a50023cfd3d5fc522ef8110ecdf9daafa94c78e3",
+      "subcommand": "unpair",
+      "options": {
+        "slot": 2,
+        "timeout": 15.0,
+        "poll_interval": 0.5
+      },
+      "device": "/dev/hidraw9",
+      "slot": 2,
+      "packet": "41 04 02 00 00",
+      "target_before": {
+        "slot": 2,
+        "report_id": "0x45",
+        "device_type": "0x59",
+        "occupied": true,
+        "serial_raw_hex": "<ANONYMIZED:DEVICE_1>",
+        "raw_hex": "45 59 <ANONYMIZED:DEVICE_1>",
+        "layout_evidence": "prior-static for device_type/serial interpretation"
+      },
+      "required_expect_raw": "45 59 <ANONYMIZED:DEVICE_1>",
+      "evidence": "manual success reported; reproducible raw success audit absent",
+      "before": [
+        {
+          "slot": 0,
+          "report_id": "0x43",
+          "device_type": "0x00",
+          "occupied": false,
+          "serial_raw_hex": "00 00 00 00 00 00",
+          "raw_hex": "43 00 00 00 00 00 00 00",
+          "layout_evidence": "prior-static for device_type/serial interpretation"
+        },
+        {
+          "slot": 1,
+          "report_id": "0x44",
+          "device_type": "0x00",
+          "occupied": false,
+          "serial_raw_hex": "00 00 00 00 00 00",
+          "raw_hex": "44 00 00 00 00 00 00 00",
+          "layout_evidence": "prior-static for device_type/serial interpretation"
+        },
+        {
+          "slot": 2,
+          "report_id": "0x45",
+          "device_type": "0x59",
+          "occupied": true,
+          "serial_raw_hex": "<ANONYMIZED:DEVICE_1>",
+          "raw_hex": "45 59 <ANONYMIZED:DEVICE_1>",
+          "layout_evidence": "prior-static for device_type/serial interpretation"
+        },
+        {
+          "slot": 3,
+          "report_id": "0x46",
+          "device_type": "0x00",
+          "occupied": false,
+          "serial_raw_hex": "00 00 00 00 00 00",
+          "raw_hex": "46 00 00 00 00 00 00 00",
+          "layout_evidence": "prior-static for device_type/serial interpretation"
+        },
+        {
+          "slot": 4,
+          "report_id": "0x47",
+          "device_type": "0x00",
+          "occupied": false,
+          "serial_raw_hex": "00 00 00 00 00 00",
+          "raw_hex": "47 00 00 00 00 00 00 00",
+          "layout_evidence": "prior-static for device_type/serial interpretation"
+        }
+      ],
+      "snapshots": [
+        {
+          "time": "2026-09-25T12:52:36.009046+00:00",
+          "device": "/dev/hidraw9",
+          "slots": [
+            {
+              "slot": 0,
+              "report_id": "0x43",
+              "device_type": "0x00",
+              "occupied": false,
+              "serial_raw_hex": "00 00 00 00 00 00",
+              "raw_hex": "43 00 00 00 00 00 00 00",
+              "layout_evidence": "prior-static for device_type/serial interpretation"
+            },
+            {
+              "slot": 1,
+              "report_id": "0x44",
+              "device_type": "0x00",
+              "occupied": false,
+              "serial_raw_hex": "00 00 00 00 00 00",
+              "raw_hex": "44 00 00 00 00 00 00 00",
+              "layout_evidence": "prior-static for device_type/serial interpretation"
+            },
+            {
+              "slot": 2,
+              "report_id": "0x45",
+              "device_type": "0x00",
+              "occupied": false,
+              "serial_raw_hex": "00 00 00 00 00 00",
+              "raw_hex": "45 00 00 00 00 00 00 00",
+              "layout_evidence": "prior-static for device_type/serial interpretation"
+            },
+            {
+              "slot": 3,
+              "report_id": "0x46",
+              "device_type": "0x00",
+              "occupied": false,
+              "serial_raw_hex": "00 00 00 00 00 00",
+              "raw_hex": "46 00 00 00 00 00 00 00",
+              "layout_evidence": "prior-static for device_type/serial interpretation"
+            },
+            {
+              "slot": 4,
+              "report_id": "0x47",
+              "device_type": "0x00",
+              "occupied": false,
+              "serial_raw_hex": "00 00 00 00 00 00",
+              "raw_hex": "47 00 00 00 00 00 00 00",
+              "layout_evidence": "prior-static for device_type/serial interpretation"
+            }
+          ]
+        }
+      ],
+      "unpair_request_attempted": true,
+      "packet_sent": true,
+      "ioctl_error": null,
+      "target_empty_confirmed": true,
+      "success": true,
+      "after": [
+        {
+          "slot": 0,
+          "report_id": "0x43",
+          "device_type": "0x00",
+          "occupied": false,
+          "serial_raw_hex": "00 00 00 00 00 00",
+          "raw_hex": "43 00 00 00 00 00 00 00",
+          "layout_evidence": "prior-static for device_type/serial interpretation"
+        },
+        {
+          "slot": 1,
+          "report_id": "0x44",
+          "device_type": "0x00",
+          "occupied": false,
+          "serial_raw_hex": "00 00 00 00 00 00",
+          "raw_hex": "44 00 00 00 00 00 00 00",
+          "layout_evidence": "prior-static for device_type/serial interpretation"
+        },
+        {
+          "slot": 2,
+          "report_id": "0x45",
+          "device_type": "0x00",
+          "occupied": false,
+          "serial_raw_hex": "00 00 00 00 00 00",
+          "raw_hex": "45 00 00 00 00 00 00 00",
+          "layout_evidence": "prior-static for device_type/serial interpretation"
+        },
+        {
+          "slot": 3,
+          "report_id": "0x46",
+          "device_type": "0x00",
+          "occupied": false,
+          "serial_raw_hex": "00 00 00 00 00 00",
+          "raw_hex": "46 00 00 00 00 00 00 00",
+          "layout_evidence": "prior-static for device_type/serial interpretation"
+        },
+        {
+          "slot": 4,
+          "report_id": "0x47",
+          "device_type": "0x00",
+          "occupied": false,
+          "serial_raw_hex": "00 00 00 00 00 00",
+          "raw_hex": "47 00 00 00 00 00 00 00",
+          "layout_evidence": "prior-static for device_type/serial interpretation"
+        }
+      ],
+      "finished_at": "2026-09-25T12:52:36.009080+00:00",
+      "failure": null
+    },
+    "pair": {
+      "schema": "c652-experimental-pairing/v1",
+      "started_at": "2026-09-25T12:53:36.027883+00:00",
+      "tool_git_commit": "2eb28b1f291031c09185d9d52ce07f5feff5a81d",
+      "transport": "receiver",
+      "vid": "256f",
+      "pid": "c652",
+      "hidraw": "/dev/hidraw9",
+      "hid_descriptor_sha256": "f3c1a890e7ac8c9345048389a50023cfd3d5fc522ef8110ecdf9daafa94c78e3",
+      "subcommand": "pair",
+      "options": {
+        "timeout": 60.0,
+        "poll_interval": 1.0,
+        "expect_type": 89
+      },
+      "device": "/dev/hidraw9",
+      "start_packet": "41 02 02 00 00",
+      "stop_packet": "41 02 00 00 00",
+      "before": [
+        {
+          "slot": 0,
+          "report_id": "0x43",
+          "device_type": "0x00",
+          "occupied": false,
+          "serial_raw_hex": "00 00 00 00 00 00",
+          "raw_hex": "43 00 00 00 00 00 00 00",
+          "layout_evidence": "prior-static for device_type/serial interpretation"
+        },
+        {
+          "slot": 1,
+          "report_id": "0x44",
+          "device_type": "0x00",
+          "occupied": false,
+          "serial_raw_hex": "00 00 00 00 00 00",
+          "raw_hex": "44 00 00 00 00 00 00 00",
+          "layout_evidence": "prior-static for device_type/serial interpretation"
+        },
+        {
+          "slot": 2,
+          "report_id": "0x45",
+          "device_type": "0x00",
+          "occupied": false,
+          "serial_raw_hex": "00 00 00 00 00 00",
+          "raw_hex": "45 00 00 00 00 00 00 00",
+          "layout_evidence": "prior-static for device_type/serial interpretation"
+        },
+        {
+          "slot": 3,
+          "report_id": "0x46",
+          "device_type": "0x00",
+          "occupied": false,
+          "serial_raw_hex": "00 00 00 00 00 00",
+          "raw_hex": "46 00 00 00 00 00 00 00",
+          "layout_evidence": "prior-static for device_type/serial interpretation"
+        },
+        {
+          "slot": 4,
+          "report_id": "0x47",
+          "device_type": "0x00",
+          "occupied": false,
+          "serial_raw_hex": "00 00 00 00 00 00",
+          "raw_hex": "47 00 00 00 00 00 00 00",
+          "layout_evidence": "prior-static for device_type/serial interpretation"
+        }
+      ],
+      "evidence": "manual success reported; reproducible raw success audit absent",
+      "snapshots": [
+        {
+          "time": "2026-09-25T12:53:36.708026+00:00",
+          "device": "/dev/hidraw9",
+          "slots": [
+            {
+              "slot": 0,
+              "report_id": "0x43",
+              "device_type": "0x00",
+              "occupied": false,
+              "serial_raw_hex": "00 00 00 00 00 00",
+              "raw_hex": "43 00 00 00 00 00 00 00",
+              "layout_evidence": "prior-static for device_type/serial interpretation"
+            },
+            {
+              "slot": 1,
+              "report_id": "0x44",
+              "device_type": "0x00",
+              "occupied": false,
+              "serial_raw_hex": "00 00 00 00 00 00",
+              "raw_hex": "44 00 00 00 00 00 00 00",
+              "layout_evidence": "prior-static for device_type/serial interpretation"
+            },
+            {
+              "slot": 2,
+              "report_id": "0x45",
+              "device_type": "0x00",
+              "occupied": false,
+              "serial_raw_hex": "00 00 00 00 00 00",
+              "raw_hex": "45 00 00 00 00 00 00 00",
+              "layout_evidence": "prior-static for device_type/serial interpretation"
+            },
+            {
+              "slot": 3,
+              "report_id": "0x46",
+              "device_type": "0x00",
+              "occupied": false,
+              "serial_raw_hex": "00 00 00 00 00 00",
+              "raw_hex": "46 00 00 00 00 00 00 00",
+              "layout_evidence": "prior-static for device_type/serial interpretation"
+            },
+            {
+              "slot": 4,
+              "report_id": "0x47",
+              "device_type": "0x00",
+              "occupied": false,
+              "serial_raw_hex": "00 00 00 00 00 00",
+              "raw_hex": "47 00 00 00 00 00 00 00",
+              "layout_evidence": "prior-static for device_type/serial interpretation"
+            }
+          ]
+        },
+        {
+          "time": "2026-09-25T12:53:38.332073+00:00",
+          "device": "/dev/hidraw9",
+          "slots": [
+            {
+              "slot": 0,
+              "report_id": "0x43",
+              "device_type": "0x00",
+              "occupied": false,
+              "serial_raw_hex": "00 00 00 00 00 00",
+              "raw_hex": "43 00 00 00 00 00 00 00",
+              "layout_evidence": "prior-static for device_type/serial interpretation"
+            },
+            {
+              "slot": 1,
+              "report_id": "0x44",
+              "device_type": "0x00",
+              "occupied": false,
+              "serial_raw_hex": "00 00 00 00 00 00",
+              "raw_hex": "44 00 00 00 00 00 00 00",
+              "layout_evidence": "prior-static for device_type/serial interpretation"
+            },
+            {
+              "slot": 2,
+              "report_id": "0x45",
+              "device_type": "0x00",
+              "occupied": false,
+              "serial_raw_hex": "00 00 00 00 00 00",
+              "raw_hex": "45 00 00 00 00 00 00 00",
+              "layout_evidence": "prior-static for device_type/serial interpretation"
+            },
+            {
+              "slot": 3,
+              "report_id": "0x46",
+              "device_type": "0x00",
+              "occupied": false,
+              "serial_raw_hex": "00 00 00 00 00 00",
+              "raw_hex": "46 00 00 00 00 00 00 00",
+              "layout_evidence": "prior-static for device_type/serial interpretation"
+            },
+            {
+              "slot": 4,
+              "report_id": "0x47",
+              "device_type": "0x00",
+              "occupied": false,
+              "serial_raw_hex": "00 00 00 00 00 00",
+              "raw_hex": "47 00 00 00 00 00 00 00",
+              "layout_evidence": "prior-static for device_type/serial interpretation"
+            }
+          ]
+        },
+        {
+          "time": "2026-09-25T12:53:40.108164+00:00",
+          "device": "/dev/hidraw9",
+          "slots": [
+            {
+              "slot": 0,
+              "report_id": "0x43",
+              "device_type": "0x00",
+              "occupied": false,
+              "serial_raw_hex": "00 00 00 00 00 00",
+              "raw_hex": "43 00 00 00 00 00 00 00",
+              "layout_evidence": "prior-static for device_type/serial interpretation"
+            },
+            {
+              "slot": 1,
+              "report_id": "0x44",
+              "device_type": "0x00",
+              "occupied": false,
+              "serial_raw_hex": "00 00 00 00 00 00",
+              "raw_hex": "44 00 00 00 00 00 00 00",
+              "layout_evidence": "prior-static for device_type/serial interpretation"
+            },
+            {
+              "slot": 2,
+              "report_id": "0x45",
+              "device_type": "0x00",
+              "occupied": false,
+              "serial_raw_hex": "00 00 00 00 00 00",
+              "raw_hex": "45 00 00 00 00 00 00 00",
+              "layout_evidence": "prior-static for device_type/serial interpretation"
+            },
+            {
+              "slot": 3,
+              "report_id": "0x46",
+              "device_type": "0x00",
+              "occupied": false,
+              "serial_raw_hex": "00 00 00 00 00 00",
+              "raw_hex": "46 00 00 00 00 00 00 00",
+              "layout_evidence": "prior-static for device_type/serial interpretation"
+            },
+            {
+              "slot": 4,
+              "report_id": "0x47",
+              "device_type": "0x00",
+              "occupied": false,
+              "serial_raw_hex": "00 00 00 00 00 00",
+              "raw_hex": "47 00 00 00 00 00 00 00",
+              "layout_evidence": "prior-static for device_type/serial interpretation"
+            }
+          ]
+        },
+        {
+          "time": "2026-09-25T12:53:41.990137+00:00",
+          "device": "/dev/hidraw9",
+          "slots": [
+            {
+              "slot": 0,
+              "report_id": "0x43",
+              "device_type": "0x00",
+              "occupied": false,
+              "serial_raw_hex": "00 00 00 00 00 00",
+              "raw_hex": "43 00 00 00 00 00 00 00",
+              "layout_evidence": "prior-static for device_type/serial interpretation"
+            },
+            {
+              "slot": 1,
+              "report_id": "0x44",
+              "device_type": "0x00",
+              "occupied": false,
+              "serial_raw_hex": "00 00 00 00 00 00",
+              "raw_hex": "44 00 00 00 00 00 00 00",
+              "layout_evidence": "prior-static for device_type/serial interpretation"
+            },
+            {
+              "slot": 2,
+              "report_id": "0x45",
+              "device_type": "0x00",
+              "occupied": false,
+              "serial_raw_hex": "00 00 00 00 00 00",
+              "raw_hex": "45 00 00 00 00 00 00 00",
+              "layout_evidence": "prior-static for device_type/serial interpretation"
+            },
+            {
+              "slot": 3,
+              "report_id": "0x46",
+              "device_type": "0x00",
+              "occupied": false,
+              "serial_raw_hex": "00 00 00 00 00 00",
+              "raw_hex": "46 00 00 00 00 00 00 00",
+              "layout_evidence": "prior-static for device_type/serial interpretation"
+            },
+            {
+              "slot": 4,
+              "report_id": "0x47",
+              "device_type": "0x00",
+              "occupied": false,
+              "serial_raw_hex": "00 00 00 00 00 00",
+              "raw_hex": "47 00 00 00 00 00 00 00",
+              "layout_evidence": "prior-static for device_type/serial interpretation"
+            }
+          ]
+        },
+        {
+          "time": "2026-09-25T12:53:43.871213+00:00",
+          "device": "/dev/hidraw9",
+          "slots": [
+            {
+              "slot": 0,
+              "report_id": "0x43",
+              "device_type": "0x00",
+              "occupied": false,
+              "serial_raw_hex": "00 00 00 00 00 00",
+              "raw_hex": "43 00 00 00 00 00 00 00",
+              "layout_evidence": "prior-static for device_type/serial interpretation"
+            },
+            {
+              "slot": 1,
+              "report_id": "0x44",
+              "device_type": "0x00",
+              "occupied": false,
+              "serial_raw_hex": "00 00 00 00 00 00",
+              "raw_hex": "44 00 00 00 00 00 00 00",
+              "layout_evidence": "prior-static for device_type/serial interpretation"
+            },
+            {
+              "slot": 2,
+              "report_id": "0x45",
+              "device_type": "0x00",
+              "occupied": false,
+              "serial_raw_hex": "00 00 00 00 00 00",
+              "raw_hex": "45 00 00 00 00 00 00 00",
+              "layout_evidence": "prior-static for device_type/serial interpretation"
+            },
+            {
+              "slot": 3,
+              "report_id": "0x46",
+              "device_type": "0x00",
+              "occupied": false,
+              "serial_raw_hex": "00 00 00 00 00 00",
+              "raw_hex": "46 00 00 00 00 00 00 00",
+              "layout_evidence": "prior-static for device_type/serial interpretation"
+            },
+            {
+              "slot": 4,
+              "report_id": "0x47",
+              "device_type": "0x00",
+              "occupied": false,
+              "serial_raw_hex": "00 00 00 00 00 00",
+              "raw_hex": "47 00 00 00 00 00 00 00",
+              "layout_evidence": "prior-static for device_type/serial interpretation"
+            }
+          ]
+        },
+        {
+          "time": "2026-09-25T12:53:45.804270+00:00",
+          "device": "/dev/hidraw9",
+          "slots": [
+            {
+              "slot": 0,
+              "report_id": "0x43",
+              "device_type": "0x00",
+              "occupied": false,
+              "serial_raw_hex": "00 00 00 00 00 00",
+              "raw_hex": "43 00 00 00 00 00 00 00",
+              "layout_evidence": "prior-static for device_type/serial interpretation"
+            },
+            {
+              "slot": 1,
+              "report_id": "0x44",
+              "device_type": "0x00",
+              "occupied": false,
+              "serial_raw_hex": "00 00 00 00 00 00",
+              "raw_hex": "44 00 00 00 00 00 00 00",
+              "layout_evidence": "prior-static for device_type/serial interpretation"
+            },
+            {
+              "slot": 2,
+              "report_id": "0x45",
+              "device_type": "0x00",
+              "occupied": false,
+              "serial_raw_hex": "00 00 00 00 00 00",
+              "raw_hex": "45 00 00 00 00 00 00 00",
+              "layout_evidence": "prior-static for device_type/serial interpretation"
+            },
+            {
+              "slot": 3,
+              "report_id": "0x46",
+              "device_type": "0x59",
+              "occupied": true,
+              "serial_raw_hex": "<ANONYMIZED:DEVICE_1>",
+              "raw_hex": "46 59 <ANONYMIZED:DEVICE_1>",
+              "layout_evidence": "prior-static for device_type/serial interpretation"
+            },
+            {
+              "slot": 4,
+              "report_id": "0x47",
+              "device_type": "0x00",
+              "occupied": false,
+              "serial_raw_hex": "00 00 00 00 00 00",
+              "raw_hex": "47 00 00 00 00 00 00 00",
+              "layout_evidence": "prior-static for device_type/serial interpretation"
+            }
+          ]
+        }
+      ],
+      "new_slots": [
+        {
+          "slot": 3,
+          "report_id": "0x46",
+          "device_type": "0x59",
+          "occupied": true,
+          "serial_raw_hex": "<ANONYMIZED:DEVICE_1>",
+          "raw_hex": "46 59 <ANONYMIZED:DEVICE_1>",
+          "layout_evidence": "prior-static for device_type/serial interpretation"
+        }
+      ],
+      "stop_sent": true,
+      "success": true,
+      "finished_at": "2026-09-25T12:53:48.039315+00:00",
+      "failure": null,
+      "paired_c658_handles": [
+        "/dev/hidraw11"
+      ]
+    },
+    "failed_after_input": {
+      "schema": "c652-physical-input/v1",
+      "started_at": "2026-09-25T12:55:19.477967+00:00",
+      "tool_git_commit": "2eb28b1f291031c09185d9d52ce07f5feff5a81d",
+      "transport": "receiver",
+      "vid": "256f",
+      "pid": "c652",
+      "hidraw": "/dev/hidraw11",
+      "hid_descriptor_sha256": "8e31d4b6f8e0c5eb5ff01617d202f8f29421f514fd05a187a2ca3c777aea9efc",
+      "subcommand": "audit-receiver-input",
+      "options": {
+        "seconds": 30.0,
+        "presses": 10
+      },
+      "input_hidraw": "/dev/hidraw11",
+      "event_paths": [
+        "/dev/input/event11",
+        "/dev/input/event12"
+      ],
+      "physical_button": "left",
+      "expected_evdev_code": 272,
+      "required_presses": 10,
+      "capture_seconds": 30.0,
+      "raw_reports": [],
+      "key_events": [],
+      "failure": "[Errno 2] No such file or directory: '/dev/input/event12'",
+      "success": false,
+      "finished_at": "2026-09-25T12:55:19.544917+00:00"
+    },
+    "after_slots": {
+      "schema": "c652-slot-snapshot/v1",
+      "time": "2026-09-25T12:54:45.262618+00:00",
+      "device": "/dev/hidraw9",
+      "operation": "GET_FEATURE 0x43..0x47",
+      "write_performed": false,
+      "slots": [
+        {
+          "slot": 0,
+          "report_id": "0x43",
+          "device_type": "0x00",
+          "occupied": false,
+          "serial_raw_hex": "00 00 00 00 00 00",
+          "raw_hex": "43 00 00 00 00 00 00 00",
+          "layout_evidence": "prior-static for device_type/serial interpretation"
+        },
+        {
+          "slot": 1,
+          "report_id": "0x44",
+          "device_type": "0x00",
+          "occupied": false,
+          "serial_raw_hex": "00 00 00 00 00 00",
+          "raw_hex": "44 00 00 00 00 00 00 00",
+          "layout_evidence": "prior-static for device_type/serial interpretation"
+        },
+        {
+          "slot": 2,
+          "report_id": "0x45",
+          "device_type": "0x00",
+          "occupied": false,
+          "serial_raw_hex": "00 00 00 00 00 00",
+          "raw_hex": "45 00 00 00 00 00 00 00",
+          "layout_evidence": "prior-static for device_type/serial interpretation"
+        },
+        {
+          "slot": 3,
+          "report_id": "0x46",
+          "device_type": "0x59",
+          "occupied": true,
+          "serial_raw_hex": "<ANONYMIZED:DEVICE_1>",
+          "raw_hex": "46 59 <ANONYMIZED:DEVICE_1>",
+          "layout_evidence": "prior-static for device_type/serial interpretation"
+        },
+        {
+          "slot": 4,
+          "report_id": "0x47",
+          "device_type": "0x00",
+          "occupied": false,
+          "serial_raw_hex": "00 00 00 00 00 00",
+          "raw_hex": "47 00 00 00 00 00 00 00",
+          "layout_evidence": "prior-static for device_type/serial interpretation"
+        }
+      ]
+    },
+    "after_input": {
+      "schema": "c652-physical-input/v1",
+      "started_at": "2026-09-25T12:58:11.761726+00:00",
+      "tool_git_commit": "2eb28b1f291031c09185d9d52ce07f5feff5a81d",
+      "transport": "receiver",
+      "vid": "256f",
+      "pid": "c652",
+      "hidraw": "/dev/hidraw11",
+      "hid_descriptor_sha256": "8e31d4b6f8e0c5eb5ff01617d202f8f29421f514fd05a187a2ca3c777aea9efc",
+      "subcommand": "audit-receiver-input",
+      "options": {
+        "seconds": 30.0,
+        "presses": 10
+      },
+      "input_hidraw": "/dev/hidraw11",
+      "event_paths": [
+        "/dev/input/event10",
+        "/dev/input/event11"
+      ],
+      "physical_button": "left",
+      "expected_evdev_code": 272,
+      "required_presses": 10,
+      "capture_seconds": 30.0,
+      "raw_reports": [
+        {
+          "time": 97481.23141877,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 00 00 00 00 ff ff 00"
+        },
+        {
+          "time": 97481.279408241,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 00 00 00 00 ff ff 00"
+        },
+        {
+          "time": 97481.327401468,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 00 00 00 00 ff ff 00"
+        },
+        {
+          "time": 97482.310440627,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 ff ff 01 00 00 00 00"
+        },
+        {
+          "time": 97482.318437982,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 fe ff 02 00 00 00 00"
+        },
+        {
+          "time": 97482.3264365,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 fe ff 03 00 00 00 00"
+        },
+        {
+          "time": 97482.334437331,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 fe ff 03 00 00 00 00"
+        },
+        {
+          "time": 97482.342422032,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 fe ff 02 00 00 00 00"
+        },
+        {
+          "time": 97482.350434375,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 fc ff 06 00 00 00 00"
+        },
+        {
+          "time": 97482.358443763,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 fc ff 05 00 00 00 00"
+        },
+        {
+          "time": 97482.366420179,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 fd ff 04 00 00 00 00"
+        },
+        {
+          "time": 97482.374417153,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 fc ff 04 00 00 00 00"
+        },
+        {
+          "time": 97482.382430398,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 fc ff 03 00 00 00 00"
+        },
+        {
+          "time": 97482.3904209,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 fc ff 03 00 00 00 00"
+        },
+        {
+          "time": 97482.398426291,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 fd ff 02 00 00 00 00"
+        },
+        {
+          "time": 97482.406419017,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 fe ff 01 00 00 00 00"
+        },
+        {
+          "time": 97482.414419919,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 ff ff 00 00 00 00 00"
+        },
+        {
+          "time": 97482.503439987,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 00 00 01 00 00 00 00"
+        },
+        {
+          "time": 97482.511440598,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 ff ff 00 00 00 00 00"
+        },
+        {
+          "time": 97482.519444756,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 00 00 01 00 00 00 00"
+        },
+        {
+          "time": 97482.527427924,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 ff ff 00 00 00 00 00"
+        },
+        {
+          "time": 97482.535446099,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 00 00 01 00 00 00 00"
+        },
+        {
+          "time": 97482.543434276,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 ff ff 00 00 00 00 00"
+        },
+        {
+          "time": 97482.55144164,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 00 00 01 00 00 00 00"
+        },
+        {
+          "time": 97482.559432423,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 ff ff 00 00 00 00 00"
+        },
+        {
+          "time": 97482.567437813,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 00 00 01 00 00 00 00"
+        },
+        {
+          "time": 97482.575444356,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 ff ff 00 00 00 00 00"
+        },
+        {
+          "time": 97482.814452895,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 00 00 01 00 00 00 00"
+        },
+        {
+          "time": 97483.054469839,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 01 00 00 00 00 00 00 00"
+        },
+        {
+          "time": 97483.142456595,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 00 00 00 00 00 00 00"
+        },
+        {
+          "time": 97483.222464751,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 01 00 00 00 00 00 00 00"
+        },
+        {
+          "time": 97483.310461245,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 00 00 00 00 00 00 00"
+        },
+        {
+          "time": 97483.439474861,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 01 00 00 00 00 00 00 00"
+        },
+        {
+          "time": 97483.551464122,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 00 00 00 00 00 00 00"
+        },
+        {
+          "time": 97483.678481817,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 01 00 00 00 00 00 00 00"
+        },
+        {
+          "time": 97483.783470876,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 00 00 00 00 00 00 00"
+        },
+        {
+          "time": 97483.942486018,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 01 00 00 00 00 00 00 00"
+        },
+        {
+          "time": 97484.047481348,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 00 00 00 00 00 00 00"
+        },
+        {
+          "time": 97484.18248605,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 01 00 00 00 00 00 00 00"
+        },
+        {
+          "time": 97484.278486732,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 00 00 00 00 00 00 00"
+        },
+        {
+          "time": 97484.446494689,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 01 00 00 00 00 00 00 00"
+        },
+        {
+          "time": 97484.566504749,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 00 00 00 00 00 00 00"
+        },
+        {
+          "time": 97484.727491064,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 01 00 00 00 00 00 00 00"
+        },
+        {
+          "time": 97484.830503159,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 00 00 00 00 00 00 00"
+        },
+        {
+          "time": 97484.998511527,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 01 00 00 00 00 00 00 00"
+        },
+        {
+          "time": 97485.095514942,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 00 00 00 00 00 00 00"
+        },
+        {
+          "time": 97485.407523251,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 01 00 00 00 00 00 00 00"
+        },
+        {
+          "time": 97485.502527582,
+          "path": "/dev/hidraw11",
+          "length": 9,
+          "report_id": "0x1b",
+          "raw_hex": "1b 00 00 00 00 00 00 00 00"
+        },
+        {
+          "time": 97487.190565055,
+          "path": "/dev/hidraw11",
+          "length": 3,
+          "report_id": "0x17",
+          "raw_hex": "17 64 00"
+        },
+        {
+          "time": 97488.686626075,
+          "path": "/dev/hidraw11",
+          "length": 3,
+          "report_id": "0x17",
+          "raw_hex": "17 64 00"
+        }
+      ],
+      "key_events": [
+        {
+          "time": 97483.054472544,
+          "kernel_time": "1790341093.683359",
+          "path": "/dev/input/event10",
+          "type": 1,
+          "code": 272,
+          "value": 1
+        },
+        {
+          "time": 97483.142461835,
+          "kernel_time": "1790341093.771356",
+          "path": "/dev/input/event10",
+          "type": 1,
+          "code": 272,
+          "value": 0
+        },
+        {
+          "time": 97483.222468187,
+          "kernel_time": "1790341093.851351",
+          "path": "/dev/input/event10",
+          "type": 1,
+          "code": 272,
+          "value": 1
+        },
+        {
+          "time": 97483.31046426,
+          "kernel_time": "1790341093.939347",
+          "path": "/dev/input/event10",
+          "type": 1,
+          "code": 272,
+          "value": 0
+        },
+        {
+          "time": 97483.439480281,
+          "kernel_time": "1790341094.068365",
+          "path": "/dev/input/event10",
+          "type": 1,
+          "code": 272,
+          "value": 1
+        },
+        {
+          "time": 97483.551466707,
+          "kernel_time": "1790341094.180351",
+          "path": "/dev/input/event10",
+          "type": 1,
+          "code": 272,
+          "value": 0
+        },
+        {
+          "time": 97483.678484963,
+          "kernel_time": "1790341094.307368",
+          "path": "/dev/input/event10",
+          "type": 1,
+          "code": 272,
+          "value": 1
+        },
+        {
+          "time": 97483.783476898,
+          "kernel_time": "1790341094.412369",
+          "path": "/dev/input/event10",
+          "type": 1,
+          "code": 272,
+          "value": 0
+        },
+        {
+          "time": 97483.942490116,
+          "kernel_time": "1790341094.571373",
+          "path": "/dev/input/event10",
+          "type": 1,
+          "code": 272,
+          "value": 1
+        },
+        {
+          "time": 97484.047487099,
+          "kernel_time": "1790341094.676371",
+          "path": "/dev/input/event10",
+          "type": 1,
+          "code": 272,
+          "value": 0
+        },
+        {
+          "time": 97484.182489677,
+          "kernel_time": "1790341094.811370",
+          "path": "/dev/input/event10",
+          "type": 1,
+          "code": 272,
+          "value": 1
+        },
+        {
+          "time": 97484.278490048,
+          "kernel_time": "1790341094.907374",
+          "path": "/dev/input/event10",
+          "type": 1,
+          "code": 272,
+          "value": 0
+        },
+        {
+          "time": 97484.446499168,
+          "kernel_time": "1790341095.075379",
+          "path": "/dev/input/event10",
+          "type": 1,
+          "code": 272,
+          "value": 1
+        },
+        {
+          "time": 97484.566507645,
+          "kernel_time": "1790341095.195389",
+          "path": "/dev/input/event10",
+          "type": 1,
+          "code": 272,
+          "value": 0
+        },
+        {
+          "time": 97484.727500301,
+          "kernel_time": "1790341095.356385",
+          "path": "/dev/input/event10",
+          "type": 1,
+          "code": 272,
+          "value": 1
+        },
+        {
+          "time": 97484.830505143,
+          "kernel_time": "1790341095.459392",
+          "path": "/dev/input/event10",
+          "type": 1,
+          "code": 272,
+          "value": 0
+        },
+        {
+          "time": 97484.998513791,
+          "kernel_time": "1790341095.627402",
+          "path": "/dev/input/event10",
+          "type": 1,
+          "code": 272,
+          "value": 1
+        },
+        {
+          "time": 97485.095517066,
+          "kernel_time": "1790341095.724402",
+          "path": "/dev/input/event10",
+          "type": 1,
+          "code": 272,
+          "value": 0
+        },
+        {
+          "time": 97485.407525476,
+          "kernel_time": "1790341096.036412",
+          "path": "/dev/input/event10",
+          "type": 1,
+          "code": 272,
+          "value": 1
+        },
+        {
+          "time": 97485.502549453,
+          "kernel_time": "1790341096.131401",
+          "path": "/dev/input/event10",
+          "type": 1,
+          "code": 272,
+          "value": 0
+        }
+      ],
+      "failure": null,
+      "success": true,
+      "raw_left_press_transitions": 10,
+      "evdev_left_press_release_by_path": {
+        "/dev/input/event10": [
+          10,
+          10
+        ]
+      },
+      "finished_at": "2026-09-25T12:58:41.880957+00:00"
+    }
+  },
+  "success": true
+}
