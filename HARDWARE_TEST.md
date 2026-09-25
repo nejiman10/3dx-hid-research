@@ -2,7 +2,7 @@
 
 ## 前提
 
-Linux、Python 3.10以上、対象C658/C652、操作できる物理マウスを用意する。試験はユーザー設定を上書きする。現在設定のreadbackは期待せず、所有者が保存した完全Report `0x10` snapshotを先に別途保管する。SDK同梱の `latest_software_baseline()` は過去の試験fixtureでありfactory defaultではない。継続前に上書きと復元値を確認する。probeには保存値を `--baseline-report10-hex '10 ...'` で渡す。保存値がない場合だけ `--accept-test-fixture` を明示する。
+Linux、Python 3.10以上、対象C658/C652、操作できる物理マウスを用意する。試験はユーザー設定を上書きする。現在設定のreadbackは期待せず、所有者が保存した完全Report `0x10` snapshotを先に別途保管する。SDK同梱の `latest_software_baseline()` は静的解析をもとに構築した実験用初期値であり、保存済み設定やfactory defaultではない。継続前に上書きと復元値を確認する。probeには保存値を `--baseline-report10-hex '10 ...'` で渡す。保存値がない場合だけ `--accept-test-fixture` を明示する。
 
 `python3 tools/build_zipapp.py --source sdk/python/src --output /tmp/c658-report10ctl.pyz` でtoolを作る。`sudo python3 /tmp/c658-report10ctl.pyz scan --json` でReport `0x10` target、Report `0x03` input hidraw、input eventを特定する。`/dev/hidrawN` は実行ごとに読み替える。
 

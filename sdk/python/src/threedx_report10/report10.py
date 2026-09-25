@@ -176,7 +176,7 @@ class Report10Config:
 
     @classmethod
     def latest_software_baseline(cls) -> "Report10Config":
-        """Historical test fixture; overwrites user settings and is not factory default."""
+        """Static-analysis-derived test starting point, not a saved or factory setting."""
 
         direct = ButtonMapping.direct
         return cls.create(

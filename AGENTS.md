@@ -13,7 +13,7 @@ Do not record:
 - device-specific session information
 - local paths or environment details
 
-Current work progress and continuation information belong in `HANDOFF.md`.
+Unfinished work and its completion criteria belong in `TODO.md`. The next item and brief restart notes belong in `HANDOFF.md`.
 
 ---
 
@@ -62,16 +62,28 @@ Does not contain:
 ### HANDOFF.md
 
 Purpose:
-- continuation guide for future development sessions
+- minimal restart note for future development sessions
 
-May contain:
-- current focus
-- recently completed work
-- recommended next actions
-- files to inspect first
-- decisions requiring user input
+Contains:
+- the number of the next `TODO.md` item
+- brief notes needed to resume that item
 
-Do not use `HANDOFF.md` as a source of protocol specification.
+Do not copy the task list, completion criteria, or protocol claims into `HANDOFF.md`.
+
+---
+
+### TODO.md
+
+Purpose:
+- authoritative list of unfinished work and completion criteria
+
+Contains:
+- stable item numbers
+- the work needed for each item
+- observable conditions for closing each item
+
+Do not use `TODO.md` as a source of protocol specification. Link to `SPEC.md` and evidence instead of repeating protocol claims.
+When an item meets its completion criteria, remove it from `TODO.md`, keep its number unused, and update `HANDOFF.md` to the next unfinished item.
 
 Protocol information belongs in `SPEC.md` with an appropriate evidence status.
 
@@ -211,7 +223,7 @@ Rules:
 - Do not create duplicate specifications.
 - Additional indexes or catalogs are allowed when they improve navigation and do not duplicate protocol claims.
 
-A handoff document or evidence index is acceptable when its purpose is navigation rather than specification.
+The TODO list, handoff document, and evidence indexes serve their stated roles and do not override `SPEC.md`.
 
 ---
 
@@ -219,7 +231,7 @@ A handoff document or evidence index is acceptable when its purpose is navigatio
 
 Before changing anything:
 
-1. Read `HANDOFF.md` if present.
+1. Read `HANDOFF.md` and `TODO.md` if present.
 2. Read relevant sections of `README.md`, `SPEC.md`, and documentation.
 3. Inspect:
    - `git status`

@@ -1,6 +1,6 @@
 # C658 / C652 調査仕様
 
-唯一の人間向け仕様正本。`CONFIRMED` は静的解析で到達経路・値を確認、または制御した反復実験で確認。`OBSERVED` は条件付き観測、`HYPOTHESIS` は説明仮説、`UNKNOWN` は根拠不足。Report `0x03` matrixの実機監査は[公開用証拠](evidence/report03-core-matrix-2026-09/README.md)に収録した。他の実機観測については、公開監査の有無を各項目で区別する。[静的解析原報告](docs/STATIC_ANALYSIS_REPORT.md)はsource artifactで、仕様正本ではない。
+唯一の人間向け仕様正本。`CONFIRMED` は静的解析で到達経路・値を確認、または制御した反復実験で確認。`OBSERVED` は条件付き観測、`HYPOTHESIS` は説明仮説、`UNKNOWN` は根拠不足。Report `0x03` matrixの実機監査は[公開用証拠](evidence/report03-core-matrix-2026-09/README.md)に収録した。他の実機観測については、公開監査の有無を各項目で区別する。[静的解析原報告](docs/STATIC_ANALYSIS_REPORT.md)と[静的経路の再確認報告](docs/STATIC_ANALYSIS_REPORT_2.md)は調査資料であり、仕様正本ではない。後者の新規主張は報告者による静的再確認結果として受け取り、リポジトリ内の原資料による独立検証は未了である。
 
 ## Report 0x10
 
@@ -35,6 +35,12 @@
 ## Receiver管理とLinux実装
 
 - [CONFIRMED] 静的経路はslot情報の `GET 43..47` を含む。(source: docs/STATIC_ANALYSIS_REPORT.md)
+- [HYPOTHESIS] 再確認報告は、`HIDDev.dll` の `GET 0x08/0x51` 分岐とbrokerのC652 paired-device handleに対する `GET 0x08` 経路を主張する。旧報告の「到達可能な `GET 0x08` なし」と対立しており、示されたcaller・対象handle・HID APIまでの経路は独立検証前である。(source: [再確認報告 §4](docs/STATIC_ANALYSIS_REPORT_2.md))
+- [HYPOTHESIS] 再確認報告は、`3DxPair.exe` にReport `0x50` と `0x60` の8-byte GET実装があるが、両関数の直接callerは見つからないとする。旧報告での「specific GET producerなし」は調査モジュールの範囲に依存する。通常UIからの到達性と実機応答は未検証である。(source: [再確認報告 §5](docs/STATIC_ANALYSIS_REPORT_2.md))
+- [HYPOTHESIS] 再確認報告は、SetBlobのbroker経路がlogical PIDに一致する全handleへ送信し、C652 paired-device handleも対象になり得るとする。primary handle選択、secondary fallback、slot wrapperは当該経路に見つからなかったという否定範囲も独立検証前である。(source: [再確認報告 §6](docs/STATIC_ANALYSIS_REPORT_2.md))
+- [HYPOTHESIS] 再確認報告は、通常Universal Receiverのslot `0..4` と `MI_0..MI_4` の対応、およびslot GETの8-byte応答内のdevice typeと6-byte識別子を主張する。実装に同じ解釈があっても、それだけを独立した根拠としない。(source: [再確認報告 §7](docs/STATIC_ANALYSIS_REPORT_2.md))
+- [UNKNOWN] 再確認報告が示すReport `0x60` の5-byte fieldの正式意味と、`0x50` / `0x60` GETの通常UIからの到達性。field名、関数名、未確認の実行時応答だけで意味を確定しない。(source: [再確認報告 §5](docs/STATIC_ANALYSIS_REPORT_2.md))
+- [HYPOTHESIS] 再確認報告は、純正pair UIの成功通知はSET完了とは別の入力・接続eventによる一方、純正unpair経路の成功判定はI/O完了でslot空化を再確認しないとする。これはLinux実装の成功判定とは別の主張であり、純正経路の独立検証と実機の前後観測が未了である。(source: [再確認報告 §8](docs/STATIC_ANALYSIS_REPORT_2.md))
 - [OBSERVED] pairingとunpairingの成功は手動確認済み。ただし成功時のraw監査JSONは同梱されず、公開再現証拠ではない。`EPIPE` の失敗記録だけから成功を証明しない。
 - [HYPOTHESIS] pairing start `41 02 02 00 00`、stop `41 02 00 00 00`、unpair `41 04 <slot> 00 00` が管理packetの候補。成功監査で再検証する。
 - [OBSERVED] systemd user service、有線USBマウス通常動作、USB再接続後の再取得は手動確認済み。raw監査は同梱されていない。
@@ -42,5 +48,5 @@
 
 ## 試験fixtureと証拠境界
 
-- [OBSERVED] `latest_software_baseline_hex` と呼ばれた31-byte値は過去の試験用完全snapshotであり、factory defaultではない。ユーザー設定を上書きし得る。SDKの `latest_software_baseline()` は復元fixtureで、通常アプリの既定値として使わない。
+- [OBSERVED] `latest_software_baseline_hex` と呼ばれた31-byte値は、マウス内の工場出荷時設定32-byteの取得が実際上困難だったため、静的解析で特定したbyteの意味をもとに構築した実験用初期値である。設定を変更して出力を確認する試験などに用いるための値であり、実機から取得したsnapshotやfactory defaultではない。SDKの `latest_software_baseline()` もこの実験用設定を生成する。送信するとユーザー設定を上書きし得るため、通常アプリの既定値や元の設定への復元値として使わない。
 - [UNKNOWN] 公開用証拠に含まれない過去raw記録の実行条件。存在しないファイルを確認済み根拠にしない。
