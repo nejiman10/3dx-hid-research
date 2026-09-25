@@ -9,6 +9,7 @@ CadMouse Compact Wireless と Universal Receiver の Linux HID に関する非�
 - [docs/STATIC_ANALYSIS_REPORT.md](docs/STATIC_ANALYSIS_REPORT.md): 静的解析の原報告（仕様正本ではありません）
 - [docs/STATIC_ANALYSIS_REPORT_2.md](docs/STATIC_ANALYSIS_REPORT_2.md): 作成者による静的経路の再確認報告（独立検証前）
 - [evidence/report03-core-matrix-2026-09/README.md](evidence/report03-core-matrix-2026-09/README.md): 匿名化したReport `0x03` matrix監査の案内
+- [evidence/read-paths-2026-09/README.md](evidence/read-paths-2026-09/README.md): Receiver読み取り経路の匿名化済み監査
 - [sdk/python/README.md](sdk/python/README.md): Python SDK と実験ツール
 
 自動チェックは `./tools/run-tests.sh` で実行できます。実機への設定書き込みや Receiver のペアリング操作は状態を変更するため、実施前に [HARDWARE_TEST.md](HARDWARE_TEST.md) を確認してください。

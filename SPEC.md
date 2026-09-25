@@ -8,7 +8,7 @@
 - [OBSERVED] 試験したLinux HID descriptorはReport `0x10` を32-byte wire bufferとして宣言した。Linux実装はID `10` と31-byte blobから完全snapshotを作る。実機への最終適用の一般性は未検証。
 - [CONFIRMED] direct buttonは `0x09 + action code`、host routedは `0x28 + action index` に変換する。(source: docs/STATIC_ANALYSIS_REPORT.md)
 - [OBSERVED] 試験した有線C658とReceiver経由C658 handleの双方で、有効な現在設定readbackは得られなかった。失敗方法は試行ごとの観測であり、protocol定数ではない。全firmwareで不可能とは断定しない。
-- [OBSERVED] 試験したReceiverでは32-byte Report `0x10`候補handleの `GET 08` が `08 59 ...` を返した経路がC658に対応した。このLinux選択法をvendor DLLの静的経路と同一視しない。
+- [OBSERVED] 試験したReceiverでは32-byte Report `0x10`候補handleの `GET 08` が `08 59 ...` を返した。今回もC652 MI_02で8-byte応答のbyte 1が`59`だった。単一占有slotとReceiver入力は観測したが、GET `0x08`の値から個体を直接同定したわけではない。このLinux選択法をvendor DLLの静的経路と同一視しない。(evidence: [読み取り監査](evidence/read-paths-2026-09/README.md))
 - [UNKNOWN] deviceからの現在設定・factory defaultの復元。Linux実装はhost側に保存した設定を正本とし、Report `0x10`を完全snapshotとして送る。
 
 ## Direct Action
@@ -35,6 +35,7 @@
 ## Receiver管理とLinux実装
 
 - [CONFIRMED] 静的経路はslot情報の `GET 43..47` を含む。(source: docs/STATIC_ANALYSIS_REPORT.md)
+- [OBSERVED] 試験したLinux C652 MI_00とMI_02では、宣言された8-byte Feature Report `0x43..0x47`、`0x50`、`0x60` のGETがそれぞれ8-byte応答を返した。両interfaceの共通GET応答は一致した。接続切替後のsnapshotではslot 2だけが占有され、Receiverのevdev経路で物理入力を観測した。単一占有slotと利用者の接続報告から入力とslot 2の対応を推定できるが、入力frameにslot IDはない。`0x50` / `0x60` の値の意味とWindows UIからの到達性は未検証。(evidence: [読み取り監査](evidence/read-paths-2026-09/README.md))
 - [HYPOTHESIS] 再確認報告は、`HIDDev.dll` の `GET 0x08/0x51` 分岐とbrokerのC652 paired-device handleに対する `GET 0x08` 経路を主張する。旧報告の「到達可能な `GET 0x08` なし」と対立しており、示されたcaller・対象handle・HID APIまでの経路は独立検証前である。(source: [再確認報告 §4](docs/STATIC_ANALYSIS_REPORT_2.md))
 - [HYPOTHESIS] 再確認報告は、`3DxPair.exe` にReport `0x50` と `0x60` の8-byte GET実装があるが、両関数の直接callerは見つからないとする。旧報告での「specific GET producerなし」は調査モジュールの範囲に依存する。通常UIからの到達性と実機応答は未検証である。(source: [再確認報告 §5](docs/STATIC_ANALYSIS_REPORT_2.md))
 - [HYPOTHESIS] 再確認報告は、SetBlobのbroker経路がlogical PIDに一致する全handleへ送信し、C652 paired-device handleも対象になり得るとする。primary handle選択、secondary fallback、slot wrapperは当該経路に見つからなかったという否定範囲も独立検証前である。(source: [再確認報告 §6](docs/STATIC_ANALYSIS_REPORT_2.md))

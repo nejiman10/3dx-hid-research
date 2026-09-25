@@ -55,6 +55,7 @@ from .receiver import (
     unpair_slot,
     validate_receiver_management,
 )
+from .read_audit import audit_read_paths
 from .report03 import REPORT03_MASKS, Report03Reader
 from .report10 import (
     ButtonMapping,
@@ -279,6 +280,15 @@ def _cmd_receiver_slots(args: argparse.Namespace) -> int:
     }
     _write_audit(args.audit, document)
     return 0
+
+
+def _cmd_audit_read_paths(args: argparse.Namespace) -> int:
+    if Path(args.audit).exists():
+        raise RuntimeError(f"audit already exists: {args.audit}")
+    document = audit_read_paths(args.device)
+    _write_audit(args.audit, document, quiet=True)
+    print(f"private audit: {args.audit}")
+    return 1 if document.get("failure") else 0
 
 
 def _cmd_hold_open(args: argparse.Namespace) -> int:
@@ -1582,6 +1592,13 @@ def build_parser() -> argparse.ArgumentParser:
     scan.add_argument("--json", action="store_true")
     scan.add_argument("--all", action="store_true", help="include every 256f hidraw node")
     scan.set_defaults(func=_cmd_scan)
+
+    read_paths = subparsers.add_parser(
+        "audit-read-paths", help="read-only descriptor and bounded GET audit for one HID node"
+    )
+    read_paths.add_argument("--device", required=True, help="one verified C658/C652 hidraw node")
+    read_paths.add_argument("--audit", required=True, help="private JSON audit path")
+    read_paths.set_defaults(func=_cmd_audit_read_paths)
 
     slots = subparsers.add_parser(
         "receiver-slots", help="read-only GET_FEATURE 0x43..0x47 slot snapshot"

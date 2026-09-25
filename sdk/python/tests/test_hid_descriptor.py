@@ -5,6 +5,7 @@ from threedx_report10 import (
     feature_report_wire_lengths,
     input_report_wire_lengths,
 )
+from threedx_report10.hid_descriptor import top_level_usages
 
 
 class HidDescriptorTests(unittest.TestCase):
@@ -29,6 +30,13 @@ class HidDescriptorTests(unittest.TestCase):
     def test_input_report_03_length(self):
         descriptor = bytes.fromhex("85 03 75 08 95 02 81 02")
         self.assertEqual(input_report_wire_lengths(descriptor), {0x03: 3})
+
+    def test_top_level_usages(self):
+        descriptor = bytes.fromhex(
+            "05 01 09 02 a1 01 09 01 a1 00 c0 c0 "
+            "06 00 ff 09 10 a1 01 c0"
+        )
+        self.assertEqual(top_level_usages(descriptor), [(1, 2), (0xff00, 0x10)])
 
 
 if __name__ == "__main__":

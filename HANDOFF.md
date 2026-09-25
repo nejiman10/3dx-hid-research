@@ -1,5 +1,5 @@
 # 作業引き継ぎ
 
-次に着手する項目: [TODO.md の 7](TODO.md#7-linux実機でreceiverの読み取り経路を検証する)
+次に着手する項目: [TODO.md の 8](TODO.md#8-linux実機でreport-0x10-の対象handleと効果を確認する)
 
-再開時の注意: 新報告のWindows経路はLinuxのGET結果だけでは確定しない。まず対象interfaceとdescriptorを再取得し、読み取り専用の監査から始める。Windows VMでの観測は項目9の推奨作業。
+再開時の注意: 対象のinterfaceとdescriptorを現時点で確認する。設定書き込みと復元は利用者の明示的な実施指示を得てから行う。

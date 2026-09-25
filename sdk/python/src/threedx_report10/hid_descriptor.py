@@ -84,3 +84,54 @@ def input_report_wire_lengths(descriptor: bytes) -> dict[int, int]:
     """Return Input Report wire lengths keyed by Report ID."""
 
     return _main_report_wire_lengths(descriptor, 8)
+
+
+def top_level_usages(descriptor: bytes) -> list[tuple[int, int]]:
+    """Return Usage Page and Usage for top-level collections."""
+    page = 0
+    usage: int | None = None
+    stack: list[int] = []
+    depth = 0
+    found: list[tuple[int, int]] = []
+    offset = 0
+    while offset < len(descriptor):
+        prefix = descriptor[offset]
+        offset += 1
+        if prefix == 0xFE:
+            if offset + 2 > len(descriptor):
+                raise HidDescriptorError("truncated HID long-item header")
+            size = descriptor[offset]
+            offset += 2
+            if offset + size > len(descriptor):
+                raise HidDescriptorError("truncated HID long item")
+            offset += size
+            continue
+        size = (0, 1, 2, 4)[prefix & 0x03]
+        if offset + size > len(descriptor):
+            raise HidDescriptorError("truncated HID short item")
+        value = int.from_bytes(descriptor[offset:offset + size], "little")
+        offset += size
+        kind = (prefix >> 2) & 3
+        tag = (prefix >> 4) & 15
+        if kind == 1 and tag == 0:
+            page = value
+        elif kind == 1 and tag == 10:
+            stack.append(page)
+        elif kind == 1 and tag == 11:
+            if not stack:
+                raise HidDescriptorError("global POP without PUSH")
+            page = stack.pop()
+        elif kind == 2 and tag == 0:
+            usage = value
+        elif kind == 0 and tag == 10:
+            if depth == 0 and usage is not None:
+                found.append((page, usage))
+            depth += 1
+            usage = None
+        elif kind == 0 and tag == 12:
+            if depth == 0:
+                raise HidDescriptorError("END_COLLECTION without COLLECTION")
+            depth -= 1
+        elif kind == 0:
+            usage = None
+    return found

@@ -40,14 +40,6 @@
 
 達成条件: 比較するflagと観測する動作を事前に定義し、経路ごとのopen結果、動作、失敗を記録する。systemd serviceやudev ruleの導入を試す場合は、実施指示を得てから行う。結果と限界を `SPEC.md` に反映する。
 
-## 7. Linux実機でReceiverの読み取り経路を検証する
-
-目的: [再確認報告](docs/STATIC_ANALYSIS_REPORT_2.md)が主張するGET `0x08`、slot情報、Report `0x50` / `0x60` とinterface対応について、旧[静的解析報告](docs/STATIC_ANALYSIS_REPORT.md)との対立を実機観測で絞る。Linuxで得た応答を、純正Windowsソフトが同じ経路を実行した証拠とは扱わない。
-
-計画: 有線C658とReceiver接続時のC652を別々に列挙し、USB interface、hidraw、evdev、Usage、Report Descriptor、reportごとの長さを記録する。Receiverでは管理handleとpaired-device候補を区別する。GET `0x43..0x47` と`0x50` / `0x60` は対象descriptorの宣言と長さを照合してから試し、未宣言なら未試験と記録する。GET `0x08` は既存のLinux観測があるC652のReport `0x10`候補handleで、8-byte要求を別に記録して試す。各要求の対象・長さ・時刻・応答またはerrnoを残し、slotの占有と実入力の対応を確認する。最初は各経路1回とし、失敗または値の揺れがあった要求だけ最大2回追加する。所要時間の目安は1経路15分以内で、pairing/unpairingと設定書き込みは行わない。識別子を含み得る応答は非公開原本に保持し、公開版では匿名化する。
-
-達成条件: 経路ごとのdescriptorとGETの成功・失敗を自己完結した監査に保存し、匿名化・検証した証拠を `evidence/` に整理する。各報告の主張を「Linuxで観測」「この条件では未観測」「未試験」「Windows側の到達性は未検証」に分け、`SPEC.md` に反映する。GET成功だけでfieldの正式意味やdevice内部の効果を確定しない。
-
 ## 8. Linux実機でReport `0x10` の対象handleと効果を確認する
 
 目的: [既存のReport `0x03`監査](evidence/report03-core-matrix-2026-09/README.md)で確認できる範囲を再利用し、なお不足するReport `0x10` の対象handleと動作を限定試験で調べる。Linuxから各handleを操作した結果は、純正Windows brokerの全handle送信・primary選択の証拠にはしない。
