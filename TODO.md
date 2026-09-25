@@ -4,12 +4,6 @@
 
 実機試験では着手前に目的、区別したい説明、試験条件、反復回数、所要時間を決めます。結果は成功・失敗・判定不能を含めて匿名化した監査として `evidence/` に保存し、検証したうえで `SPEC.md` の該当箇所を更新します。原因を特定できない場合は `UNKNOWN` を維持し、試験条件と限界を記録します。
 
-## 1. Receiverのindex切り替え時の異常入力を調べる
-
-目的: [SPEC.mdのInput Report 0x03](SPEC.md#input-report-0x03) にある、index 7試行時の異常入力について、旧mappingの残留、転送遅延、その他の要因を区別する。既存の[公開監査](evidence/report03-core-matrix-2026-09/README.md)には当該試行のraw記録がない。
-
-達成条件: 範囲を限定した試験で、index 6から7への書き込み時刻、転送機会、操作時刻、raw HIDとevdevの時系列を取得する。反復ごとの結果と復元後の動作を監査し、公開可能な証拠に整理する。再現しなかった場合も試験回数と条件を記し、原因を断定せず `SPEC.md` に結果と限界を反映する。
-
 ## 2. direct code 6の効果を調べる
 
 目的: [SPEC.mdのDirect Action](SPEC.md#direct-action) に残るhardware effectの不明点を調べる。
