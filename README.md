@@ -16,6 +16,9 @@ CadMouse Compact Wireless と Universal Receiver の Linux HID に関する非�
 - [evidence/report03-index-transition-2026-09/README.md](evidence/report03-index-transition-2026-09/README.md): Receiverのindex 6→7限定監査
 - [evidence/direct6-controlled-2026-09/README.md](evidence/direct6-controlled-2026-09/README.md): direct code 6の前後対照監査
 - [evidence/receiver-repair-2026-09/README.md](evidence/receiver-repair-2026-09/README.md): Receiver結合解除・再ペアリングの匿名化監査
+- [evidence/report17-battery-2026-09/README.md](evidence/report17-battery-2026-09/README.md): Report `0x17` と電池表示の限定比較
+- [evidence/connection-identity-2026-09/README.md](evidence/connection-identity-2026-09/README.md): USB識別子とinterfaceの匿名化済み読み取り監査
+- [evidence/cross-route-management-2026-09/README.md](evidence/cross-route-management-2026-09/README.md): 同時接続時の設定送信とReceiver管理命令の限定監査
 - [sdk/python/README.md](sdk/python/README.md): Python SDK と実験ツール
 
 自動チェックは `./tools/run-tests.sh` で実行できます。実機への設定書き込みや Receiver のペアリング操作は状態を変更するため、実施前に [HARDWARE_TEST.md](HARDWARE_TEST.md) を確認してください。
