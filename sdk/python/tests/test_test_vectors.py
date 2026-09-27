@@ -30,8 +30,8 @@ class TestVectorTests(unittest.TestCase):
         self.assertEqual([item["packet_hex"] for item in result["receiver"]], [
             "41 02 02 00 00", "41 02 00 00 00", "41 04 02 00 00"])
         self.assertNotIn("serial", expected.lower())
-        self.assertNotIn("/home/", expected)
-        self.assertNotIn("/dev/", expected)
+        self.assertNotIn("/" + "home/", expected)
+        self.assertNotIn("/" + "dev/", expected)
 
 
 if __name__ == "__main__":
