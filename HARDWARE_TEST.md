@@ -6,6 +6,8 @@ Linux、Python 3.10以上、対象C658/C652、操作できる物理マウスを�
 
 `python3 tools/build_zipapp.py --source sdk/python/src --output /tmp/c658-report10ctl.pyz` でtoolを作る。`python3 /tmp/c658-report10ctl.pyz scan --json` でReport `0x10` target、Report `0x03` input hidraw、input eventを特定する。`/dev/hidrawN` は実行ごとに読み替える。
 
+ReceiverへReport `0x10`を書き込む試験では、各送信の直前に対象nodeのpath、USB interface、descriptor hash、Report宣言を再同定する。書き込みに使う同じfdでGET `0x08`を行い、ioctl戻り値、応答長、Report ID、byte 1、およびbytes 2..7と対象slotの応答との一致・不一致を非公開監査に記録する。slotの占有状態も同時に確認し、対象が一意に定まらなければ送信しない。GETとSETの間に再列挙やnode変更があれば選択からやり直す。送信後にもnodeを再同定し、host戻り値、転送機会、raw入力、復元結果を別々に記録する。公開資料には識別子の実値やローカルpathを載せない。
+
 ## Report `0x10` の読み戻し監査
 
 読み取り専用の `audit-read-paths --report10-readback` を使う。実行時のscan結果、USB interface、descriptor、標準ユーザーのACLを確認し、接続状態を記録する。Receiverのinterface番号は再ペアリング等で変わり得るため、以前のMI番号を固定しない。C652ではGET `0x08`の候補応答を確認してからGET `0x10`へ進む。有線C658ではGET `0x10`だけを送る。GETの結果はioctl戻り値またはerrno、応答長、Report ID一致を記録する。32-byte応答があっても現在設定としての意味は別途検証する。sudoが必要な場合は試験を停止する。
