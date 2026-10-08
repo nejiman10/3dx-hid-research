@@ -27,3 +27,11 @@
 計画: 実施前に復元値、試験回数、所要時間を決め、所有者の実施指示を得る。経路Aに試験値を送り効果を確認し、Bへ切り替えて入力を確認した後、Aへ戻して試験値が残るかを確認する。Bに別の試験値を先に送る対照条件も検討する。各段階でnodeを再同定し、送信先、host戻り値、転送機会、物理入力を別々に記録する。判定にはLinuxイベント名よりraw Report `0x03` / `0x1b`を優先し、利用者が見た動作も別に記録する。
 
 達成条件: 試した条件で、経路ごとの保持、切り替え時の再適用・初期化、その他の説明それぞれを支持・反証・判定不能のいずれかに判定した匿名化監査を残し、`SPEC.md`に反映する。
+
+## 14. Report `0x17` とLinux `power_supply` の対応を経路ごとに確かめる
+
+目的: [descriptorとpower_supplyの限定観測](evidence/report17-power-supply-2026-10/README.md)は、Receiver経由の1点だけである。byte 1とLinux `capacity` の対応、`status` がbyte 2を反映しないか、有線・Bluetooth接続で同じ電池が作られるか、UPowerが列挙しない理由を区別する。
+
+計画: 読み取りだけで行う（設定・結合状態の書き込みはしない）。Receiver、有線、Bluetoothの各経路で、同じ時間帯にraw Report `0x17` の取得と `power_supply` の `capacity`・`status`・`type`・`scope` の読み取りを行い、親のHID deviceのdescriptor SHA-256を記録する。可能なら充電ケーブルの有無で各1回比べる。UPowerについては `upower -d` の列挙とUPowerのdebug出力を記録する。各経路1回を基本とし、所要時間は経路の切り替えを含めて30分程度を見込む。識別子の実値（`serial_number`、Bluetooth address、USB topology）は公開しない。
+
+達成条件: 試した各経路で、raw byte 1と `capacity`、byte 2と `status` の一致・不一致、`power_supply` の有無、UPowerの列挙結果を匿名化した監査に残し、[SPEC.mdのReport 0x17節](SPEC.md#report-0x17)を更新する。試せなかった経路は条件とともに未確認として残す。
