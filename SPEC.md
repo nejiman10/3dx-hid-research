@@ -41,8 +41,9 @@
 - [OBSERVED] 利用者が充電ケーブルを外して9時20分ごろにBluetooth表示100%を確認し、USB接続せずReceiverへ戻した後、9時22分09秒～29秒に `17 64 00` を2回取得した。`0x64` は十進100で表示値と一致する。98%時の `0x62` と合わせて2つの独立表示値に対応するが、表示時刻とraw取得時刻は同時ではない。(evidence: [98%・100%限定比較](evidence/report17-battery-2026-09/README.md))
 - [OBSERVED] 試験個体のC652 MI_02（Receiver設定nodeと同じdescriptor）と有線C658 MI_01のdescriptorは、Input Report `0x17` のbyte 1をUsage Page `0x06` / Usage `0x20`（Battery Strength）、Logical範囲0..100の8 bitとして、byte 2のbit 0をvendor Usage `0xff00:0x27`、Logical範囲0..1の1 bitとして宣言する。descriptorの宣言は値の意味を保証しない。(evidence: [descriptorとpower_supply](evidence/report17-power-supply-2026-10/README.md))
 - [OBSERVED] 2026-10-07、Receiver C652経由の接続で、LinuxはC652 MI_03を親とする `power_supply`（`type=Battery`、`scope=Device`）を作り、`capacity` は `70` だった。利用者はこれが同じマウスのBluetooth電池表示と同じ値だったと報告した。同時刻のraw Report `0x17` は取得しておらず、`status` は `Discharging` だった。この電池はUPowerに列挙されなかった。(evidence: [descriptorとpower_supply](evidence/report17-power-supply-2026-10/README.md))
+- [OBSERVED] 2026-10-08、Bluetooth LE接続中の60秒間に、設定用node（[Bluetooth LE接続](#bluetooth-le接続)）のraw入力から `17 3e 00` を12回取得した。同じ時間帯のLinux `capacity` は `62`（十進で `0x3e` と同じ）だった。Receiver・Bluetooth・有線のどの接続中も、HIDの `power_supply` は親がC652 MI_03のものだけで、Bluetooth（uhid）と有線C658のHID deviceを親とするものはなかった。Bluetooth・有線接続中の `capacity` がどの経路の入力に由来するかは区別していない。(evidence: [Bluetooth LE限定観測](evidence/bluetooth-le-spike-2026-10/README.md))
 - [HYPOTHESIS] byte 0はReport ID、byte 1は電池残量の百分率候補である。byte 2は充電ケーブル接続に関係するflag候補で、この限定比較ではケーブルありで `01`、なしで `00` と相関した。
-- [UNKNOWN] byte 1の正式なbattery percentage意味と他の値・接続・firmwareへの一般性、byte 2が実際の充電電流・給電状態・他の条件のどれを示すか。2つの表示値と1回のケーブル前後比較、descriptorの宣言、1点のLinux `capacity` だけでは確定しない。有線・Bluetooth接続でのLinux `power_supply` と、UPowerが列挙しない理由。
+- [UNKNOWN] byte 1の正式なbattery percentage意味と他の値・接続・firmwareへの一般性、byte 2が実際の充電電流・給電状態・他の条件のどれを示すか。2つの表示値と1回のケーブル前後比較、descriptorの宣言、1点のLinux `capacity` だけでは確定しない。有線・Bluetooth接続でLinuxが `power_supply` を作らない理由と、Receiverの `power_supply` が他の経路の接続中に何を反映しているか、UPowerが列挙しない理由。
 
 ## Receiver管理とLinux実装
 
@@ -58,6 +59,8 @@
 - [UNKNOWN] slot応答byte 1の任意の非zero値を占有と判定できるか、あるいは全てのfirmwareで `0x00` が空きかは未検証。再確認報告 §7のfield名と現行Linux実装の `byte1 != 0` 判定だけでは一般則を確定できない。(source: [再確認報告 §7](docs/STATIC_ANALYSIS_REPORT_2.md))
 - [OBSERVED] 同時接続した試験個体の有線C658とC652 Receiverでは、USB親deviceのsysfs `serial` fileがなく、各interfaceの`udevadm info`にもserial関連fieldがなかった。USB serialの再列挙・別portでの安定性は値がないため調べていない。(evidence: [接続識別子の読み取り監査](evidence/connection-identity-2026-09/README.md))
 - [OBSERVED] 有線C658 MI_01とReceiver C652 MI_03を同時接続した限定監査で、両GET `0x08`は8 byteで成功し、byte 1は `0x59`、bytes 2..7の候補値は一致した。Receiverのslot GETでは5 interfaceすべてでslot 3のみbyte 1が `0x59` で、そのbytes 2..7も両GET `0x08`と一致した。単一占有slotの試験条件で、設定候補nodeとslotの同一機器対応を支持するが、識別子fieldの正式意味と複数機器での一意性は未検証。実値は非公開。(evidence: [接続識別子の読み取り監査](evidence/connection-identity-2026-09/README.md))
+- [OBSERVED] GET `0x08` bytes 2..7をbig-endianの整数とし、`char(byte 1)` と10進表記を続けた文字列（[再確認報告 §7](docs/STATIC_ANALYSIS_REPORT_2.md)が純正ソフトのslot応答の表示として述べる形）は、利用者の報告で試験個体の本体ラベルのシリアル番号と一致した。1個体・1回の照合で、値は公開しない。(evidence: [Bluetooth LE限定観測](evidence/bluetooth-le-spike-2026-10/README.md))
+- [HYPOTHESIS] GET `0x08` とslot応答のbytes 2..7は、機器のシリアル番号の数値である。複数個体での一意性と、全個体でこの表示規則が成り立つかは未検証。
 - [OBSERVED] 同時接続下でC652はMI_00..MI_04、有線C658はMI_00..MI_01として列挙され、Report `0x10` 32 byteの宣言はそれぞれC652 MI_03、C658 MI_01だけだった。Receiverの全5 interfaceが管理用Feature `0x41` 5 byteを宣言していた。宣言だけでは管理命令を受け付けるinterfaceを限定できない。Receiver側GET `0x08` byte 1はこの状態でも `0x59` だった。(evidence: [接続識別子の読み取り監査](evidence/connection-identity-2026-09/README.md))
 - [OBSERVED] 有線C658 MI_01にradialのReport `0x10`設定byteを `0x29`にした32-byte値を送ると、有線入力で移動とReport `0x03` bitmap `0x01`の押下・解放20組を確認した。Receiverへモードを切り替えた後は同Report `0x03`は見られず、Linux EV_KEY 277の押下・解放20組を記録した。逆方向でも、Receiver C652 MI_03への追加試行で同Report `0x03`を20組確認した後、有線へ切り替えた入力ではEV_KEY 274を20組記録した。送信先と入力元を再同定し、送信ioctl戻り値32、移動による転送機会、物理入力を分けて記録した。ただし切り替え後にLinuxイベントの分類が戻ることも観測したため、設定が別経路へ伝播しないのか、切り替え時に別の設定が適用されるのかは判定不能。Receiverへの最初の試験送信は移動があっても局所効果を確認できず、復元値を適用した後の追加試行では確認できた。原因は未決定。(evidence: [同時接続監査](evidence/cross-route-management-2026-09/README.md))
 - [OBSERVED] 試験したReceiverのMI_02はFeature `0x41`を5 byteで宣言し、そこへslot 3解除 `41 04 03 00 00` を送るとioctlは`EPIPE`だったが、後続GETでslot 3の空化を確認した。MI_02へのpair開始 `41 02 02 00 00` と停止 `41 02 00 00 00` は各5 byteでhost完了し、slot 4の新規占有と再列挙後MI_04からの移動・radial入力を確認した。従ってこの個体・条件ではMI_02が管理命令の有効な送信先だった。先行結合監査の管理nodeは、同日の早い時点にMI_00として同定されたnodeと一致するが、各write時点のinterface番号は原本に記録されていない。MI_00との厳密な同時比較と、他のMIでの効果は未検証。(evidence: [MI_02結合監査](evidence/cross-route-management-2026-09/README.md), [先行結合監査](evidence/receiver-repair-2026-09/README.md), [先行interface同定](evidence/read-paths-2026-09/README.md))
@@ -68,6 +71,19 @@
 - [OBSERVED] 現行のhold-open user serviceを使った有線C658は、利用者報告でhidraw用udevルールのみの状態で1日以上、通常のカーソル移動・クリック・スクロールに支障なく動作した。USB再接続後、journalの`held`記録で対象interfaceの再取得も確認した。確認したunitは `c658-report10ctl hold-open --poll-interval 1` を実行し、実装は有線C658の全hidraw interfaceを1秒間隔で再列挙して保持する。今回の確認直前にinput event用udevルールも追加されたが、1日以上の動作条件には含まれず、serviceはhidrawだけを開く。これは当該Linux環境・サービス・確認期間での実用確認であり、他環境での一般性や根本原因を示さない。(evidence: [hold-open限定監査と継続利用確認](evidence/hold-open-2026-09/README.md))
 - [OBSERVED] 有線C658の限定試験でuser serviceを一時停止し、hidraw FDを保持しない条件Aでは後続の操作窓で入力異常を2回観測した。両回とも利用者は左クリックを物理的に3回行ったと報告し、evdev監査の押下・解放は各0件だった。2回目の接続直後の`y`回答は操作前だった可能性があり、直後の正常動作の根拠にはしない。両interfaceを `O_RDONLY | O_CLOEXEC | O_NONBLOCK` で保持した条件Bでは後続の正常入力を2回、`O_RDWR | O_CLOEXEC | O_NONBLOCK` で保持した条件Cでは同じ正常入力を1回観測した。B/Cの各観測で10秒間のevdev押下・解放を各3件記録した。これらは限定条件での観測で、停止までの秒数やFD保持の因果効果は確定しない。(evidence: [hold-open限定監査](evidence/hold-open-2026-09/README.md))
 - [UNKNOWN] hold-open効果に必要なopen flag。Bの2回とCの1回の成功は、この試行条件でread-only保持でも正常入力が可能で、read-write access modeの必要性を示さない。現在のLinux実装は `O_RDWR` をaccess mode、`O_CLOEXEC` をFD継承防止、`O_NONBLOCK` をブロック回避に使う。protocol valueではない。
+
+## Bluetooth LE接続
+
+以下は1台のマウス・1台のReceiver・1台のPCで、cadratの試作を使った1日の観測である。raw監査ファイルはなく、効果は利用者の報告による。(evidence: [Bluetooth LE限定観測](evidence/bluetooth-le-spike-2026-10/README.md))
+
+- [OBSERVED] Bluetooth LE（HID over GATT、`00001812`）接続のC658は、Linuxで `/sys/devices/virtual/misc/uhid/0005:256F:C658.*` の下に2つのhidrawとして現れた。USBのinterface番号と親USB deviceはない。利用者側のSDK解析では、一方はFeatureを宣言せずInput `0x1b` だけ（有線MI_00と同一）、他方はFeature `0x10` 32 byteと `0x08` 8 byte、Input `0x03`・`0x17`・`0xff` を宣言した（以下、設定用node）。descriptor本体は本リポジトリに収録していない。
+- [OBSERVED] 設定用nodeへのGET `0x08`（8 byte）は成功し、byte 1は `0x59`、bytes 2..7はReceiver C652 MI_03と有線C658 MI_01のGET `0x08` と一致した。
+- [OBSERVED] Bluetooth接続中も有線接続中も、Receiver C652の設定候補node（MI_03）は列挙されGET `0x08` に応答した。Bluetooth接続中に有線C658のnodeはなく、有線接続中にBluetoothのnodeはなかった。
+- [OBSERVED] 設定用nodeへ32-byte Report `0x10` を `HIDIOCSFEATURE(32)` で送ると、利用者はDPIの変化（800、200、1400への切り替え）を報告した。radialをhost index 1（`0x29`）にした送信の後、Bluetooth接続中のradial押下で設定用nodeからReport `0x03` の押下・解放が3組届いた。送信前（radialが `0x0c`）は全ボタンの押下でReport `0x03` は届かなかった。
+- [OBSERVED] 利用者は、Bluetoothで送った設定がマウスの電源の入れ直しや別の経路での再接続の後に消える様子で、有線とReceiverで無効にしているwheelの慣性がBluetooth接続のたびに有効になっていると報告した。読み戻しはしておらず、時刻も記録していない。
+- [HYPOTHESIS] Bluetooth経路は有線・Receiver経路とは別の設定を持ち、Bluetoothで送った設定は再接続や電源の入れ直しで保持されない。
+- [OBSERVED] 利用者は、Bluetooth接続中にどのプロセスもhidrawを開いていない状態でも入力が止まらなかったと報告した。継続時間と操作回数は記録していない。
+- [UNKNOWN] Bluetoothの設定が消える条件（電源、経路の切り替え、Bluetoothの再接続）、慣性が有効になるのが既定値によるのか、Bluetoothへの送信が他の経路の設定に影響するか。
 
 ## 試験fixtureと証拠境界
 
