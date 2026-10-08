@@ -39,8 +39,10 @@
 - [OBSERVED] USBケーブル接続前、同じマウスについて利用者がBluetooth電池表示98%を日本時間9時12分ごろに確認した。Receiverへ切り替えた後の9時14分31秒～51秒の20秒間に、C652 MI_03のraw入力から `17 62 00` を3回取得した。byte 1の `0x62` は十進98で表示値と一致する。表示値は利用者申告で、画面保存と切り替え後の同時表示確認はない。この一致だけでは百分率の意味を確定しない。(evidence: [98%限定比較](evidence/report17-battery-2026-09/README.md))
 - [OBSERVED] 利用者がPCにつながっていない充電ケーブルを9時17分ごろ接続した後、同じReceiver入力経路で9時18分38秒～58秒に `17 64 01` を3回取得した。接続前の `17 62 00` からbyte 1・2がともに変化した。充電電流と接続後の独立した残量表示は未確認なので、`0x64` がその時点の実残量100%を示すとは断定しない。(evidence: [充電ケーブル前後の限定比較](evidence/report17-battery-2026-09/README.md))
 - [OBSERVED] 利用者が充電ケーブルを外して9時20分ごろにBluetooth表示100%を確認し、USB接続せずReceiverへ戻した後、9時22分09秒～29秒に `17 64 00` を2回取得した。`0x64` は十進100で表示値と一致する。98%時の `0x62` と合わせて2つの独立表示値に対応するが、表示時刻とraw取得時刻は同時ではない。(evidence: [98%・100%限定比較](evidence/report17-battery-2026-09/README.md))
+- [OBSERVED] 試験個体のC652 MI_02（Receiver設定nodeと同じdescriptor）と有線C658 MI_01のdescriptorは、Input Report `0x17` のbyte 1をUsage Page `0x06` / Usage `0x20`（Battery Strength）、Logical範囲0..100の8 bitとして、byte 2のbit 0をvendor Usage `0xff00:0x27`、Logical範囲0..1の1 bitとして宣言する。descriptorの宣言は値の意味を保証しない。(evidence: [descriptorとpower_supply](evidence/report17-power-supply-2026-10/README.md))
+- [OBSERVED] 2026-10-07、Receiver C652経由の接続で、LinuxはC652 MI_03を親とする `power_supply`（`type=Battery`、`scope=Device`）を作り、`capacity` は `70` だった。利用者はこれが同じマウスのBluetooth電池表示と同じ値だったと報告した。同時刻のraw Report `0x17` は取得しておらず、`status` は `Discharging` だった。この電池はUPowerに列挙されなかった。(evidence: [descriptorとpower_supply](evidence/report17-power-supply-2026-10/README.md))
 - [HYPOTHESIS] byte 0はReport ID、byte 1は電池残量の百分率候補である。byte 2は充電ケーブル接続に関係するflag候補で、この限定比較ではケーブルありで `01`、なしで `00` と相関した。
-- [UNKNOWN] byte 1の正式なbattery percentage意味と他の値・接続・firmwareへの一般性、byte 2が実際の充電電流・給電状態・他の条件のどれを示すか。2つの表示値と1回のケーブル前後比較だけでは確定しない。
+- [UNKNOWN] byte 1の正式なbattery percentage意味と他の値・接続・firmwareへの一般性、byte 2が実際の充電電流・給電状態・他の条件のどれを示すか。2つの表示値と1回のケーブル前後比較、descriptorの宣言、1点のLinux `capacity` だけでは確定しない。有線・Bluetooth接続でのLinux `power_supply` と、UPowerが列挙しない理由。
 
 ## Receiver管理とLinux実装
 
